@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+    	android:layout_height="match_parent"
+	    android:layout_width="match_parent">
+	    <LinearLayout
+	   		android:layout_height="match_parent"
+	    	android:layout_width="match_parent"
+	    	android:orientation="vertical">
+	    
+	 	    <TableLayout 
+	    	android:id="@+id/tblUsbInfo_top"
+	    	android:layout_height="wrap_content"
+	    	android:layout_width="match_parent"
+	    	android:stretchColumns="1">
+	    	<TableRow  
+	        	style="@style/table_section_title_row">
+	            <TextView
+	            	style="@style/table_section_title_row_data"
+	            	android:text="Device Info"/>
+	        </TableRow> 
+	        </TableLayout>   
+
+	    <RelativeLayout
+			android:layout_height="match_parent"
+	    	android:layout_width="match_parent">
+	    <TableLayout 
+	    	android:id="@+id/tblUsbInfo_top"
+	    	android:layout_toLeftOf="@+id/btnLogo"
+	    	android:layout_height="wrap_content"
+	    	android:layout_width="match_parent"
+	    	android:stretchColumns="1">
+	        
+	        <TableRow  
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content">
+	            <TextView
+					style="@style/table_row_title_cell"
+	            	android:text="Device Path:"/>
+	            <TextView 
+	            	style="@style/table_row_data_cell" 
+		            android:id="@+id/tvDevicePath"/>
+	        </TableRow>
+	        <TableRow  
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content">
+	            <TextView
+					style="@style/table_row_title_cell"
+	            	android:text="Device Class:"/>
+	            <TextView 
+	            	style="@style/table_row_data_cell" 
+		            android:id="@+id/tvDeviceClass"/>
+	        </TableRow>         
+	        <TableRow 
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content">
+	            <TextView 
+	            	style="@style/table_row_title_cell" 
+	            	android:text="Vendor ID: "/>
+	            <TextView 
+	            	style="@style/table_row_data_cell"  
+	            	android:id="@+id/tvVID"/>
+	        </TableRow>
+	        <TableRow 
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content">
+	            <TextView 
+	            	style="@style/table_row_title_cell" 
+	            	android:text="Vendor Name (reported): "/>
+	            <TextView 
+	            	style="@style/table_row_data_cell" 
+	            	android:id="@+id/tvVendorReported"/>
+	        </TableRow>
+	        <TableRow 
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content">
+	            <TextView 
+	            	style="@style/table_row_title_cell" 
+	            	android:text="Vendor Name (from DB): "/>
+	            <TextView 
+	            	style="@style/table_row_data_cell" 
+	            	android:id="@+id/tvVendorDb"/>
+	        </TableRow>	        
+	        <TableRow 
+	        	android:layout_width="match_parent" 
+	        	android:layout_height="wrap_content">
+	            <TextView 
+	            	style="@style/table_row_title_cell"
+	            	android:text="Product ID: "/>
+	            <TextView 
+	            	style="@style/table_row_data_cell"  
+	            	android:id="@+id/tvPID"/>
+	        </TableRow>
+	        <TableRow 
+	        	android:layout_width="match_parent" 
+	        	android:layout_height="wrap_content">
+	            <TextView 
+	            	style="@style/table_row_title_cell" 
+	            	android:text="Product Name (reported): "/>
+	            <TextView 
+	            	style="@style/table_row_data_cell"  
+	            	android:id="@+id/tvProductReported"/>
+	        </TableRow>
+	        <TableRow 
+	        	android:layout_width="match_parent" 
+	        	android:layout_height="wrap_content">
+	            <TextView 
+	            	style="@style/table_row_title_cell" 
+	            	android:text="Product Name(from DB): "/>
+	            <TextView 
+	            	style="@style/table_row_data_cell"  
+	            	android:id="@+id/tvProductDb"/>
+	        </TableRow>	        
+		</TableLayout>
+		
+		<ImageButton
+			android:id="@+id/btnLogo"
+			android:layout_marginTop="5dip"
+			android:layout_marginRight="5dip"
+			android:layout_height="match_parent"
+			android:layout_width="wrap_content"
+			android:layout_alignParentRight="true"
+			android:minHeight="130dip"
+			android:maxHeight="130dip"
+			android:maxWidth="130dip"
+			android:minWidth="130dip"
+			android:background="@drawable/image_border"/>
+		</RelativeLayout>
+		<TableLayout
+			android:id="@+id/tblUsbInfo_bottom"
+	    	android:layout_height="wrap_content"
+	    	android:layout_width="match_parent"
+	    	android:stretchColumns="1">
+	        <TableRow  
+	        	style="@style/table_section_title_row">
+	            <TextView
+	            	style="@style/table_section_title_row_data"
+	            	android:text="Additional Info"/>
+	        </TableRow> 
+	    </TableLayout>
+	    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

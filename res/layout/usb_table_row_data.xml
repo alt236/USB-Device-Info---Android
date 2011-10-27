@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<TableRow  xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+    <TextView 
+    	style="@style/table_row_title_cell"
+    	android:id="@+id/usb_tablerow_cell1"/>
+    <TextView 
+    	style="@style/table_row_data_cell"
+     	android:id="@+id/usb_tablerow_cell2"/>
+</TableRow>
+
