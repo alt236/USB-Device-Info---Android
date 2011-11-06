@@ -12,7 +12,7 @@
 	    	android:orientation="vertical">
 	    
 	 	    <TableLayout 
-	    	android:id="@+id/tblUsbInfo_top"
+	    	android:id="@+id/tblUsbInfo_title"
 	    	android:layout_height="wrap_content"
 	    	android:layout_width="match_parent"
 	    	android:stretchColumns="1">
@@ -39,7 +39,7 @@
 	        	android:layout_height="wrap_content">
 	            <TextView
 					style="@style/table_row_title_cell"
-	            	android:text="Device Path:"/>
+	            	android:text="@string/device_path_"/>
 	            <TextView 
 	            	style="@style/table_row_data_cell" 
 		            android:id="@+id/tvDevicePath"/>
@@ -49,7 +49,7 @@
 	        	android:layout_height="wrap_content">
 	            <TextView
 					style="@style/table_row_title_cell"
-	            	android:text="Device Class:"/>
+	            	android:text="@string/device_class_"/>
 	            <TextView 
 	            	style="@style/table_row_data_cell" 
 		            android:id="@+id/tvDeviceClass"/>
@@ -59,7 +59,7 @@
 	        	android:layout_height="wrap_content">
 	            <TextView 
 	            	style="@style/table_row_title_cell" 
-	            	android:text="Vendor ID: "/>
+	            	android:text="@string/vendor_id_"/>
 	            <TextView 
 	            	style="@style/table_row_data_cell"  
 	            	android:id="@+id/tvVID"/>
@@ -69,7 +69,7 @@
 	        	android:layout_height="wrap_content">
 	            <TextView 
 	            	style="@style/table_row_title_cell" 
-	            	android:text="Vendor Name: "/>
+	            	android:text="@string/vendor_name_"/>
 	            <TextView 
 	            	style="@style/table_row_data_cell" 
 	            	android:id="@+id/tvVendorDb"/>
@@ -79,7 +79,7 @@
 	        	android:layout_height="wrap_content">
 	            <TextView 
 	            	style="@style/table_row_title_cell"
-	            	android:text="Product ID: "/>
+	            	android:text="@string/product_id_"/>
 	            <TextView 
 	            	style="@style/table_row_data_cell"  
 	            	android:id="@+id/tvPID"/>
@@ -89,7 +89,7 @@
 	        	android:layout_height="wrap_content">
 	            <TextView 
 	            	style="@style/table_row_title_cell" 
-	            	android:text="Product Name: "/>
+	            	android:text="@string/product_name_"/>
 	            <TextView 
 	            	style="@style/table_row_data_cell"  
 	            	android:id="@+id/tvProductDb"/>
@@ -118,7 +118,7 @@
 	        	style="@style/table_section_title_row">
 	            <TextView
 	            	style="@style/table_section_title_row_data"
-	            	android:text="Interfaces"/>
+	            	android:text="@string/interfaces"/>
 	        </TableRow> 
 	    </TableLayout>
 	    </LinearLayout>

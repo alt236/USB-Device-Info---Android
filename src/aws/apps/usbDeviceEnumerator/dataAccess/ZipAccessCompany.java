@@ -43,8 +43,11 @@ public class ZipAccessCompany {
 
 			while ((ze = zis.getNextEntry()) != null) {
                 if (ze.getName().equals(logo)) {
+                	Log.d(TAG, "^ Found it!");
                 	result = BitmapFactory.decodeStream(zis);
                     break;
+                } else {
+                	
                 }
             } 
 			

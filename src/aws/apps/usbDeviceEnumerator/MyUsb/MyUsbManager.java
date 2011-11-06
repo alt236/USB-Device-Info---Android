@@ -76,13 +76,13 @@ public class MyUsbManager {
 		}
 	}
 
-	private String pad(String text, int maxsize, String padding){
-		String res = text;
-		while(res.length()<maxsize){
-			res = padding + res;
-		}
-		return res;
-	}
+//	private String pad(String text, int maxsize, String padding){
+//		String res = text;
+//		while(res.length()<maxsize){
+//			res = padding + res;
+//		}
+//		return res;
+//	}
 		
 	public HashMap<String, MyUsbDevice> getUsbDevices(){
 		populateList();
@@ -125,7 +125,7 @@ public class MyUsbManager {
         return res.trim();
 	}
 
-	public static String getUsbInfo(){
+	public static String getUsbInfoViaShell(){
 		String res = (new ExecTerminal()).exec(COMMAND_GET_USB_INFO);
 		
 		res = res.replace(DEVICE_START + "\n" + DEVICE_END + "\n", "");

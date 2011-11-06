@@ -14,7 +14,8 @@
 		Changelog:\n
 		·v0.0.1 First public release\n
 		·v0.0.2 Added Interface and Endpoint resolution\n
-		·v0.0.3 Databases can now be downloaded.
+		·v0.0.3 Databases can now be downloaded.\n
+		·v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.
 	</string>
 
 	<string name="app_notes" formatted="false">
@@ -27,8 +28,7 @@
 	<string name="label_menu_update_db">Update DBs</string>
 	<string name="label_menu_quit">Quit</string>
 	<string name="label_menu_about">About</string>
-	<string name="label_hide">Hide</string>
-	<string name="label_show">Show</string>
+	<string name="label_menu_export">Export</string>
 	
 	<string name="label_tab_api">API</string>
 	<string name="label_tab_linux">Linux</string>
@@ -70,5 +70,34 @@
 	<string name="alert_update_db">You are about to download files which are about 2.5MB in size. The files will be downloaded on your SD card.\nDo you want to continue?</string>
 	<string name="alert_db_not_found_title">Vendor Database not found</string>
 	<string name="alert_db_not_found_instructions">To enable the resolution of Vendor and Device IDs you need to download a few files. To do that go to "Menu->Update DBs".</string>
+	<string name="no_usb_device_selected_">No USB device selected.</string>
+	<string name="usb_version_">USB Version:</string>
+	<string name="speed_">Speed:</string>
+	<string name="protocol_">Protocol:</string>
+	<string name="maximum_power_">Maximum Power:</string>
+	<string name="serial_number_">Serial Number:</string>
+	<string name="address_">"Address        : "</string>
+	<string name="number_">"Number         : "</string>
+	<string name="direction_">"Direction      : "</string>
+	<string name="type_">"Type           : "</string>
+	<string name="poll_interval_">"Poll Interval  : "</string>
+	<string name="max_packet_size_">"Max Packet Size: "</string>
+	<string name="attributes_">"Attributes     : "</string>
+	<string name="none">None</string>
+	<string name="class_">Class:</string>
+	<string name="interface_">Interface #</string>
+	<string name="endpoint_">Endpoint:</string>
+	<string name="device_path_">Device Path:</string>
+	<string name="device_class_">Device Class:</string>
+	<string name="vendor_id_">"Vendor ID: "</string>
+	<string name="vendor_name_">"Vendor Name: "</string>
+	<string name="product_id_">"Product ID: "</string>
+	<string name="product_name_">"Product Name: "</string>
+	<string name="interfaces">Interfaces</string>
+	<string name="device_info">Device Info</string>
+	<string name="vendor_name_reported_">"Vendor Name (reported): "</string>
+	<string name="vendor_name_from_db_">"Vendor Name (from DB): "</string>
+	<string name="product_name_reported_">"Product Name (reported): "</string>
+	<string name="product_name_from_db_">"Product Name (from DB): "</string>
 	
 </resources>

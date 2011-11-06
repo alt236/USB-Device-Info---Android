@@ -10,15 +10,28 @@ import java.util.Date;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
+import aws.apps.usbDeviceEnumerator.R;
 
 public class UsefulBits {
 	final String TAG =  this.getClass().getName();
+	
+	public enum SOFTWARE_INFO{
+		NAME, VERSION, NOTES, CHANGELOG, COPYRIGHT, ACKNOWLEDGEMENTS
+	}
+	
+	
 	private Context c;
 
 	public UsefulBits(Context cntx) {
@@ -57,14 +70,7 @@ public class UsefulBits {
 				return false;
 			}
 	}
-
-	/**
-	 * Gets the software version and version name for this application
-	 */
-	public enum SOFTWARE_INFO{
-		NAME, VERSION, NOTES, CHANGELOG, COPYRIGHT, ACKNOWLEDGEMENTS
-	}
-
+	
 	public String getSoftwareInfo(SOFTWARE_INFO info) {
 		try {
 			PackageInfo pi = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
@@ -103,6 +109,21 @@ public class UsefulBits {
 		}
 	} 
 
+	public String getAboutDialogueText(){
+		StringBuilder sbText = new StringBuilder();
+		
+		
+		sbText.append(c.getString(R.string.app_changelog));
+		sbText.append("\n\n");
+		sbText.append(c.getString(R.string.app_notes));
+		sbText.append("\n\n");
+		sbText.append(c.getString(R.string.app_acknowledgements));
+		sbText.append("\n\n");
+		sbText.append(c.getString(R.string.app_copyright));
+		
+		return sbText.toString();
+	}
+	
 	public String formatDateTime(String formatString, Date d){
 		Format formatter = new SimpleDateFormat(formatString);
 		return formatter.format(d);
@@ -178,5 +199,47 @@ public class UsefulBits {
 			Log.e(TAG, "^ createDirectories - something went wrong (" + dirs + ") " + e.getMessage());	
 			return false;
 		}
+	}
+	
+	public String tableToString(TableLayout t) {
+		String res = "";
+
+		for (int i=0; i <= t.getChildCount()-1; i++){
+			TableRow row = (TableRow) t.getChildAt(i);
+
+			for (int j=0; j <= row.getChildCount()-1; j++){
+				View v = row.getChildAt(j);
+
+				try {
+					if(v.getClass() == Class.forName("android.widget.TextView")){
+						TextView tmp = (TextView) v;
+						res += tmp.getText();
+
+						if(j==0){res += " ";}
+					} else if(v.getClass() == Class.forName("android.widget.EditText")){
+						EditText tmp = (EditText) v;
+						res += tmp.getText().toString();
+					} else {
+						//do nothing
+					}
+				} catch (Exception e) {
+					res = e.toString();
+					Log.e(TAG, "^ ERROR: tableToString: " + res);
+				}
+			}
+			res +="\n";
+		}
+		return res;
+	}
+	
+	public void share(String subject, String text){
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		Intent share = Intent.createChooser(intent, "Share result via:");
+		c.startActivity(share);		
 	}
 }

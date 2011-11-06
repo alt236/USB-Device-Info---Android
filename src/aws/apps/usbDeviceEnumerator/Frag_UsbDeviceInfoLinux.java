@@ -1,6 +1,5 @@
 package aws.apps.usbDeviceEnumerator;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,9 +19,9 @@ import aws.apps.usbDeviceEnumerator.dataAccess.DbAccessCompany;
 import aws.apps.usbDeviceEnumerator.dataAccess.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.dataAccess.ZipAccessCompany;
 import aws.apps.usbDeviceEnumerator.util.UsbConstants;
+import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
-public class Frag_UsbDeviceInfoLinux extends Fragment {
-//	private final String TAG =  this.getClass().getName();
+public class Frag_UsbDeviceInfoLinux extends Frag_UsbDeviceInfo {
 	private final String TAG =  this.getClass().getName();
 	private final static String BUNDLE_MY_USB_INFO = "BUNDLE_MY_USB_INFO";
 	
@@ -30,7 +29,9 @@ public class Frag_UsbDeviceInfoLinux extends Fragment {
 	public final static int TYPE_LINUX_INFO = 1;	
 	
 	public final static String DEFAULT_STRING = "???";
-    private TableLayout tblUsbInfo;
+	private TableLayout tblUsbInfoHeader;
+	private TableLayout tblUsbInfoTop;
+    private TableLayout tblUsbInfoBottom;
 	private TextView tvVID;
 	private TextView tvPID;
 	private TextView tvVendorReported;
@@ -82,7 +83,9 @@ public class Frag_UsbDeviceInfoLinux extends Fragment {
     		v = inflater.inflate(R.layout.usb_info_linux, container, false);
     	}
     	
-   		tblUsbInfo = (TableLayout) v.findViewById(R.id.tblUsbInfo_bottom);
+    	tblUsbInfoHeader = (TableLayout) v.findViewById(R.id.tblUsbInfo_title);
+    	tblUsbInfoTop = (TableLayout) v.findViewById(R.id.tblUsbInfo_top);
+    	tblUsbInfoBottom = (TableLayout) v.findViewById(R.id.tblUsbInfo_bottom);
 		tvVID = ((TextView) v.findViewById(R.id.tvVID));
 		tvPID = ((TextView) v.findViewById(R.id.tvPID));
 		tvProductDb = ((TextView) v.findViewById(R.id.tvProductDb));
@@ -132,13 +135,13 @@ public class Frag_UsbDeviceInfoLinux extends Fragment {
 			Log.d(TAG, "^ Searching for '"+searchFor+"'");
 			loadLogo(dbComp.getLogo(searchFor));
 		}
-		addDataRow(inflater, tblUsbInfo, "USB Version:",myUsbDevice.getUsbVersion());
-		addDataRow(inflater, tblUsbInfo, "Speed:",myUsbDevice.getSpeed());
-		addDataRow(inflater, tblUsbInfo, "Protocol:", myUsbDevice.getDeviceProtocol());
-		addDataRow(inflater, tblUsbInfo, "Maximum Power:",myUsbDevice.getMaxPower());
-		addDataRow(inflater, tblUsbInfo, "Serial Number:",myUsbDevice.getSerialNumber());
+		addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.usb_version_),myUsbDevice.getUsbVersion());
+		addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.speed_),myUsbDevice.getSpeed());
+		addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.protocol_), myUsbDevice.getDeviceProtocol());
+		addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.maximum_power_),myUsbDevice.getMaxPower());
+		addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.serial_number_),myUsbDevice.getSerialNumber());
 		
-		addHeaderRow(inflater, tblUsbInfo, "Interfaces");
+		//addHeaderRow(inflater, tblUsbInfo, "Interfaces");
 		
     }
 
@@ -178,4 +181,15 @@ private void loadLogo(String logo){
     	}
     	return pad+string;
     }
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		UsefulBits uB = new UsefulBits(getActivity());
+		sb.append(uB.tableToString(tblUsbInfoHeader));
+		sb.append(uB.tableToString(tblUsbInfoTop));
+		sb.append("\n");
+		sb.append(uB.tableToString(tblUsbInfoBottom));
+		return sb.toString();
+	}
 }

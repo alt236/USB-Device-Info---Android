@@ -47,21 +47,12 @@ import aws.apps.usbDeviceEnumerator.ui.MyAlertBox;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits.SOFTWARE_INFO;
 
-enum MENU_BUTTONS {
-	ABOUT, UPDATE_DB;
-
-	public static MENU_BUTTONS lookUpByOrdinal(int i) {
-		return MENU_BUTTONS.values()[i];
-	}
-}
-
-public class Act_UsbDeviceEnumerator extends TabActivity{
+public class Act_Main extends TabActivity{
 	final String TAG =  this.getClass().getName();
 	final int DIALOGUE_UPDATE_DB = 0;
 	
 	private final static String TAB_ANDROID_INFO = "Android";
 	private final static String TAB_LINUX_INFO = "Linux";
-	
 	
 	private UsefulBits uB;
 	private ProgressDialog dlProgressDialog;
@@ -74,20 +65,22 @@ public class Act_UsbDeviceEnumerator extends TabActivity{
 	private String companyLogoZipDirectory = "";
 	private String companyLogoZipFullPath = "";
 
-	ListView listUsbAndroid;
-	TextView tvDeviceCountAndroid;
+	private ListView listUsbAndroid;
+	private TextView tvDeviceCountAndroid;
 
-	ListView listUsbLinux;
-	TextView tvDeviceCountLinux;
+	private ListView listUsbLinux;
+	private TextView tvDeviceCountLinux;
 
-	UsbManager usbManAndroid;
-	MyUsbManager usbManagerLinux;
+	private UsbManager usbManAndroid;
+	private MyUsbManager usbManagerLinux;
 	
 	private TabHost tabHost;
-	TabWidget tabWidget;
-	HashMap<String, UsbDevice> androidUsbDeviceList;
-	HashMap<String, MyUsbDevice> linuxUsbDeviceList;
+	private TabWidget tabWidget;
+	private HashMap<String, UsbDevice> androidUsbDeviceList;
+	private HashMap<String, MyUsbDevice> linuxUsbDeviceList;	
 
+	private Frag_UsbDeviceInfo currentInfoFragment;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -231,12 +224,13 @@ public class Act_UsbDeviceEnumerator extends TabActivity{
 			ArrayAdapter<String> usbDeviceAdaptorLinux = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, linuxUsbArray);
 			listUsbLinux.setAdapter(usbDeviceAdaptorLinux);
 			tvDeviceCountLinux.setText("Device List (" + linuxUsbDeviceList.size()+ "):");
-			//MyAlertBox.create(this, MyUsbManager.getUsbInfo(), "Linux Result:", getString(android.R.string.ok)).show();
 		}
 	}
 
 	private void stackAFragment(String usbKey) {
 		Fragment f = new Frag_UsbDeviceInfoAndroid(usbKey);
+		currentInfoFragment = (Frag_UsbDeviceInfo) f;
+		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, f);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -246,6 +240,8 @@ public class Act_UsbDeviceEnumerator extends TabActivity{
 
 	private void stackAFragment(MyUsbDevice usbDevice) {
 		Fragment f = new Frag_UsbDeviceInfoLinux(usbDevice);
+		currentInfoFragment = (Frag_UsbDeviceInfo) f;
+		
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, f);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -263,21 +259,11 @@ public class Act_UsbDeviceEnumerator extends TabActivity{
 	/** Handles item selections */
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_about:
-			String text = "";
-			String title = "";
+		case R.id.menu_about:			
+			 String title = uB.getSoftwareInfo(SOFTWARE_INFO.NAME) + " v" + uB.getSoftwareInfo(SOFTWARE_INFO.VERSION);
+			 String messeage = uB.getAboutDialogueText();
 
-			text += uB.getSoftwareInfo(SOFTWARE_INFO.CHANGELOG);
-			text += "\n\n";
-			text += uB.getSoftwareInfo(SOFTWARE_INFO.NOTES);
-			text += "\n\n";
-			text += uB.getSoftwareInfo(SOFTWARE_INFO.ACKNOWLEDGEMENTS);
-			text += "\n\n";
-			text += uB.getSoftwareInfo(SOFTWARE_INFO.COPYRIGHT);
-			title = uB.getSoftwareInfo(SOFTWARE_INFO.NAME) + " v"
-					+ uB.getSoftwareInfo(SOFTWARE_INFO.VERSION);
-
-			MyAlertBox.create(this, text, title, getString(android.R.string.ok)).show();
+			MyAlertBox.create(this, messeage, title, getString(android.R.string.ok)).show();
 			return true;
 		case R.id.menu_update_db:
 			if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -319,7 +305,16 @@ public class Act_UsbDeviceEnumerator extends TabActivity{
 		case R.id.menu_refresh:
 			refreshUsbDevices();
 			return true;
+			
+		case R.id.menu_export:
+			if ( currentInfoFragment != null ){
+				uB.share("USB Info", currentInfoFragment.toString());
+			}else{
+				uB.showToast(getString(R.string.no_usb_device_selected_), Toast.LENGTH_SHORT, Gravity.BOTTOM, 0, 0);
+			}
+		
 		}
+	
 		return false;
 	}
 
@@ -409,9 +404,9 @@ public class Act_UsbDeviceEnumerator extends TabActivity{
 		protected void onPostExecute(Boolean result) {
 
 			if(result){ // The download is ok.
-				Toast.makeText(Act_UsbDeviceEnumerator.this, getString(R.string.download_ok), Toast.LENGTH_SHORT).show();
+				Toast.makeText(Act_Main.this, getString(R.string.download_ok), Toast.LENGTH_SHORT).show();
 			}else{     // There was an error.
-				Toast.makeText(Act_UsbDeviceEnumerator.this, getString(R.string.download_error), Toast.LENGTH_SHORT).show();
+				Toast.makeText(Act_Main.this, getString(R.string.download_error), Toast.LENGTH_SHORT).show();
 			}
 
 			Log.d(TAG, "^ Dismissing dialogue");

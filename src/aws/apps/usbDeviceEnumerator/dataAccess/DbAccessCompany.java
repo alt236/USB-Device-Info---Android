@@ -35,7 +35,7 @@ public class DbAccessCompany {
 		Cursor cur = executeQuery(  "companies, company_name_spellings", 
 									new String[]{"companies.logo"}, 
 									"company_name_spellings.company_name='" + CompanyNameString + 
-										"' AND company_name_spellings.companyId=companies._id", 
+									"' AND company_name_spellings.companyId=companies._id", 
 									"companies.logo ASC");
 
 		if (cur!= null){

@@ -3,10 +3,7 @@ package aws.apps.usbDeviceEnumerator.MyUsb;
 import java.io.Serializable;
 
 public class MyUsbDevice implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4917560687401662145L;
+	private static final long serialVersionUID = 5383159744871594658L;
 	
 	private String VID;
 	private String PID;
