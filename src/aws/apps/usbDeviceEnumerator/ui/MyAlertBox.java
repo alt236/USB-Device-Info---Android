@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import aws.apps.usbDeviceEnumerator.R;
 
 public class MyAlertBox {
 

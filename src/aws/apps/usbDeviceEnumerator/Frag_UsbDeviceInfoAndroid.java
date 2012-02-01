@@ -187,12 +187,12 @@ private void loadLogo(String logo){
 		tlb.addView(row);
     }
     
-    private void addHeaderRow(LayoutInflater inflater, TableLayout tlb, String cell1Text){
-    	TableRow row = (TableRow)inflater.inflate(R.layout.usb_table_row_header, null);
-    	TextView tv1 = (TextView) row.findViewById(R.id.usb_tablerow_header_cell1);
-    	tv1.setText(cell1Text);
-		tlb.addView(row);
-    }
+//    private void addHeaderRow(LayoutInflater inflater, TableLayout tlb, String cell1Text){
+//    	TableRow row = (TableRow)inflater.inflate(R.layout.usb_table_row_header, null);
+//    	TextView tv1 = (TextView) row.findViewById(R.id.usb_tablerow_header_cell1);
+//    	tv1.setText(cell1Text);
+//		tlb.addView(row);
+//    }
     
     private String padLeft(String string, String padding, int size){
     	String pad = "";
@@ -211,5 +211,10 @@ private void loadLogo(String logo){
 		sb.append("\n");
 		sb.append(uB.tableToString(tblUsbInfoBottom));
 		return sb.toString();
+	}
+
+	@Override
+	public int getType() {
+		return TYPE_ANDROID_INFO;
 	}
 }
