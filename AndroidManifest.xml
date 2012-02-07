@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="aws.apps.usbDeviceEnumerator"
-      android:versionCode="4"
-      android:versionName="0.0.4">
-   <uses-sdk android:minSdkVersion="12" android:targetSdkVersion="12"></uses-sdk>
+    package="aws.apps.usbDeviceEnumerator"
+    android:versionCode="4"
+    android:versionName="0.0.4" >
 
-    <application 
-    	android:hardwareAccelerated="true"
-    	android:icon="@drawable/icon" 
-    	android:label="@string/app_name" android:theme="@android:style/Theme.Holo.Light">
-        <activity android:name=".Act_Main"
-        		  android:configChanges="orientation|keyboardHidden"
-                  android:label="@string/app_name">
+    <uses-sdk
+        android:minSdkVersion="12"
+        android:targetSdkVersion="14" >
+    </uses-sdk>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <application
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Holo.Light" >
+        <activity
+            android:name=".Act_Main"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-    
-    <uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
