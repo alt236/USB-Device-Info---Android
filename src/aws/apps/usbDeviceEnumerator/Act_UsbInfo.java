@@ -20,7 +20,7 @@ public class Act_UsbInfo extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.act_main);
+		setContentView(R.layout.act_usb_info);
 		
 		Bundle b = getIntent().getExtras();
 		mType = b.getInt(EXTRA_TYPE);

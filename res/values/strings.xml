@@ -15,7 +15,8 @@
 		·v0.0.1 First public release\n
 		·v0.0.2 Added Interface and Endpoint resolution\n
 		·v0.0.3 Databases can now be downloaded.\n
-		·v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.
+		·v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.\n
+		·v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.
 	</string>
 
 	<string name="app_notes" formatted="false">
@@ -100,5 +101,7 @@
 	<string name="product_name_reported_">"Product Name (reported): "</string>
 	<string name="product_name_from_db_">"Product Name (from DB): "</string>
 	<string name="share_result_via">Share result via:</string>
+	<string name="logo">Logo</string>
+	<string name="additional_info">Additional Info</string>
 	
 </resources>

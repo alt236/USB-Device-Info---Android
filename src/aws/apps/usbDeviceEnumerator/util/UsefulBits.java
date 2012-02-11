@@ -212,6 +212,7 @@ public class UsefulBits {
 	
 	public String tableToString(TableLayout t) {
 		String res = "";
+		if(t==null){return res;}
 
 		for (int i=0; i <= t.getChildCount()-1; i++){
 			TableRow row = (TableRow) t.getChildAt(i);
