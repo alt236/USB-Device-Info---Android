@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_export"
+          android:title="@string/label_menu_export"
+          android:icon="@android:drawable/ic_menu_upload"
+          android:showAsAction="ifRoom|withText"/>    
+</menu>

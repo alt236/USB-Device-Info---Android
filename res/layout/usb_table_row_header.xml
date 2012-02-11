@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>  
-<TableRow  xmlns:android="http://schemas.android.com/apk/res/android"
- 	style="@style/table_section_title_row">
-     <TextView
-     	android:id="@+id/usb_tablerow_header_cell1"
-     	style="@style/table_section_title_row_data"/>
- </TableRow> 
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/table_section_title_row" >
 
+    <TextView
+        android:id="@+id/usb_tablerow_header_cell1"
+        style="@style/table_section_title_row_data" />
+
+</TableRow>

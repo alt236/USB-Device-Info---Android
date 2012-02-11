@@ -11,9 +11,5 @@
     <item android:id="@+id/menu_about"
           android:title="@string/label_menu_about"
           android:icon="@android:drawable/ic_menu_info_details"
-          android:showAsAction="never"/>
-    <item android:id="@+id/menu_export"
-          android:title="@string/label_menu_export"
-          android:icon="@android:drawable/ic_menu_upload"
-          android:showAsAction="never"/>    
+          android:showAsAction="never"/> 
 </menu>

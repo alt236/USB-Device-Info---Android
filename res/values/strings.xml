@@ -99,5 +99,6 @@
 	<string name="vendor_name_from_db_">"Vendor Name (from DB): "</string>
 	<string name="product_name_reported_">"Product Name (reported): "</string>
 	<string name="product_name_from_db_">"Product Name (from DB): "</string>
+	<string name="share_result_via">Share result via:</string>
 	
 </resources>

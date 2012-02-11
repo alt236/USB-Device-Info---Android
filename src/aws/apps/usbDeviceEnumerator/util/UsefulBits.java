@@ -25,50 +25,73 @@ import android.widget.Toast;
 import aws.apps.usbDeviceEnumerator.R;
 
 public class UsefulBits {
-	final String TAG =  this.getClass().getName();
-	
 	public enum SOFTWARE_INFO{
 		NAME, VERSION, NOTES, CHANGELOG, COPYRIGHT, ACKNOWLEDGEMENTS
 	}
 	
-	
+	final String TAG =  this.getClass().getName();
 	private Context c;
 
 	public UsefulBits(Context cntx) {
 		c = cntx;
 	}
 
-	public void ShowAlert(String title, String text, String button){
-		if (button.equals("")){button = c.getString(android.R.string.ok);}
-
-		try{
-			AlertDialog.Builder ad = new AlertDialog.Builder(c);
-			ad.setTitle( title );
-			ad.setMessage(text);
-
-			ad.setPositiveButton( button, null );
-			ad.show();
-		}catch (Exception e){
-			Log.e(TAG, "^ ShowAlert()", e);
-		}	
+	public Calendar convertMillisToDate(long millis){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(millis);
+		return calendar;
 	}
 
-	public boolean isOnline() {
-		try{ 
-			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-			
-			if (cm != null) {
-				Log.d(TAG, "^ isOnline()=true");
-				return cm.getActiveNetworkInfo().isConnected();
+	public boolean createDirectories(String dirs){
+		Log.d(TAG, "^ createDirectories - Attempting to create: " + dirs);
+		try{
+
+			if (new File(dirs).exists()){
+				Log.d(TAG, "^ createDirectories - Directory already exist:" + dirs);
+				return true;
+			}
+
+			// create a File object for the parent directory
+			File newDirectories = new File(dirs);
+			// have the object build the directory structure, if needed.
+			if(newDirectories.mkdirs()){
+				showToast("Directories created: " + dirs, 
+						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
+				Log.d(TAG, "^ createDirectories - Directory created:" + dirs);
+				return true;					
 			} else {
-				Log.d(TAG, "^ isOnline()=false");
+				showToast("Could not create: " + dirs, 
+						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
+				Log.e(TAG, "^ createDirectories - Could not create:" + dirs);
 				return false;
 			}
-					
-			}catch(Exception e){
-				Log.e(TAG, "^ isOnline()=false", e);
-				return false;
-			}
+
+		}catch (Exception e){//Catch exception if any
+			showToast("Could not create: " + dirs, 
+					Toast.LENGTH_SHORT, Gravity.TOP,0,0);
+			Log.e(TAG, "^ createDirectories - something went wrong (" + dirs + ") " + e.getMessage());	
+			return false;
+		}
+	}
+	
+	public String formatDateTime(String formatString, Date d){
+		Format formatter = new SimpleDateFormat(formatString);
+		return formatter.format(d);
+	} 
+
+	public String getAboutDialogueText(){
+		StringBuilder sbText = new StringBuilder();
+		
+		
+		sbText.append(c.getString(R.string.app_changelog));
+		sbText.append("\n\n");
+		sbText.append(c.getString(R.string.app_notes));
+		sbText.append("\n\n");
+		sbText.append(c.getString(R.string.app_acknowledgements));
+		sbText.append("\n\n");
+		sbText.append(c.getString(R.string.app_copyright));
+		
+		return sbText.toString();
 	}
 	
 	public String getSoftwareInfo(SOFTWARE_INFO info) {
@@ -107,32 +130,24 @@ public class UsefulBits {
 			Log.e(TAG, "^ Error @ getSoftwareInfo(" + info.name() + ") ", e);
 			return "";
 		}
-	} 
-
-	public String getAboutDialogueText(){
-		StringBuilder sbText = new StringBuilder();
-		
-		
-		sbText.append(c.getString(R.string.app_changelog));
-		sbText.append("\n\n");
-		sbText.append(c.getString(R.string.app_notes));
-		sbText.append("\n\n");
-		sbText.append(c.getString(R.string.app_acknowledgements));
-		sbText.append("\n\n");
-		sbText.append(c.getString(R.string.app_copyright));
-		
-		return sbText.toString();
-	}
-	
-	public String formatDateTime(String formatString, Date d){
-		Format formatter = new SimpleDateFormat(formatString);
-		return formatter.format(d);
 	}
 
-	public Calendar convertMillisToDate(long millis){
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(millis);
-		return calendar;
+	public boolean isOnline() {
+		try{ 
+			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+			
+			if (cm != null) {
+				Log.d(TAG, "^ isOnline()=true");
+				return cm.getActiveNetworkInfo().isConnected();
+			} else {
+				Log.d(TAG, "^ isOnline()=false");
+				return false;
+			}
+					
+			}catch(Exception e){
+				Log.e(TAG, "^ isOnline()=false", e);
+				return false;
+			}
 	}
 
 	public void saveToFile(String fileName, File directory, String contents){
@@ -163,42 +178,36 @@ public class UsefulBits {
 		}
 	}
 
+	public static void share(Context context, String subject, String text){
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		Intent share = Intent.createChooser(intent, context.getString(R.string.share_result_via));
+		context.startActivity(share);
+	}
+
+	public void ShowAlert(String title, String text, String button){
+		if (button.equals("")){button = c.getString(android.R.string.ok);}
+
+		try{
+			AlertDialog.Builder ad = new AlertDialog.Builder(c);
+			ad.setTitle( title );
+			ad.setMessage(text);
+
+			ad.setPositiveButton( button, null );
+			ad.show();
+		}catch (Exception e){
+			Log.e(TAG, "^ ShowAlert()", e);
+		}	
+	}
+	
 	public void showToast(String message, int duration, int location, int x_offset, int y_offset){
 		Toast toast = Toast.makeText(c.getApplicationContext(), message, duration);
 		toast.setGravity(location,x_offset,y_offset);
 		toast.show();
-	}
-
-	public boolean createDirectories(String dirs){
-		Log.d(TAG, "^ createDirectories - Attempting to create: " + dirs);
-		try{
-
-			if (new File(dirs).exists()){
-				Log.d(TAG, "^ createDirectories - Directory already exist:" + dirs);
-				return true;
-			}
-
-			// create a File object for the parent directory
-			File newDirectories = new File(dirs);
-			// have the object build the directory structure, if needed.
-			if(newDirectories.mkdirs()){
-				showToast("Directories created: " + dirs, 
-						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
-				Log.d(TAG, "^ createDirectories - Directory created:" + dirs);
-				return true;					
-			} else {
-				showToast("Could not create: " + dirs, 
-						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
-				Log.e(TAG, "^ createDirectories - Could not create:" + dirs);
-				return false;
-			}
-
-		}catch (Exception e){//Catch exception if any
-			showToast("Could not create: " + dirs, 
-					Toast.LENGTH_SHORT, Gravity.TOP,0,0);
-			Log.e(TAG, "^ createDirectories - something went wrong (" + dirs + ") " + e.getMessage());	
-			return false;
-		}
 	}
 	
 	public String tableToString(TableLayout t) {
@@ -230,16 +239,5 @@ public class UsefulBits {
 			res +="\n";
 		}
 		return res;
-	}
-	
-	public void share(String subject, String text){
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_TEXT, text);
-		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-		intent.addCategory(Intent.CATEGORY_DEFAULT);
-		Intent share = Intent.createChooser(intent, "Share result via:");
-		c.startActivity(share);		
 	}
 }
