@@ -41,7 +41,6 @@
                             android:id="@+id/lbl_devices_api"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="---"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
                         <View
@@ -70,7 +69,6 @@
                             android:id="@+id/lbl_devices_linux"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="---"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
                         <View

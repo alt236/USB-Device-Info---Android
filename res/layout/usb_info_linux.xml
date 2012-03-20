@@ -40,7 +40,6 @@
             android:id="@+id/tblUsbInfo_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btnLogo"
             android:stretchColumns="1" >
 
             <TableRow

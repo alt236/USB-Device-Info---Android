@@ -27,7 +27,6 @@
 	</string>
 	
 	<string name="label_menu_update_db">Update DBs</string>
-	<string name="label_menu_quit">Quit</string>
 	<string name="label_menu_about">About</string>
 	<string name="label_menu_export">Export</string>
 	
@@ -35,13 +34,12 @@
 	<string name="label_tab_linux">Linux</string>
 	
 	<string name="label_refresh">Refresh</string>
-	<string name="label_no_results">No results</string>
     <string name="label_empty_list">No devices detected.\nPlug a device in and hit refresh</string>
         
     <string name="download_ok">Files successfully downloaded!</string>
     <string name="download_error">There was an error while downloading the files.</string>
     
-     <string name="text_downloading_files">Downloading files...</string>
+     <string name="text_downloading_files">Downloading files…</string>
      
      <string name="url_usb_db">http://aschillings.co.uk/download/db/android_usb.db3</string>
      <string name="url_company_db">http://aschillings.co.uk/download/db/android_company.db3</string>
@@ -56,22 +54,18 @@
      <string name="sd_zip_location_company">/data/alt236/company_db/</string>
      <string name="sd_zip_name_company">company_logos.zip</string>
      
-    <string name="text_copied">copied.</string>
     <string name="text_device_offline">Device offline</string>
 	<string name="text_device_offline_instructions">The device seems to be offline.\nPlease enable either WiFi or Mobile Internet before continuing.</string>
 	
 	<string name="sd_error">SD Card Error</string>
 	<string name="sd_not_available">Cannot write to the SD card. It is either read-only or unmounted.</string>
 	
-	<string name="text_nothing_to_search_for">Nothing to search for.</string>
-	<string name="text_enter_search_parameters">Please enter some search parameters before continuing.</string>
-
 	<string name="error_could_not_open_db">Could not open database!.</string>
 
 	<string name="alert_update_db">You are about to download files which are about 2.5MB in size. The files will be downloaded on your SD card.\nDo you want to continue?</string>
 	<string name="alert_db_not_found_title">Vendor Database not found</string>
 	<string name="alert_db_not_found_instructions">To enable the resolution of Vendor and Device IDs you need to download a few files. To do that go to "Menu->Update DBs".</string>
-	<string name="no_usb_device_selected_">No USB device selected.</string>
+	
 	<string name="usb_version_">USB Version:</string>
 	<string name="speed_">Speed:</string>
 	<string name="protocol_">Protocol:</string>

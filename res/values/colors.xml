@@ -4,8 +4,7 @@
 <color name="title_bar_color">#50C0C0C0</color>
 <color name="logo_border_color">#FFC0C0C0</color>
 <color name="logo_bg_color">#FFFFFF</color>
-<color name="default_text_color">#FFEAEAEA</color>
-
+<!-- <color name="default_text_color">#FFEAEAEA</color> -->
 <!--     <color name="black">#000000</color> -->
 <!--     <color name="white">#FFFFFF</color> -->
 <!--     <color name="green">#A4C639</color> -->
