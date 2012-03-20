@@ -27,7 +27,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.res.Resources;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,11 +38,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.MyAlertBox;
 
 public class UsefulBits {
-	public enum SOFTWARE_INFO{
-		NAME, VERSION, NOTES, CHANGELOG, COPYRIGHT, ACKNOWLEDGEMENTS
-	}
 	
 	final String TAG =  this.getClass().getName();
 	private Context c;
@@ -94,59 +92,32 @@ public class UsefulBits {
 		return formatter.format(d);
 	} 
 
-	public String getAboutDialogueText(){
-		StringBuilder sbText = new StringBuilder();
+	public void showAboutDialogue(){
+		String title = c.getString(R.string.app_name) + " v"+ getAppVersion();
 		
+		StringBuffer sb = new StringBuffer();
 		
-		sbText.append(c.getString(R.string.app_changelog));
-		sbText.append("\n\n");
-		sbText.append(c.getString(R.string.app_notes));
-		sbText.append("\n\n");
-		sbText.append(c.getString(R.string.app_acknowledgements));
-		sbText.append("\n\n");
-		sbText.append(c.getString(R.string.app_copyright));
+		sb.append(c.getString(R.string.app_changelog));
+		sb.append("\n\n");
+		sb.append(c.getString(R.string.app_notes));
+		sb.append("\n\n");
+		sb.append(c.getString(R.string.app_acknowledgements));
+		sb.append("\n\n");		
+		sb.append(c.getString(R.string.app_copyright));
 		
-		return sbText.toString();
+		MyAlertBox.create(c, sb.toString(), title, c.getString(android.R.string.ok)).show();
 	}
-	
-	public String getSoftwareInfo(SOFTWARE_INFO info) {
-		try {
-			PackageInfo pi = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
-			Resources appR = c.getResources();
-			CharSequence txt;
-			// Store the software version code and version name somewhere..
-			switch(info){
-			case VERSION:
-				return pi.versionName;
-			case NAME:
-				txt = appR.getText(appR.getIdentifier("app_name", "string", c.getPackageName())); 
-				break;
-			case NOTES:
-				txt = appR.getText(appR.getIdentifier("app_notes", "string", c.getPackageName())); 
-				break;
-			case CHANGELOG:
-				txt = appR.getText(appR.getIdentifier("app_changelog", "string", c.getPackageName())); 
-				break;
-			case COPYRIGHT:
-				txt = appR.getText(appR.getIdentifier("app_copyright", "string", c.getPackageName())); 
-				break;
-			case ACKNOWLEDGEMENTS:
-				txt = appR.getText(appR.getIdentifier("app_acknowledgements", "string", c.getPackageName())); 
-				break;
-			default:
-				return "";
-			}
-			String res = txt.toString();
-			res = res.replaceAll("\\t", "");
-			res = res.replaceAll("\\n\\n", "\n");
 
-			return res.trim();
-		} catch (Exception e) {
-			Log.e(TAG, "^ Error @ getSoftwareInfo(" + info.name() + ") ", e);
+	public String getAppVersion(){
+		PackageInfo pi;
+		try {
+			pi = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+			return pi.versionName;
+		} catch (NameNotFoundException e) {
 			return "";
 		}
 	}
-
+	
 	public boolean isOnline() {
 		try{ 
 			ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);

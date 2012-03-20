@@ -25,12 +25,12 @@ import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -59,11 +59,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbDevice;
 import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbManager;
-import aws.apps.usbDeviceEnumerator.ui.MyAlertBox;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
-import aws.apps.usbDeviceEnumerator.util.UsefulBits.SOFTWARE_INFO;
 
-public class Act_Main extends TabActivity{
+public class Act_Main extends Activity{
 	final String TAG =  this.getClass().getName();
 	final int DIALOGUE_UPDATE_DB = 0;
 
@@ -90,12 +88,12 @@ public class Act_Main extends TabActivity{
 	private UsbManager usbManAndroid;
 	private MyUsbManager usbManagerLinux;
 
-	private TabHost tabHost;
-	private TabWidget tabWidget;
+	private TabHost mTabHost;
+	private TabWidget mTabWidget;
 	private HashMap<String, UsbDevice> androidUsbDeviceList;
 	private HashMap<String, MyUsbDevice> linuxUsbDeviceList;	
 
-	private Frag_AbstractUsbDeviceInfo currentInfoFragment;
+	//private Frag_AbstractUsbDeviceInfo currentInfoFragment;
 
 	private boolean isSmallScreen = true;
 
@@ -112,9 +110,8 @@ public class Act_Main extends TabActivity{
 		tvDeviceCountAndroid = (TextView) findViewById(R.id.lbl_devices_api);
 		tvDeviceCountLinux = (TextView) findViewById(R.id.lbl_devices_linux);
 
-		tabHost = getTabHost();
-		tabWidget = getTabWidget();
-
+		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+	
 		listUsbAndroid = (ListView) findViewById(R.id.usb_list_api);
 		listUsbAndroid.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		listUsbAndroid.setOnItemClickListener(new OnItemClickListener() {
@@ -174,16 +171,19 @@ public class Act_Main extends TabActivity{
 	}
 
 	private void setupTabs() {
-		tabHost.setup(); // you must call this before adding your tabs!
-		tabHost.addTab(newTab(TAB_ANDROID_INFO, R.string.label_tab_api, R.id.tab_1));
-		tabHost.addTab(newTab(TAB_LINUX_INFO, R.string.label_tab_linux, R.id.tab_2));
+		mTabHost.setup(); // you must call this before adding your tabs!
+		
+		mTabHost.addTab(newTab(TAB_ANDROID_INFO, R.string.label_tab_api, R.id.tab_1));
+		mTabHost.addTab(newTab(TAB_LINUX_INFO, R.string.label_tab_linux, R.id.tab_2));
 
-		for (int i = 0; i < tabWidget.getChildCount(); i ++){
-			final TextView tv = (TextView) tabWidget.getChildAt(i).findViewById(android.R.id.title);        
+		mTabWidget = mTabHost.getTabWidget();
+		
+		for (int i = 0; i < mTabWidget.getChildCount(); i ++){
+			final TextView tv = (TextView) mTabWidget.getChildAt(i).findViewById(android.R.id.title);        
 			tv.setTextColor(this.getResources().getColorStateList(R.drawable.tab_text_selector));
 		}
 
-		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
 			@Override
 			public void onTabChanged(String tabId) {
@@ -214,7 +214,7 @@ public class Act_Main extends TabActivity{
 	}
 
 	private TabSpec newTab(String tag, int labelId, int tabContentId) {
-		TabSpec tabSpec = tabHost.newTabSpec(tag);
+		TabSpec tabSpec = mTabHost.newTabSpec(tag);
 		tabSpec.setIndicator(tag);
 		tabSpec.setContent(tabContentId);
 		return tabSpec;
@@ -274,23 +274,21 @@ public class Act_Main extends TabActivity{
 
 	private void stackAFragment(String usbKey) {
 		Fragment f = new Frag_UsbDeviceInfoAndroid(usbKey);
-		currentInfoFragment = (Frag_AbstractUsbDeviceInfo) f;
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, f);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-		//ft.addToBackStack(null);
+
 		ft.commit();
 	}
 
 	private void stackAFragment(MyUsbDevice usbDevice) {
 		Fragment f = new Frag_UsbDeviceInfoLinux(usbDevice);
-		currentInfoFragment = (Frag_AbstractUsbDeviceInfo) f;
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, f);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-		//ft.addToBackStack(null);
+
 		ft.commit();
 	}
 
@@ -317,10 +315,7 @@ public class Act_Main extends TabActivity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_about:			
-			String title = uB.getSoftwareInfo(SOFTWARE_INFO.NAME) + " v" + uB.getSoftwareInfo(SOFTWARE_INFO.VERSION);
-			String messeage = uB.getAboutDialogueText();
-
-			MyAlertBox.create(this, messeage, title, getString(android.R.string.ok)).show();
+			uB.showAboutDialogue();
 			return true;
 		case R.id.menu_update_db:
 			if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
