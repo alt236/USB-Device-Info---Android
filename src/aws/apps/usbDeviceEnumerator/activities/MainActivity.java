@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
@@ -40,6 +41,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -343,16 +345,26 @@ public class MainActivity extends Activity{
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(getString(R.string.alert_update_db))
 			.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener(){
+				@SuppressWarnings("unchecked")
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					showDialog(DIALOGUE_UPDATE_DB);
 
-					String[][] files = {
-							{getString(R.string.url_usb_db), 			usbDbFullPath},
-							{getString(R.string.url_company_db),		companyDbFullPath},
-							{getString(R.string.url_company_logo_zip), 	companyLogoZipFullPath}
-					};
-					new DownloadFile().execute(files);
+					ArrayList<Pair<String, String>> downloads = new ArrayList<Pair<String, String>>();
+					
+					downloads.add(new Pair<String, String>(
+							getString(R.string.url_usb_db), 
+							usbDbFullPath));
+	
+					downloads.add(new Pair<String, String>(
+							getString(R.string.url_company_db), 
+							companyDbFullPath));
+					
+					downloads.add(new Pair<String, String>(
+							getString(R.string.url_company_logo_zip), 
+							companyLogoZipFullPath));
+					
+					new DownloadFile().execute(downloads);
 				}
 
 			})
@@ -391,12 +403,12 @@ public class MainActivity extends Activity{
 		}
 	}
 
-	private class DownloadFile extends AsyncTask<String[][], Integer, Boolean>{
+	private class DownloadFile extends AsyncTask<ArrayList<Pair<String, String>>, Integer, Boolean>{
 		// This is the message which will be shown on the progress bar
 		MessageFormat form = new MessageFormat("Downloading file: {0} of {1}...");
 
 		@Override
-		protected Boolean doInBackground(String[][]... list) {
+		protected Boolean doInBackground(ArrayList<Pair<String, String>>... downloadLists ) {
 			int count;
 
 			URL url;
@@ -406,11 +418,15 @@ public class MainActivity extends Activity{
 			OutputStream os;
 			Boolean bOK = true;
 
-			String[][] pair = list[0];
-			for(int i = 0; i < list[0].length; i++){
+			
+			ArrayList<Pair<String, String>> downloads = downloadLists[0];
+			
+			int downloadCounter = 0;
+					
+			for( Pair<String, String> download : downloads){
 				try {
-					url = new URL(pair[i][0]);
-					filePath = pair[i][1];
+					url = new URL(download.first);
+					filePath = download.second;
 
 					Log.d(TAG, "^ Downloading: " + url);
 					Log.d(TAG, "^ To         : " + filePath);
@@ -432,19 +448,29 @@ public class MainActivity extends Activity{
 						// The first number is the current file
 						// The second is the total number of files to download
 						// The third is the current progress
-						publishProgress(i+1, list[0].length, (int)(total*100/lenghtOfFile));
+						publishProgress(downloadCounter+1, downloads.size(), (int)(total*100/lenghtOfFile));
 						os.write(data, 0, count);
 					}
 
 					os.flush();
 					os.close();
 					is.close();
+					
 				} catch (Exception e) {
 					Log.e(TAG, "^ Error while downloading.", e);
 					bOK = false;
 					e.printStackTrace();
-				}
+				}	
+				
+				downloadCounter += 1;
 			}
+			
+			
+			
+//			String[][] pair = list[0];
+//			for(int i = 0; i < list[0].length; i++){
+//				
+//			}
 			return bOK;
 		}
 
@@ -464,7 +490,6 @@ public class MainActivity extends Activity{
 		@Override
 		public void onProgressUpdate(Integer... args){
 			Object[] testArgs = {args[0],args[1]};
-
 			dlProgressDialog.setTitle(form.format(testArgs));
 			dlProgressDialog.setProgress(args[2]);
 		}

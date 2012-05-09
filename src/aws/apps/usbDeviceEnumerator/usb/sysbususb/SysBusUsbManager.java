@@ -63,6 +63,7 @@ public class SysBusUsbManager {
 
 	public HashMap<String, SysBusUsbDevice> getUsbDevices(){
 		populateList(PATH_SYS_BUS_USB);
+		
 		return myUsbDevices;
 	}
 
