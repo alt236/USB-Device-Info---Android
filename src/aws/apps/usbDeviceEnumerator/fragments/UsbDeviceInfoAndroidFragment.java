@@ -70,9 +70,6 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
 
 	}
 
-	/**
-	 * Constructor for being created explicitly
-	 */
 	public UsbDeviceInfoAndroidFragment(String usbKey) {
 		this.usbKey = usbKey;
 	}
@@ -153,13 +150,6 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
 	public void onSaveInstanceState(Bundle toSave) {
 		toSave.putString(BUNDLE_USB_KEY, usbKey);
 	}
-
-	//    private void addHeaderRow(LayoutInflater inflater, TableLayout tlb, String cell1Text){
-	//    	TableRow row = (TableRow)inflater.inflate(R.layout.usb_table_row_header, null);
-	//    	TextView tv1 = (TextView) row.findViewById(R.id.usb_tablerow_header_cell1);
-	//    	tv1.setText(cell1Text);
-	//		tlb.addView(row);
-	//    }
 
 	private String padLeft(String string, String padding, int size){
 		String pad = "";
