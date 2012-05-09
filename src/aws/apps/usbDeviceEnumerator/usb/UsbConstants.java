@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.util;
+package aws.apps.usbDeviceEnumerator.usb;
 
 public class UsbConstants {
 

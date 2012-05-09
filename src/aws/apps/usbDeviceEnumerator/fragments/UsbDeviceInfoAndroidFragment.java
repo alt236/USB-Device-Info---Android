@@ -37,7 +37,7 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.dataAccess.DbAccessCompany;
 import aws.apps.usbDeviceEnumerator.dataAccess.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.dataAccess.ZipAccessCompany;
-import aws.apps.usbDeviceEnumerator.util.UsbConstants;
+import aws.apps.usbDeviceEnumerator.usb.UsbConstants;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
 public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment {

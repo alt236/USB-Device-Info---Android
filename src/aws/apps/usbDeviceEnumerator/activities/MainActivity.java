@@ -58,11 +58,11 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbDevice;
-import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbManager;
 import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
+import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
+import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbManager;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
 public class MainActivity extends Activity{
@@ -90,12 +90,12 @@ public class MainActivity extends Activity{
 	private TextView tvDeviceCountLinux;
 
 	private UsbManager usbManAndroid;
-	private MyUsbManager usbManagerLinux;
+	private SysBusUsbManager usbManagerLinux;
 
 	private TabHost mTabHost;
 	private TabWidget mTabWidget;
 	private HashMap<String, UsbDevice> androidUsbDeviceList;
-	private HashMap<String, MyUsbDevice> linuxUsbDeviceList;	
+	private HashMap<String, SysBusUsbDevice> linuxUsbDeviceList;	
 
 	//private Frag_AbstractUsbDeviceInfo currentInfoFragment;
 
@@ -110,7 +110,7 @@ public class MainActivity extends Activity{
 		uB = new UsefulBits(this);
 
 		usbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
-		usbManagerLinux = new MyUsbManager();
+		usbManagerLinux = new SysBusUsbManager();
 		tvDeviceCountAndroid = (TextView) findViewById(R.id.lbl_devices_api);
 		tvDeviceCountLinux = (TextView) findViewById(R.id.lbl_devices_linux);
 
@@ -163,7 +163,7 @@ public class MainActivity extends Activity{
 		}
 	}
 
-	private void displayLinuxUsbDeviceInfo(MyUsbDevice device){
+	private void displayLinuxUsbDeviceInfo(SysBusUsbDevice device){
 		if(isSmallScreen){
 			Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
             i.putExtra(UsbInfoActivity.EXTRA_TYPE, AbstractUsbDeviceInfoFragment.TYPE_LINUX_INFO);
@@ -286,7 +286,7 @@ public class MainActivity extends Activity{
 		ft.commit();
 	}
 
-	private void stackAFragment(MyUsbDevice usbDevice) {
+	private void stackAFragment(SysBusUsbDevice usbDevice) {
 		Fragment f = new UsbDeviceInfoLinuxFragment(usbDevice);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();

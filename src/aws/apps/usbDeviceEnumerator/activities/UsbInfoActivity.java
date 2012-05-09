@@ -20,10 +20,10 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbDevice;
 import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
+import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 
 public class UsbInfoActivity extends Activity{
 	public static final String EXTRA_TYPE =  "type";
@@ -34,7 +34,7 @@ public class UsbInfoActivity extends Activity{
 	
 	private int mType;
 	private String mAndroidKey;
-	private MyUsbDevice mLinuxDevice;
+	private SysBusUsbDevice mLinuxDevice;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

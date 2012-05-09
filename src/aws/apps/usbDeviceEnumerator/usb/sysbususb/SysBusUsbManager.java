@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.MyUsb;
+package aws.apps.usbDeviceEnumerator.usb.sysbususb;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,12 +24,14 @@ import java.util.HashMap;
 
 import aws.apps.usbDeviceEnumerator.util.ExecTerminal;
 
-public class MyUsbManager {
+public class SysBusUsbManager {
 	//final String TAG =  this.getClass().getName();
-	private HashMap<String, MyUsbDevice> myUsbDevices;
+	private HashMap<String, SysBusUsbDevice> myUsbDevices;
 	
+	private static final String PATH_SYS_BUS_USB = "/sys/bus/usb/devices/";
 	private static final String DEVICE_START = "__DEV_START__";
 	private static final String DEVICE_END = "__DEV_END__";
+	
 	private static final String COMMAND_GET_USB_INFO = "for DEVICE in /sys/bus/usb/devices/*; do " +
 			" echo "+ DEVICE_START + ";" +
 			" [ -f $DEVICE/idProduct ] && echo PID: $(cat $DEVICE/idProduct);" +
@@ -55,7 +57,56 @@ public class MyUsbManager {
 		return res;
 	}
 
-	private static String readFile(String filePath){
+	public SysBusUsbManager(){
+		myUsbDevices = new HashMap<String, SysBusUsbDevice>();
+	}
+
+	public HashMap<String, SysBusUsbDevice> getUsbDevices(){
+		populateList(PATH_SYS_BUS_USB);
+		return myUsbDevices;
+	}
+
+	private void populateList(String path){
+		SysBusUsbDevice usb;
+		
+		myUsbDevices.clear();	
+		
+		File dir = new File(path);
+		
+		if (!dir.isDirectory()){return;}
+		
+		for (File child : dir.listFiles()) {
+			
+			if (".".equals(child.getName()) || "..".equals(child.getName())) {
+				continue;  // Ignore the self and parent aliases.
+			}
+			
+			String parentPath = child.getAbsolutePath() + File.separator;
+			
+			usb = new SysBusUsbDevice();
+			usb.setDevicePath(parentPath);
+			usb.setBusNumber(readFileContents(parentPath + "busnum"));
+			usb.setDeviceClass(readFileContents(parentPath + "bDeviceClass"));
+			usb.setDeviceNumber(readFileContents(parentPath + "devnum"));
+			usb.setDeviceProtocol(readFileContents(parentPath + "bDeviceProtocol"));
+			usb.setDeviceSubClass(readFileContents(parentPath + "bDeviceSubClass"));
+			usb.setMaxPower(readFileContents(parentPath + "bMaxPower"));
+			usb.setPID(readFileContents(parentPath + "idProduct"));
+			usb.setReportedProductName(readFileContents(parentPath + "product"));
+			usb.setReportedVendorName(readFileContents(parentPath + "manufacturer"));
+			usb.setSerialNumber(readFileContents(parentPath + "serial"));
+			usb.setSpeed(readFileContents(parentPath + "speed"));
+			usb.setVID(readFileContents(parentPath + "idVendor"));
+			usb.setUsbVersion(readFileContents(parentPath + "version"));
+
+			if(usb.getBusNumber().length() > 0 && usb.getDeviceNumber().length() > 0){
+				String key = child.getName();
+				myUsbDevices.put(key, usb);
+			}
+		}
+	}
+
+	private String readFileContents(String filePath){
 		File file = new File(filePath);
 		if(!file.exists()){return "";}
 		if(file.isDirectory()){return "";}
@@ -89,62 +140,5 @@ public class MyUsbManager {
 			res = "";
 		}
         return res.trim();
-	}
-
-//	private String pad(String text, int maxsize, String padding){
-//		String res = text;
-//		while(res.length()<maxsize){
-//			res = padding + res;
-//		}
-//		return res;
-//	}
-		
-	public MyUsbManager(){
-		myUsbDevices = new HashMap<String, MyUsbDevice>();
-	}
-
-	public HashMap<String, MyUsbDevice> getUsbDevices(){
-		populateList();
-		return myUsbDevices;
-	}
-
-	private void populateList(){
-		myUsbDevices.clear();		
-		File dir = new File("/sys/bus/usb/devices/");
-		if (!dir.isDirectory()){return;}
-		MyUsbDevice usb;
-
-		for (File child : dir.listFiles()) {
-			
-			if (".".equals(child.getName()) || "..".equals(child.getName())) {
-				continue;  // Ignore the self and parent aliases.
-			}
-			
-			String parentPath = child.getAbsolutePath() + File.separator;
-			
-			usb = new MyUsbDevice();
-			usb.setDevicePath(parentPath);
-			usb.setBusNumber(readFile(parentPath + "busnum"));
-			usb.setDeviceClass(readFile(parentPath + "bDeviceClass"));
-			usb.setDeviceNumber(readFile(parentPath + "devnum"));
-			usb.setDeviceProtocol(readFile(parentPath + "bDeviceProtocol"));
-			usb.setDeviceSubClass(readFile(parentPath + "bDeviceSubClass"));
-			usb.setMaxPower(readFile(parentPath + "bMaxPower"));
-			usb.setPID(readFile(parentPath + "idProduct"));
-			usb.setReportedProductName(readFile(parentPath + "product"));
-			usb.setReportedVendorName(readFile(parentPath + "manufacturer"));
-			usb.setSerialNumber(readFile(parentPath + "serial"));
-			usb.setSpeed(readFile(parentPath + "speed"));
-			usb.setVID(readFile(parentPath + "idVendor"));
-			usb.setUsbVersion(readFile(parentPath + "version"));
-
-			if(usb.getBusNumber().length() > 0 && usb.getDeviceNumber().length() > 0){
-//				String key = "/" + pad(usb.getBusNumber(), 3, "0") + 
-//						"/" + pad(usb.getDeviceNumber(), 3, "0");
-				String key = child.getName();
-				myUsbDevices.put(key, usb);
-			}
-
-		}
 	}
 }

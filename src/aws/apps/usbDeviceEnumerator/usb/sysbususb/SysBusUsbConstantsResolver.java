@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.MyUsb;
+package aws.apps.usbDeviceEnumerator.usb.sysbususb;
 
-public class MyUsbConstantsResolver {
+class SysBusUsbConstantsResolver {
 
 	private final static int USB_CLASS_PER_INTERFACE 		= 0x00;
 	private final static int USB_CLASS_AUDIO 				= 0x01;
@@ -45,7 +45,7 @@ public class MyUsbConstantsResolver {
 	private final static int  USB_ENDPOINT_XFER_BULK = 2;
 	private final static int  USB_ENDPOINT_XFER_INT = 3;
 
-	public static String resolveUsbClass(int usbClass){
+	protected static String resolveUsbClass(int usbClass){
 		switch(usbClass){
 		case USB_CLASS_PER_INTERFACE:
 			return "Use class information in the Interface Descriptors (0x"+Integer.toHexString(usbClass) + ")";		
@@ -90,7 +90,7 @@ public class MyUsbConstantsResolver {
 		}
 	}
 
-	public static String resolveUsbEndpointDirection(int usbEndpointDirection){
+	protected static String resolveUsbEndpointDirection(int usbEndpointDirection){
 
 		switch(usbEndpointDirection){
 		case USB_DIR_OUT:
@@ -102,7 +102,7 @@ public class MyUsbConstantsResolver {
 		}
 	}
 
-	public static String resolveUsbEndpointType(int usbEndpointType) {
+	protected static String resolveUsbEndpointType(int usbEndpointType) {
 
 		switch(usbEndpointType){
 		case USB_ENDPOINT_XFER_CONTROL:
@@ -117,6 +117,4 @@ public class MyUsbConstantsResolver {
 			return "Unknown (0x"+Integer.toHexString(usbEndpointType) + ")";
 		}
 	}
-
-
 }
