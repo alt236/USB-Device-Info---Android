@@ -24,6 +24,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import android.app.Activity;
@@ -60,6 +61,9 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.dataAccess.DbAccessCompany;
+import aws.apps.usbDeviceEnumerator.dataAccess.DbAccessUsb;
+import aws.apps.usbDeviceEnumerator.dataAccess.ZipAccessCompany;
 import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
@@ -67,7 +71,7 @@ import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbManager;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements OnTabChangeListener{
 	final String TAG =  this.getClass().getName();
 	final int DIALOGUE_UPDATE_DB = 0;
 
@@ -76,15 +80,11 @@ public class MainActivity extends Activity{
 
 	private UsefulBits uB;
 	private ProgressDialog dlProgressDialog;
-	private String usbDbDirectory = "";
-	private String usbDbFullPath = "";
 
-	private String companyDbDirectory = "";
-	private String companyDbFullPath = "";
-
-	private String companyLogoZipDirectory = "";
-	private String companyLogoZipFullPath = "";
-
+	private DbAccessUsb dbUsb;
+	private DbAccessCompany dbComp;
+	private ZipAccessCompany zipComp;
+	
 	private ListView listUsbAndroid;
 	private TextView tvDeviceCountAndroid;
 
@@ -118,6 +118,10 @@ public class MainActivity extends Activity{
 
 		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 	
+		dbUsb = new DbAccessUsb(this);
+		dbComp = new DbAccessCompany(this);
+		zipComp = new ZipAccessCompany(this);
+		
 		listUsbAndroid = (ListView) findViewById(R.id.usb_list_api);
 		listUsbAndroid.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		listUsbAndroid.setOnItemClickListener(new OnItemClickListener() {
@@ -125,7 +129,6 @@ public class MainActivity extends Activity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				listUsbAndroid.setItemChecked(position, true);
-
 				displayAndroidUsbDeviceInfo(((TextView) view).getText().toString());
 			}
 		});
@@ -150,7 +153,7 @@ public class MainActivity extends Activity{
 
 		setupTabs();
 
-		doDbPathStuff();
+		initialiseDbComponents();
 		refreshUsbDevices();
 	}
 
@@ -189,34 +192,7 @@ public class MainActivity extends Activity{
 			tv.setTextColor(this.getResources().getColorStateList(R.drawable.tab_text_selector));
 		}
 
-		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
-
-			@Override
-			public void onTabChanged(String tabId) {
-				if(isSmallScreen){ return; }
-				int position = -1;
-
-				if(tabId.equals(TAB_ANDROID_INFO)){
-					position = listUsbAndroid.getCheckedItemPosition();
-					if(position != ListView.INVALID_POSITION){
-						String text = (String) listUsbAndroid.getItemAtPosition(position);
-						stackAFragment(text);
-					}else{
-						stackAFragment(new String());
-					}
-				}
-				else if(tabId.equals(TAB_LINUX_INFO)){
-					position = listUsbLinux.getCheckedItemPosition();
-					if(position != ListView.INVALID_POSITION){
-						String text = (String) listUsbLinux.getItemAtPosition(position);
-						stackAFragment(linuxUsbDeviceList.get(text));
-					}else{
-						stackAFragment(new String());
-					}
-
-				}
-			}
-		});
+		mTabHost.setOnTabChangedListener(this);
 	}
 
 	private TabSpec newTab(String tag, int labelId, int tabContentId) {
@@ -235,22 +211,13 @@ public class MainActivity extends Activity{
 		return emptyView;
 	}
 
-	private void doDbPathStuff(){
-		usbDbDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_db_location_usb);
-		usbDbFullPath = usbDbDirectory + getString(R.string.sd_db_name_usb);
-
-		companyDbDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_db_location_company);
-		companyDbFullPath = companyDbDirectory + getString(R.string.sd_db_name_company);
-
-		companyLogoZipDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_zip_location_company);
-		companyLogoZipFullPath = companyLogoZipDirectory + getString(R.string.sd_zip_name_company);
-
+	private void initialiseDbComponents(){
 		// Prompt user to DL db if it is missing.
-		if (!new File(usbDbFullPath).exists()){
+		if (!new File(dbUsb.getLocalDbFullPath()).exists()){
 			uB.ShowAlert(getString(R.string.alert_db_not_found_title), 
 					getString(R.string.alert_db_not_found_instructions), 
 					getString(android.R.string.ok));
-			Log.e(TAG, "^ Database not found: " + usbDbFullPath);
+			Log.w(TAG, "^ Database not found: " + dbUsb.getLocalDbFullPath());
 			return;
 		}
 	}
@@ -260,20 +227,24 @@ public class MainActivity extends Activity{
 		// Getting devices from API
 		{
 			androidUsbDeviceList = usbManAndroid.getDeviceList();
-			String[] androidUsbArray = androidUsbDeviceList.keySet().toArray(new String[androidUsbDeviceList.keySet().size()]);
+			String[] array = androidUsbDeviceList.keySet().toArray(new String[androidUsbDeviceList.keySet().size()]);
 
-			ArrayAdapter<String> usbDeviceAdaptorAndroid = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, androidUsbArray);
-			listUsbAndroid.setAdapter(usbDeviceAdaptorAndroid);
+			Arrays.sort(array);
+			
+			ArrayAdapter<String> adaptor = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, array);
+			listUsbAndroid.setAdapter(adaptor);
 			tvDeviceCountAndroid.setText("Device List (" + androidUsbDeviceList.size()+ "):");
 		}
 
 		// Getting devices from Linux subsystem
 		{
 			linuxUsbDeviceList = usbManagerLinux.getUsbDevices();
-			String[] linuxUsbArray = linuxUsbDeviceList.keySet().toArray(new String[linuxUsbDeviceList.keySet().size()]);
+			String[] array = linuxUsbDeviceList.keySet().toArray(new String[linuxUsbDeviceList.keySet().size()]);
 
-			ArrayAdapter<String> usbDeviceAdaptorLinux = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, linuxUsbArray);
-			listUsbLinux.setAdapter(usbDeviceAdaptorLinux);
+			Arrays.sort(array);
+			
+			ArrayAdapter<String> adaptor = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, array);
+			listUsbLinux.setAdapter(adaptor);
 			tvDeviceCountLinux.setText("Device List (" + linuxUsbDeviceList.size()+ "):");
 		}
 	}
@@ -330,9 +301,9 @@ public class MainActivity extends Activity{
 				return true;
 			}
 
-			if (!uB.createDirectories(usbDbDirectory)){return true;}
-			if (!uB.createDirectories(companyDbDirectory)){return true;}
-			if (!uB.createDirectories(companyLogoZipDirectory)){return true;}
+			if (!uB.createDirectories(dbUsb.getLocalDbLocation())){return true;}
+			if (!uB.createDirectories(dbComp.getLocalDbLocation())){return true;}
+			if (!uB.createDirectories(zipComp.getLocalZipLocation())){return true;}
 
 			if (!uB.isOnline()){  // If we are not online, cancel everything
 				uB.ShowAlert(
@@ -354,15 +325,15 @@ public class MainActivity extends Activity{
 					
 					downloads.add(new Pair<String, String>(
 							getString(R.string.url_usb_db), 
-							usbDbFullPath));
+							dbUsb.getLocalDbFullPath()));
 	
 					downloads.add(new Pair<String, String>(
 							getString(R.string.url_company_db), 
-							companyDbFullPath));
+							dbComp.getLocalDbFullPath()));
 					
 					downloads.add(new Pair<String, String>(
 							getString(R.string.url_company_logo_zip), 
-							companyLogoZipFullPath));
+							zipComp.getLocalZipFullPath()));
 					
 					new DownloadFile().execute(downloads);
 				}
@@ -492,6 +463,32 @@ public class MainActivity extends Activity{
 			Object[] testArgs = {args[0],args[1]};
 			dlProgressDialog.setTitle(form.format(testArgs));
 			dlProgressDialog.setProgress(args[2]);
+		}
+	}
+
+	@Override
+	public void onTabChanged(String tabId) {
+		if(isSmallScreen){ return; }
+		int position = -1;
+
+		if(tabId.equals(TAB_ANDROID_INFO)){
+			position = listUsbAndroid.getCheckedItemPosition();
+			if(position != ListView.INVALID_POSITION){
+				String text = (String) listUsbAndroid.getItemAtPosition(position);
+				stackAFragment(text);
+			}else{
+				stackAFragment(new String());
+			}
+		}
+		else if(tabId.equals(TAB_LINUX_INFO)){
+			position = listUsbLinux.getCheckedItemPosition();
+			if(position != ListView.INVALID_POSITION){
+				String text = (String) listUsbLinux.getItemAtPosition(position);
+				stackAFragment(linuxUsbDeviceList.get(text));
+			}else{
+				stackAFragment(new String());
+			}
+
 		}
 	}
 }

@@ -45,6 +45,14 @@ public class ZipAccessCompany {
 		localZipFullPath = localZipLocation + context.getString(R.string.sd_zip_name_company);
 	}
 
+	public String getLocalZipFullPath(){
+		return localZipFullPath;
+	}
+	
+	public String getLocalZipLocation(){
+		return localZipLocation;
+	}
+
 	public Bitmap getLogo(final String logo){
 		Log.d(TAG, "^ Getting logo '" + logo + "' from '" + localZipFullPath +"'");
 		Bitmap result = null;
