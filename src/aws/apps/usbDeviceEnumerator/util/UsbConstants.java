@@ -47,42 +47,6 @@ public class UsbConstants {
 
 
 
-	public static String resolveUsbEndpointDirection(int usbEndpointDirection){
-
-		switch(usbEndpointDirection){
-		case USB_DIR_OUT:
-			return "Outbound (0x"+Integer.toHexString(usbEndpointDirection) + ")";		
-		case USB_DIR_IN:
-			return "Inbound (0x"+Integer.toHexString(usbEndpointDirection) + ")";
-		default:
-			return "Unknown (0x"+Integer.toHexString(usbEndpointDirection) + ")";
-		}
-	}
-
-	public static String resolveUsbEndpointType(int usbEndpointType) {
-
-		switch(usbEndpointType){
-		case USB_ENDPOINT_XFER_CONTROL:
-			return "Control (0x"+Integer.toHexString(usbEndpointType) + ")";		
-		case USB_ENDPOINT_XFER_ISOC:
-			return "Isochronous (0x"+Integer.toHexString(usbEndpointType) + ")";
-		case USB_ENDPOINT_XFER_BULK:
-			return "Bulk (0x"+Integer.toHexString(usbEndpointType) + ")";
-		case USB_ENDPOINT_XFER_INT:
-			return "Intrrupt (0x"+Integer.toHexString(usbEndpointType) + ")";				
-		default:
-			return "Unknown (0x"+Integer.toHexString(usbEndpointType) + ")";
-		}
-	}
-
-	public static String resolveUsbClass(String usbClass){
-		try{
-			return resolveUsbClass(Integer.parseInt(usbClass));
-		} catch(Exception e){
-			return "";
-		}
-	}
-	
 	public static String resolveUsbClass(int usbClass){
 		switch(usbClass){
 		case USB_CLASS_PER_INTERFACE:
@@ -125,6 +89,42 @@ public class UsbConstants {
 			return "Miscellaneous (0x"+Integer.toHexString(usbClass) + ")";
 		default:
 			return "Unknown (0x"+Integer.toHexString(usbClass) + ")";
+		}
+	}
+
+	public static String resolveUsbClass(String usbClass){
+		try{
+			return resolveUsbClass(Integer.parseInt(usbClass));
+		} catch(Exception e){
+			return "";
+		}
+	}
+
+	public static String resolveUsbEndpointDirection(int usbEndpointDirection){
+
+		switch(usbEndpointDirection){
+		case USB_DIR_OUT:
+			return "Outbound (0x"+Integer.toHexString(usbEndpointDirection) + ")";		
+		case USB_DIR_IN:
+			return "Inbound (0x"+Integer.toHexString(usbEndpointDirection) + ")";
+		default:
+			return "Unknown (0x"+Integer.toHexString(usbEndpointDirection) + ")";
+		}
+	}
+	
+	public static String resolveUsbEndpointType(int usbEndpointType) {
+
+		switch(usbEndpointType){
+		case USB_ENDPOINT_XFER_CONTROL:
+			return "Control (0x"+Integer.toHexString(usbEndpointType) + ")";		
+		case USB_ENDPOINT_XFER_ISOC:
+			return "Isochronous (0x"+Integer.toHexString(usbEndpointType) + ")";
+		case USB_ENDPOINT_XFER_BULK:
+			return "Bulk (0x"+Integer.toHexString(usbEndpointType) + ")";
+		case USB_ENDPOINT_XFER_INT:
+			return "Intrrupt (0x"+Integer.toHexString(usbEndpointType) + ")";				
+		default:
+			return "Unknown (0x"+Integer.toHexString(usbEndpointType) + ")";
 		}
 	}
 

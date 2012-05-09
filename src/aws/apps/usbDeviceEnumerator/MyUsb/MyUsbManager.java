@@ -48,8 +48,64 @@ public class MyUsbManager {
 			" echo "+ DEVICE_END + ";" +
 			" done";
 
+	public static String getUsbInfoViaShell(){
+		String res = (new ExecTerminal()).exec(COMMAND_GET_USB_INFO);
+		
+		res = res.replace(DEVICE_START + "\n" + DEVICE_END + "\n", "");
+		return res;
+	}
+
+	private static String readFile(String filePath){
+		File file = new File(filePath);
+		if(!file.exists()){return "";}
+		if(file.isDirectory()){return "";}
+		
+        StringBuffer fileData = new StringBuffer(1000);
+        BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filePath));
+
+        char[] buf = new char[1024];
+        int numRead=0;
+        
+        while((numRead=reader.read(buf)) != -1){
+            String readData = String.valueOf(buf, 0, numRead);
+            fileData.append(readData);
+            buf = new char[1024];
+        }
+        
+        reader.close();
+        
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return "";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
+
+		String res = fileData.toString();
+		if(res == null){
+			res = "";
+		}
+        return res.trim();
+	}
+
+//	private String pad(String text, int maxsize, String padding){
+//		String res = text;
+//		while(res.length()<maxsize){
+//			res = padding + res;
+//		}
+//		return res;
+//	}
+		
 	public MyUsbManager(){
 		myUsbDevices = new HashMap<String, MyUsbDevice>();
+	}
+
+	public HashMap<String, MyUsbDevice> getUsbDevices(){
+		populateList();
+		return myUsbDevices;
 	}
 
 	private void populateList(){
@@ -90,61 +146,5 @@ public class MyUsbManager {
 			}
 
 		}
-	}
-
-//	private String pad(String text, int maxsize, String padding){
-//		String res = text;
-//		while(res.length()<maxsize){
-//			res = padding + res;
-//		}
-//		return res;
-//	}
-		
-	public HashMap<String, MyUsbDevice> getUsbDevices(){
-		populateList();
-		return myUsbDevices;
-	}
-
-	private static String readFile(String filePath){
-		File file = new File(filePath);
-		if(!file.exists()){return "";}
-		if(file.isDirectory()){return "";}
-		
-        StringBuffer fileData = new StringBuffer(1000);
-        BufferedReader reader;
-		try {
-			reader = new BufferedReader(new FileReader(filePath));
-
-        char[] buf = new char[1024];
-        int numRead=0;
-        
-        while((numRead=reader.read(buf)) != -1){
-            String readData = String.valueOf(buf, 0, numRead);
-            fileData.append(readData);
-            buf = new char[1024];
-        }
-        
-        reader.close();
-        
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return "";
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
-
-		String res = fileData.toString();
-		if(res == null){
-			res = "";
-		}
-        return res.trim();
-	}
-
-	public static String getUsbInfoViaShell(){
-		String res = (new ExecTerminal()).exec(COMMAND_GET_USB_INFO);
-		
-		res = res.replace(DEVICE_START + "\n" + DEVICE_END + "\n", "");
-		return res;
 	}
 }

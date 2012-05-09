@@ -51,5 +51,4 @@ public class MyAlertBox {
 		
 		    return svMessage;
 		}
-
 }

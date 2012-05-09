@@ -42,7 +42,18 @@ import aws.apps.usbDeviceEnumerator.ui.MyAlertBox;
 
 public class UsefulBits {
 	
+	public static void share(Context context, String subject, String text){
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		Intent share = Intent.createChooser(intent, context.getString(R.string.share_result_via));
+		context.startActivity(share);
+	}
 	final String TAG =  this.getClass().getName();
+
 	private Context c;
 
 	public UsefulBits(Context cntx) {
@@ -54,7 +65,7 @@ public class UsefulBits {
 		calendar.setTimeInMillis(millis);
 		return calendar;
 	}
-
+	
 	public boolean createDirectories(String dirs){
 		Log.d(TAG, "^ createDirectories - Attempting to create: " + dirs);
 		try{
@@ -85,27 +96,11 @@ public class UsefulBits {
 			Log.e(TAG, "^ createDirectories - something went wrong (" + dirs + ") " + e.getMessage());	
 			return false;
 		}
-	}
-	
+	} 
+
 	public String formatDateTime(String formatString, Date d){
 		Format formatter = new SimpleDateFormat(formatString);
 		return formatter.format(d);
-	} 
-
-	public void showAboutDialogue(){
-		String title = c.getString(R.string.app_name) + " v"+ getAppVersion();
-		
-		StringBuffer sb = new StringBuffer();
-		
-		sb.append(c.getString(R.string.app_changelog));
-		sb.append("\n\n");
-		sb.append(c.getString(R.string.app_notes));
-		sb.append("\n\n");
-		sb.append(c.getString(R.string.app_acknowledgements));
-		sb.append("\n\n");		
-		sb.append(c.getString(R.string.app_copyright));
-		
-		MyAlertBox.create(c, sb.toString(), title, c.getString(android.R.string.ok)).show();
 	}
 
 	public String getAppVersion(){
@@ -164,15 +159,20 @@ public class UsefulBits {
 		}
 	}
 
-	public static void share(Context context, String subject, String text){
-		Intent intent = new Intent(Intent.ACTION_SEND);
+	public void showAboutDialogue(){
+		String title = c.getString(R.string.app_name) + " v"+ getAppVersion();
 		
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_TEXT, text);
-		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-		intent.addCategory(Intent.CATEGORY_DEFAULT);
-		Intent share = Intent.createChooser(intent, context.getString(R.string.share_result_via));
-		context.startActivity(share);
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append(c.getString(R.string.app_changelog));
+		sb.append("\n\n");
+		sb.append(c.getString(R.string.app_notes));
+		sb.append("\n\n");
+		sb.append(c.getString(R.string.app_acknowledgements));
+		sb.append("\n\n");		
+		sb.append(c.getString(R.string.app_copyright));
+		
+		MyAlertBox.create(c, sb.toString(), title, c.getString(android.R.string.ok)).show();
 	}
 
 	public void ShowAlert(String title, String text, String button){
