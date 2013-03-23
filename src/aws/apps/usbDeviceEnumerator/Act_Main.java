@@ -27,10 +27,9 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -63,13 +62,12 @@ import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
 public class Act_Main extends Activity{
 	final String TAG =  this.getClass().getName();
-	final int DIALOGUE_UPDATE_DB = 0;
-
+	private final String DIALOG_FRAGMENT_TAG = "progress_dialog";
+	
 	private final static String TAB_ANDROID_INFO = "Android";
 	private final static String TAB_LINUX_INFO = "Linux";
 
 	private UsefulBits uB;
-	private ProgressDialog dlProgressDialog;
 	private String usbDbDirectory = "";
 	private String usbDbFullPath = "";
 
@@ -95,14 +93,125 @@ public class Act_Main extends Activity{
 
 	//private Frag_AbstractUsbDeviceInfo currentInfoFragment;
 
-	private boolean isSmallScreen = true;
+	private boolean mIsSmallScreen = true;
+
+	private void dialogFragmentDismiss(String tag){
+		Log.d(TAG, "^ Dimissing Fragment : " + tag);
+		
+		DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(tag); 
+		if (dialog != null) { 
+			if(DIALOG_FRAGMENT_TAG.equals(tag)){
+				Log.d(TAG, "^ Dimissing Fragment!");
+				((ProgressDialogFragment) dialog).dismissAllowingStateLoss();
+			} else {
+				dialog.dismiss();
+			}
+		}
+	}
+
+	private void dialogFragmentShow(String tag){
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+	    Fragment prev = getFragmentManager().findFragmentByTag(tag);
+	    if (prev != null) {
+	        ft.remove(prev);
+	    }
+	    ft.addToBackStack(null);
+	    
+		DialogFragment newFragment = null;
+		if(DIALOG_FRAGMENT_TAG.equals(tag)){
+			newFragment	= ProgressDialogFragment.newInstance(getString(R.string.text_downloading_files), null);
+		}
+		ft.add(newFragment, tag);
+        ft.commitAllowingStateLoss();
+	}
+
+	private void dialogFragmentUpdate(String tag, String title, Integer progress){
+		DialogFragment dialogFragment = (DialogFragment) getFragmentManager().findFragmentByTag(tag); 
+		if (dialogFragment != null) { 
+			if(title != null){
+				((ProgressDialogFragment) dialogFragment).setTitle(title);
+			}
+			if(progress != null){
+				((ProgressDialogFragment) dialogFragment).setProgress(progress);
+			}
+		}
+	}
+	
+	private void displayAndroidUsbDeviceInfo(String device){
+		if(mIsSmallScreen){
+			Intent i = new Intent(getApplicationContext(), Act_UsbInfo.class);
+            i.putExtra(Act_UsbInfo.EXTRA_TYPE, Frag_AbstractUsbDeviceInfo.TYPE_ANDROID_INFO);
+            i.putExtra(Act_UsbInfo.EXTRA_DATA_ANDROID, device);
+            startActivity(i);
+		} else {
+			stackAFragment(device);
+		}
+	}
+	
+	private void displayLinuxUsbDeviceInfo(MyUsbDevice device){
+		if(mIsSmallScreen){
+			Intent i = new Intent(getApplicationContext(), Act_UsbInfo.class);
+            i.putExtra(Act_UsbInfo.EXTRA_TYPE, Frag_AbstractUsbDeviceInfo.TYPE_LINUX_INFO);
+            i.putExtra(Act_UsbInfo.EXTRA_DATA_LINUX, device);
+            startActivity(i);
+		} else {
+			stackAFragment(device);
+		}
+	}
+
+	private void doDbPathStuff(){
+		usbDbDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_db_location_usb);
+		usbDbFullPath = usbDbDirectory + getString(R.string.sd_db_name_usb);
+
+		companyDbDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_db_location_company);
+		companyDbFullPath = companyDbDirectory + getString(R.string.sd_db_name_company);
+
+		companyLogoZipDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_zip_location_company);
+		companyLogoZipFullPath = companyLogoZipDirectory + getString(R.string.sd_zip_name_company);
+
+		// Prompt user to DL db if it is missing.
+		if (!new File(usbDbFullPath).exists()){
+			uB.ShowAlert(getString(R.string.alert_db_not_found_title), 
+					getString(R.string.alert_db_not_found_instructions), 
+					getString(android.R.string.ok));
+			Log.e(TAG, "^ Database not found: " + usbDbFullPath);
+			return;
+		}
+	}
+
+	private View getListViewEmptyView(String text){
+		TextView emptyView = new TextView(getApplicationContext());
+		emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+		emptyView.setText(text);
+		emptyView.setTextSize(20f);
+		emptyView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+		return emptyView;
+	}
+
+	private boolean isSmallScreen(){
+		Boolean res;
+		if(findViewById(R.id.fragment_container) == null){
+			res = true;
+		} else {
+			res = false;
+		}
+		Log.d(TAG, "^ Is this device a small screen? " + res);
+		return res;
+	}
+
+	private TabSpec newTab(String tag, int labelId, int tabContentId) {
+		TabSpec tabSpec = mTabHost.newTabSpec(tag);
+		tabSpec.setIndicator(tag);
+		tabSpec.setContent(tabContentId);
+		return tabSpec;
+	}
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_main);
-		isSmallScreen = isSmallScreen();
+		mIsSmallScreen = isSmallScreen();
 		uB = new UsefulBits(this);
 
 		usbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -148,162 +257,6 @@ public class Act_Main extends Activity{
 		refreshUsbDevices();
 	}
 
-	private void displayAndroidUsbDeviceInfo(String device){
-		if(isSmallScreen){
-			Intent i = new Intent(getApplicationContext(), Act_UsbInfo.class);
-            i.putExtra(Act_UsbInfo.EXTRA_TYPE, Frag_AbstractUsbDeviceInfo.TYPE_ANDROID_INFO);
-            i.putExtra(Act_UsbInfo.EXTRA_DATA_ANDROID, device);
-            startActivity(i);
-		} else {
-			stackAFragment(device);
-		}
-	}
-
-	private void displayLinuxUsbDeviceInfo(MyUsbDevice device){
-		if(isSmallScreen){
-			Intent i = new Intent(getApplicationContext(), Act_UsbInfo.class);
-            i.putExtra(Act_UsbInfo.EXTRA_TYPE, Frag_AbstractUsbDeviceInfo.TYPE_LINUX_INFO);
-            i.putExtra(Act_UsbInfo.EXTRA_DATA_LINUX, device);
-            startActivity(i);
-		} else {
-			stackAFragment(device);
-		}
-	}
-
-	private void setupTabs() {
-		mTabHost.setup(); // you must call this before adding your tabs!
-		
-		mTabHost.addTab(newTab(TAB_ANDROID_INFO, R.string.label_tab_api, R.id.tab_1));
-		mTabHost.addTab(newTab(TAB_LINUX_INFO, R.string.label_tab_linux, R.id.tab_2));
-
-		mTabWidget = mTabHost.getTabWidget();
-		
-		for (int i = 0; i < mTabWidget.getChildCount(); i ++){
-			final TextView tv = (TextView) mTabWidget.getChildAt(i).findViewById(android.R.id.title);        
-			tv.setTextColor(this.getResources().getColorStateList(R.drawable.tab_text_selector));
-		}
-
-		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
-
-			@Override
-			public void onTabChanged(String tabId) {
-				if(isSmallScreen){ return; }
-				int position = -1;
-
-				if(tabId.equals(TAB_ANDROID_INFO)){
-					position = listUsbAndroid.getCheckedItemPosition();
-					if(position != ListView.INVALID_POSITION){
-						String text = (String) listUsbAndroid.getItemAtPosition(position);
-						stackAFragment(text);
-					}else{
-						stackAFragment(new String());
-					}
-				}
-				else if(tabId.equals(TAB_LINUX_INFO)){
-					position = listUsbLinux.getCheckedItemPosition();
-					if(position != ListView.INVALID_POSITION){
-						String text = (String) listUsbLinux.getItemAtPosition(position);
-						stackAFragment(linuxUsbDeviceList.get(text));
-					}else{
-						stackAFragment(new String());
-					}
-
-				}
-			}
-		});
-	}
-
-	private TabSpec newTab(String tag, int labelId, int tabContentId) {
-		TabSpec tabSpec = mTabHost.newTabSpec(tag);
-		tabSpec.setIndicator(tag);
-		tabSpec.setContent(tabContentId);
-		return tabSpec;
-	}
-
-	private View getListViewEmptyView(String text){
-		TextView emptyView = new TextView(getApplicationContext());
-		emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-		emptyView.setText(text);
-		emptyView.setTextSize(20f);
-		emptyView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-		return emptyView;
-	}
-
-	private void doDbPathStuff(){
-		usbDbDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_db_location_usb);
-		usbDbFullPath = usbDbDirectory + getString(R.string.sd_db_name_usb);
-
-		companyDbDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_db_location_company);
-		companyDbFullPath = companyDbDirectory + getString(R.string.sd_db_name_company);
-
-		companyLogoZipDirectory = Environment.getExternalStorageDirectory() + getString(R.string.sd_zip_location_company);
-		companyLogoZipFullPath = companyLogoZipDirectory + getString(R.string.sd_zip_name_company);
-
-		// Prompt user to DL db if it is missing.
-		if (!new File(usbDbFullPath).exists()){
-			uB.ShowAlert(getString(R.string.alert_db_not_found_title), 
-					getString(R.string.alert_db_not_found_instructions), 
-					getString(android.R.string.ok));
-			Log.e(TAG, "^ Database not found: " + usbDbFullPath);
-			return;
-		}
-	}
-
-	private void refreshUsbDevices(){
-
-		// Getting devices from API
-		{
-			androidUsbDeviceList = usbManAndroid.getDeviceList();
-			String[] androidUsbArray = androidUsbDeviceList.keySet().toArray(new String[androidUsbDeviceList.keySet().size()]);
-
-			ArrayAdapter<String> usbDeviceAdaptorAndroid = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, androidUsbArray);
-			listUsbAndroid.setAdapter(usbDeviceAdaptorAndroid);
-			tvDeviceCountAndroid.setText("Device List (" + androidUsbDeviceList.size()+ "):");
-		}
-
-		// Getting devices from Linux subsystem
-		{
-			linuxUsbDeviceList = usbManagerLinux.getUsbDevices();
-			String[] linuxUsbArray = linuxUsbDeviceList.keySet().toArray(new String[linuxUsbDeviceList.keySet().size()]);
-
-			ArrayAdapter<String> usbDeviceAdaptorLinux = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, linuxUsbArray);
-			listUsbLinux.setAdapter(usbDeviceAdaptorLinux);
-			tvDeviceCountLinux.setText("Device List (" + linuxUsbDeviceList.size()+ "):");
-		}
-	}
-
-	private void stackAFragment(String usbKey) {
-		Fragment f = new Frag_UsbDeviceInfoAndroid(usbKey);
-
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_container, f);
-		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-		ft.commit();
-	}
-
-	private void stackAFragment(MyUsbDevice usbDevice) {
-		Fragment f = new Frag_UsbDeviceInfoLinux(usbDevice);
-
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_container, f);
-		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-		ft.commit();
-	}
-
-
-	private boolean isSmallScreen(){
-		Boolean res;
-		if(findViewById(R.id.fragment_container) == null){
-			res = true;
-		} else {
-			res = false;
-		}
-		Log.d(TAG, "^ Is this device a small screen? " + res);
-		return res;
-	}
-
 	/** Creates the menu items */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -341,7 +294,6 @@ public class Act_Main extends Activity{
 			.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					showDialog(DIALOGUE_UPDATE_DB);
 
 					String[][] files = {
 							{getString(R.string.url_usb_db), 			usbDbFullPath},
@@ -362,29 +314,92 @@ public class Act_Main extends Activity{
 		return false;
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DIALOGUE_UPDATE_DB:
-			dlProgressDialog = new ProgressDialog(this);
-			dlProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			dlProgressDialog.setCancelable(false);
-			dlProgressDialog.setTitle(getString(R.string.text_downloading_files));
-			dlProgressDialog.setMax(100);
 
-			return dlProgressDialog;
-		default:
-			return null;
+	private void refreshUsbDevices(){
+
+		// Getting devices from API
+		{
+			androidUsbDeviceList = usbManAndroid.getDeviceList();
+			String[] androidUsbArray = androidUsbDeviceList.keySet().toArray(new String[androidUsbDeviceList.keySet().size()]);
+
+			ArrayAdapter<String> usbDeviceAdaptorAndroid = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, androidUsbArray);
+			listUsbAndroid.setAdapter(usbDeviceAdaptorAndroid);
+			tvDeviceCountAndroid.setText("Device List (" + androidUsbDeviceList.size()+ "):");
+		}
+
+		// Getting devices from Linux subsystem
+		{
+			linuxUsbDeviceList = usbManagerLinux.getUsbDevices();
+			String[] linuxUsbArray = linuxUsbDeviceList.keySet().toArray(new String[linuxUsbDeviceList.keySet().size()]);
+
+			ArrayAdapter<String> usbDeviceAdaptorLinux = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, linuxUsbArray);
+			listUsbLinux.setAdapter(usbDeviceAdaptorLinux);
+			tvDeviceCountLinux.setText("Device List (" + linuxUsbDeviceList.size()+ "):");
 		}
 	}
 
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		switch (id) {
-		case DIALOGUE_UPDATE_DB:
-			dlProgressDialog.setTitle(getString(R.string.text_downloading_files));
-			dlProgressDialog.setProgress(0);
+	
+	private void setupTabs() {
+		mTabHost.setup(); // you must call this before adding your tabs!
+		
+		mTabHost.addTab(newTab(TAB_ANDROID_INFO, R.string.label_tab_api, R.id.tab_1));
+		mTabHost.addTab(newTab(TAB_LINUX_INFO, R.string.label_tab_linux, R.id.tab_2));
+
+		mTabWidget = mTabHost.getTabWidget();
+		
+		for (int i = 0; i < mTabWidget.getChildCount(); i ++){
+			final TextView tv = (TextView) mTabWidget.getChildAt(i).findViewById(android.R.id.title);        
+			tv.setTextColor(this.getResources().getColorStateList(R.drawable.tab_text_selector));
 		}
+
+		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+
+			@Override
+			public void onTabChanged(String tabId) {
+				if(mIsSmallScreen){ return; }
+				int position = -1;
+
+				if(tabId.equals(TAB_ANDROID_INFO)){
+					position = listUsbAndroid.getCheckedItemPosition();
+					if(position != ListView.INVALID_POSITION){
+						String text = (String) listUsbAndroid.getItemAtPosition(position);
+						stackAFragment(text);
+					}else{
+						stackAFragment(new String());
+					}
+				}
+				else if(tabId.equals(TAB_LINUX_INFO)){
+					position = listUsbLinux.getCheckedItemPosition();
+					if(position != ListView.INVALID_POSITION){
+						String text = (String) listUsbLinux.getItemAtPosition(position);
+						stackAFragment(linuxUsbDeviceList.get(text));
+					}else{
+						stackAFragment(new String());
+					}
+
+				}
+			}
+		});
+	}
+	
+	private void stackAFragment(MyUsbDevice usbDevice) {
+		Fragment f = new Frag_UsbDeviceInfoLinux(usbDevice);
+
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_container, f);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+		ft.commit();
+	}
+
+	private void stackAFragment(String usbKey) {
+		Fragment f = new Frag_UsbDeviceInfoAndroid(usbKey);
+
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_container, f);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+		ft.commit();
 	}
 
 	private class DownloadFile extends AsyncTask<String[][], Integer, Boolean>{
@@ -453,16 +468,18 @@ public class Act_Main extends Activity{
 				Toast.makeText(Act_Main.this, getString(R.string.download_error), Toast.LENGTH_SHORT).show();
 			}
 
-			Log.d(TAG, "^ Dismissing dialogue");
-			dismissDialog(DIALOGUE_UPDATE_DB);
+			dialogFragmentDismiss(DIALOG_FRAGMENT_TAG);
 		}
 
 		@Override
+		protected void onPreExecute(){
+			dialogFragmentShow(DIALOG_FRAGMENT_TAG);
+		}
+		
+		@Override
 		public void onProgressUpdate(Integer... args){
 			Object[] testArgs = {args[0],args[1]};
-
-			dlProgressDialog.setTitle(form.format(testArgs));
-			dlProgressDialog.setProgress(args[2]);
+			dialogFragmentUpdate(DIALOG_FRAGMENT_TAG, form.format(testArgs), args[2]);
 		}
 	}
 }
