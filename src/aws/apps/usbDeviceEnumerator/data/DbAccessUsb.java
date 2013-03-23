@@ -44,7 +44,6 @@ public class DbAccessUsb {
 		doDbPathStuff();
 	}
 
-
 	public boolean doDBChecks(){
 		if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			Log.d(TAG, "^ SD card not available.");
@@ -65,30 +64,38 @@ public class DbAccessUsb {
 		return true;
 	}
 
+	private void doDbPathStuff(){
+		localDbLocation = Environment.getExternalStorageDirectory() + context.getString(R.string.sd_db_location_usb);
+		localDbFullPath = localDbLocation + context.getString(R.string.sd_db_name_usb);
+	}
+	
+	private Cursor executeQuery(String table, String[] fields, String where, String order){		
 
-	public String getVendor(String VID){
-		String result = "";
-		Cursor cur = executeQuery(  "usb", 
-				new String[]{"vid","vendor_name","did","device_name","ifid","interface_name"}, 
-				"vid='" + VID +"' AND did=''", 
-				"vid, did, ifid ASC");
+		try {
+			db = SQLiteDatabase.openDatabase(localDbFullPath, null, SQLiteDatabase.OPEN_READONLY);
 
-		if (cur!= null){
-			//Log.d(TAG, "^ getVendor(" + VID + "): " + cur.getCount());
-			if(cur.getCount() > 0){
-				cur.moveToFirst();
-				result = cur.getString(cur.getColumnIndex("vendor_name"));
-				cur.close();
-				db.close();
-			} else {
-				result = UNKNOWN_RESULT;
+			if(!db.isOpen()){
+				Log.e(TAG, "^ DB was not opened!");
+				uB.showToast(context.getString(R.string.error_could_not_open_db), 
+						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
+				return null;
 			}
-			
-			if(!cur.isClosed()){cur.close();}
+
+			return db.query(table, fields, where, null, null, null, order);
+		} catch (Exception e) {
+			Log.e(TAG,"^ executeQuery(): " + e.getMessage());
 			if(db.isOpen()){db.close();}
 		}
+		return null;
+	}
 
-		return tryNull(result, UNKNOWN_RESULT);
+
+	public String getLocalDbFullPath(){
+		return localDbFullPath;
+	}
+
+	public String getLocalDbLocation(){
+		return localDbLocation;
 	}
 
 	public String getProduct(String VID, String PID){
@@ -115,29 +122,29 @@ public class DbAccessUsb {
 		return tryNull(result, UNKNOWN_RESULT);
 	}
 
-	private Cursor executeQuery(String table, String[] fields, String where, String order){		
+	public String getVendor(String VID){
+		String result = "";
+		Cursor cur = executeQuery(  "usb", 
+				new String[]{"vid","vendor_name","did","device_name","ifid","interface_name"}, 
+				"vid='" + VID +"' AND did=''", 
+				"vid, did, ifid ASC");
 
-		try {
-			db = SQLiteDatabase.openDatabase(localDbFullPath, null, SQLiteDatabase.OPEN_READONLY);
-
-			if(!db.isOpen()){
-				Log.e(TAG, "^ DB was not opened!");
-				uB.showToast(context.getString(R.string.error_could_not_open_db), 
-						Toast.LENGTH_SHORT, Gravity.TOP,0,0);
-				return null;
+		if (cur!= null){
+			//Log.d(TAG, "^ getVendor(" + VID + "): " + cur.getCount());
+			if(cur.getCount() > 0){
+				cur.moveToFirst();
+				result = cur.getString(cur.getColumnIndex("vendor_name"));
+				cur.close();
+				db.close();
+			} else {
+				result = UNKNOWN_RESULT;
 			}
-
-			return db.query(table, fields, where, null, null, null, order);
-		} catch (Exception e) {
-			Log.e(TAG,"^ executeQuery(): " + e.getMessage());
+			
+			if(!cur.isClosed()){cur.close();}
 			if(db.isOpen()){db.close();}
 		}
-		return null;
-	}
 
-	private void doDbPathStuff(){
-		localDbLocation = Environment.getExternalStorageDirectory() + context.getString(R.string.sd_db_location_usb);
-		localDbFullPath = localDbLocation + context.getString(R.string.sd_db_name_usb);
+		return tryNull(result, UNKNOWN_RESULT);
 	}
 
 

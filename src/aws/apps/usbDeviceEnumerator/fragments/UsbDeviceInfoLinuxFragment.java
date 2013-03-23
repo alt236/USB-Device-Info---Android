@@ -33,8 +33,8 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
 import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
-import aws.apps.usbDeviceEnumerator.myusb.MyUsbDevice;
-import aws.apps.usbDeviceEnumerator.util.UsbConstants;
+import aws.apps.usbDeviceEnumerator.usb.UsbConstants;
+import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
 public class UsbDeviceInfoLinuxFragment extends AbstractUsbDeviceInfoFragment {
@@ -60,15 +60,14 @@ public class UsbDeviceInfoLinuxFragment extends AbstractUsbDeviceInfoFragment {
 	private DbAccessUsb dbUsb;
 	private DbAccessCompany dbComp;
 	private ZipAccessCompany zipComp;
-	private MyUsbDevice myUsbDevice;
+	private SysBusUsbDevice myUsbDevice;
 
 
 	private Context context;
-	public UsbDeviceInfoLinuxFragment() {
+	public UsbDeviceInfoLinuxFragment() {}
 
-	}
 
-	public UsbDeviceInfoLinuxFragment(MyUsbDevice myUsbDevice) {
+	public UsbDeviceInfoLinuxFragment(SysBusUsbDevice myUsbDevice) {
 		this.myUsbDevice = myUsbDevice;
 	}
 
@@ -107,7 +106,7 @@ public class UsbDeviceInfoLinuxFragment extends AbstractUsbDeviceInfoFragment {
 	public void onCreate(Bundle saved) {
 		super.onCreate(saved);
 		if (null != saved) {
-			myUsbDevice = (MyUsbDevice) saved.getParcelable(BUNDLE_MY_USB_INFO);
+			myUsbDevice = (SysBusUsbDevice) saved.getParcelable(BUNDLE_MY_USB_INFO);
 		}
 	}
 

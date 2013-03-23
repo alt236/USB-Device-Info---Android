@@ -27,13 +27,18 @@ public abstract class AbstractUsbDeviceInfoFragment extends Fragment{
 	public final static int TYPE_ANDROID_INFO = 0;
 	public final static int TYPE_LINUX_INFO = 1;
 	
-	public abstract String toString();
 	public abstract int getType();
-	
-    @Override
+	@Override
     public void onCreate(Bundle saved) {
         super.onCreate(saved);
         setHasOptionsMenu(true);
+    }
+	
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    	inflater.inflate(R.menu.frag_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
     
 	@Override
@@ -46,10 +51,5 @@ public abstract class AbstractUsbDeviceInfoFragment extends Fragment{
 		return false;
 	}
 	
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    	inflater.inflate(R.menu.frag_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-
-    }
+    public abstract String toString();
 }

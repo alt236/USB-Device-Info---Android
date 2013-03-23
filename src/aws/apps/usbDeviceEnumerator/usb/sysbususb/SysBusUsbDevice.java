@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.myusb;
+package aws.apps.usbDeviceEnumerator.usb.sysbususb;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MyUsbDevice implements Parcelable {
+public class SysBusUsbDevice implements Parcelable {
 	private String VID;
 	private String PID;
 	private String ReportedProductName;
@@ -34,19 +34,19 @@ public class MyUsbDevice implements Parcelable {
 	private String UsbVersion;
 	private String DevicePath;
 
-	public static final Parcelable.Creator<MyUsbDevice> CREATOR = new Parcelable.Creator<MyUsbDevice>() {
-		public MyUsbDevice createFromParcel(Parcel in) {
-			return new MyUsbDevice(in);
+	public static final Parcelable.Creator<SysBusUsbDevice> CREATOR = new Parcelable.Creator<SysBusUsbDevice>() {
+		public SysBusUsbDevice createFromParcel(Parcel in) {
+			return new SysBusUsbDevice(in);
 		}
 
-		public MyUsbDevice[] newArray(int size) {
-			return new MyUsbDevice[size];
+		public SysBusUsbDevice[] newArray(int size) {
+			return new SysBusUsbDevice[size];
 		}
 	};
 	
-	public MyUsbDevice(){}
+	public SysBusUsbDevice(){}
 	
-	public MyUsbDevice(Parcel in) {
+	public SysBusUsbDevice(Parcel in) {
 		VID = in.readString();
 		PID = in.readString();
 		ReportedProductName = in.readString();
