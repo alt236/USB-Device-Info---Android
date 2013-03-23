@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator;
+package aws.apps.usbDeviceEnumerator.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

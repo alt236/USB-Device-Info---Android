@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator;
+package aws.apps.usbDeviceEnumerator.activities;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbDevice;
+import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
+import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
+import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
+import aws.apps.usbDeviceEnumerator.myusb.MyUsbDevice;
 
-public class Act_UsbInfo extends Activity{
+public class UsbInfoActivity extends Activity{
 	public static final String EXTRA_TYPE =  "type";
 	public static final String EXTRA_DATA_ANDROID =  "data_android";
 	public static final String EXTRA_DATA_LINUX =  "data_linux";
@@ -42,8 +46,8 @@ public class Act_UsbInfo extends Activity{
 		mAndroidKey = b.getString(EXTRA_DATA_ANDROID);
 		mLinuxDevice = b.getParcelable(EXTRA_DATA_LINUX);
 		
-		if (mType == Frag_AbstractUsbDeviceInfo.TYPE_ANDROID_INFO){
-			Fragment f = new Frag_UsbDeviceInfoAndroid(mAndroidKey);
+		if (mType == AbstractUsbDeviceInfoFragment.TYPE_ANDROID_INFO){
+			Fragment f = new UsbDeviceInfoAndroidFragment(mAndroidKey);
 
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			ft.replace(R.id.fragment_container, f);
@@ -51,8 +55,8 @@ public class Act_UsbInfo extends Activity{
 
 			ft.commit();
 		} 
-		else if(mType == Frag_AbstractUsbDeviceInfo.TYPE_LINUX_INFO){
-			Fragment f = new Frag_UsbDeviceInfoLinux(mLinuxDevice);
+		else if(mType == AbstractUsbDeviceInfoFragment.TYPE_LINUX_INFO){
+			Fragment f = new UsbDeviceInfoLinuxFragment(mLinuxDevice);
 
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			ft.replace(R.id.fragment_container, f);

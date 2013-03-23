@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator;
+package aws.apps.usbDeviceEnumerator.activities;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -56,11 +56,16 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
-import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbDevice;
-import aws.apps.usbDeviceEnumerator.MyUsb.MyUsbManager;
+import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
+import aws.apps.usbDeviceEnumerator.fragments.ProgressDialogFragment;
+import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
+import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
+import aws.apps.usbDeviceEnumerator.myusb.MyUsbDevice;
+import aws.apps.usbDeviceEnumerator.myusb.MyUsbManager;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
-public class Act_Main extends Activity{
+public class MainActivity extends Activity{
 	final String TAG =  this.getClass().getName();
 	private final String DIALOG_FRAGMENT_TAG = "progress_dialog";
 	
@@ -139,9 +144,9 @@ public class Act_Main extends Activity{
 	
 	private void displayAndroidUsbDeviceInfo(String device){
 		if(mIsSmallScreen){
-			Intent i = new Intent(getApplicationContext(), Act_UsbInfo.class);
-            i.putExtra(Act_UsbInfo.EXTRA_TYPE, Frag_AbstractUsbDeviceInfo.TYPE_ANDROID_INFO);
-            i.putExtra(Act_UsbInfo.EXTRA_DATA_ANDROID, device);
+			Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
+            i.putExtra(UsbInfoActivity.EXTRA_TYPE, AbstractUsbDeviceInfoFragment.TYPE_ANDROID_INFO);
+            i.putExtra(UsbInfoActivity.EXTRA_DATA_ANDROID, device);
             startActivity(i);
 		} else {
 			stackAFragment(device);
@@ -150,9 +155,9 @@ public class Act_Main extends Activity{
 	
 	private void displayLinuxUsbDeviceInfo(MyUsbDevice device){
 		if(mIsSmallScreen){
-			Intent i = new Intent(getApplicationContext(), Act_UsbInfo.class);
-            i.putExtra(Act_UsbInfo.EXTRA_TYPE, Frag_AbstractUsbDeviceInfo.TYPE_LINUX_INFO);
-            i.putExtra(Act_UsbInfo.EXTRA_DATA_LINUX, device);
+			Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
+            i.putExtra(UsbInfoActivity.EXTRA_TYPE, AbstractUsbDeviceInfoFragment.TYPE_LINUX_INFO);
+            i.putExtra(UsbInfoActivity.EXTRA_DATA_LINUX, device);
             startActivity(i);
 		} else {
 			stackAFragment(device);
@@ -383,7 +388,7 @@ public class Act_Main extends Activity{
 	}
 	
 	private void stackAFragment(MyUsbDevice usbDevice) {
-		Fragment f = new Frag_UsbDeviceInfoLinux(usbDevice);
+		Fragment f = new UsbDeviceInfoLinuxFragment(usbDevice);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, f);
@@ -393,7 +398,7 @@ public class Act_Main extends Activity{
 	}
 
 	private void stackAFragment(String usbKey) {
-		Fragment f = new Frag_UsbDeviceInfoAndroid(usbKey);
+		Fragment f = new UsbDeviceInfoAndroidFragment(usbKey);
 
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.replace(R.id.fragment_container, f);
@@ -463,9 +468,9 @@ public class Act_Main extends Activity{
 		protected void onPostExecute(Boolean result) {
 
 			if(result){ // The download is ok.
-				Toast.makeText(Act_Main.this, getString(R.string.download_ok), Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, getString(R.string.download_ok), Toast.LENGTH_SHORT).show();
 			}else{     // There was an error.
-				Toast.makeText(Act_Main.this, getString(R.string.download_error), Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, getString(R.string.download_error), Toast.LENGTH_SHORT).show();
 			}
 
 			dialogFragmentDismiss(DIALOG_FRAGMENT_TAG);

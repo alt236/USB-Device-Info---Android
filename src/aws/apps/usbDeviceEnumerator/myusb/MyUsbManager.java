@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.MyUsb;
+package aws.apps.usbDeviceEnumerator.myusb;
 
 import java.io.BufferedReader;
 import java.io.File;
