@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.util;
+package aws.apps.usbDeviceEnumerator.usb.sysbususb;
 
 import android.util.Log;
 
@@ -23,7 +23,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ExecTerminal {
+/*package*/ class ExecTerminal {
     final String TAG = this.getClass().getName();
 
     public String exec(String cmd) {

@@ -22,8 +22,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import aws.apps.usbDeviceEnumerator.util.ExecTerminal;
-
 public class SysBusUsbManager {
     private static final String PATH_SYS_BUS_USB = "/sys/bus/usb/devices/";
     private static final String DEVICE_START = "__DEV_START__";

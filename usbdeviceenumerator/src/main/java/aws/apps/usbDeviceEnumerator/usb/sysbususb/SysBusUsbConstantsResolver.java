@@ -15,7 +15,7 @@
  ******************************************************************************/
 package aws.apps.usbDeviceEnumerator.usb.sysbususb;
 
-class SysBusUsbConstantsResolver {
+/*package*/ class SysBusUsbConstantsResolver {
 
     private final static int USB_CLASS_PER_INTERFACE = 0x00;
     private final static int USB_CLASS_AUDIO = 0x01;
