@@ -3,10 +3,9 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
-    <TabHost
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@android:id/tabhost"
         android:layout_width="250dip"
         android:layout_height="match_parent">
@@ -14,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TabWidget
                 android:id="@android:id/tabs"
@@ -24,17 +23,17 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <FrameLayout
                     android:id="@+id/tab_1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical" >
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/lbl_devices_api"
@@ -57,12 +56,12 @@
                 <FrameLayout
                     android:id="@+id/tab_2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical" >
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/lbl_devices_linux"
@@ -89,5 +88,5 @@
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 </LinearLayout>
