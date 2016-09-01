@@ -15,10 +15,10 @@
  ******************************************************************************/
 package aws.apps.usbDeviceEnumerator.activities;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
@@ -26,7 +26,7 @@ import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
 import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 
-public class UsbInfoActivity extends Activity {
+public class UsbInfoActivity extends AppCompatActivity {
     public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_DATA_ANDROID = "data_android";
     public static final String EXTRA_DATA_LINUX = "data_linux";
@@ -51,7 +51,7 @@ public class UsbInfoActivity extends Activity {
             if (mType == AbstractUsbDeviceInfoFragment.TYPE_ANDROID_INFO) {
                 Fragment f = new UsbDeviceInfoAndroidFragment(mAndroidKey);
 
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, f);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
@@ -59,7 +59,7 @@ public class UsbInfoActivity extends Activity {
             } else if (mType == AbstractUsbDeviceInfoFragment.TYPE_LINUX_INFO) {
                 Fragment f = new UsbDeviceInfoLinuxFragment(mLinuxDevice);
 
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, f);
                 ft.setTransition(FragmentTransaction.TRANSIT_NONE);
 

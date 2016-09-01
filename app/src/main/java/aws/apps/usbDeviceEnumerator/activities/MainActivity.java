@@ -15,11 +15,7 @@
  ******************************************************************************/
 package aws.apps.usbDeviceEnumerator.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +24,10 @@ import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -72,7 +72,7 @@ import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbManager;
 import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
-public class MainActivity extends Activity implements OnTabChangeListener {
+public class MainActivity extends AppCompatActivity implements OnTabChangeListener {
     private final static String TAB_ANDROID_INFO = "Android";
     private final static String TAB_LINUX_INFO = "Linux";
     final String TAG = this.getClass().getName();
@@ -102,11 +102,11 @@ public class MainActivity extends Activity implements OnTabChangeListener {
     private void dialogFragmentDismiss(String tag) {
         Log.d(TAG, "^ Dimissing Fragment : " + tag);
 
-        DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(tag);
+        DialogFragment dialog = (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (dialog != null) {
             if (DIALOG_FRAGMENT_TAG.equals(tag)) {
                 Log.d(TAG, "^ Dimissing Fragment!");
-                ((ProgressDialogFragment) dialog).dismissAllowingStateLoss();
+                dialog.dismissAllowingStateLoss();
             } else {
                 dialog.dismiss();
             }
@@ -114,8 +114,8 @@ public class MainActivity extends Activity implements OnTabChangeListener {
     }
 
     private void dialogFragmentShow(String tag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(tag);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
         if (prev != null) {
             ft.remove(prev);
         }
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements OnTabChangeListener {
     }
 
     private void dialogFragmentUpdate(String tag, String title, Integer progress) {
-        DialogFragment dialogFragment = (DialogFragment) getFragmentManager().findFragmentByTag(tag);
+        DialogFragment dialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (dialogFragment != null) {
             if (title != null) {
                 ((ProgressDialogFragment) dialogFragment).setTitle(title);
@@ -259,7 +259,7 @@ public class MainActivity extends Activity implements OnTabChangeListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     /** Handles item selections */
@@ -401,7 +401,7 @@ public class MainActivity extends Activity implements OnTabChangeListener {
     private void stackAFragment(String usbKey) {
         Fragment f = new UsbDeviceInfoAndroidFragment(usbKey);
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, f);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
@@ -411,7 +411,7 @@ public class MainActivity extends Activity implements OnTabChangeListener {
     private void stackAFragment(SysBusUsbDevice usbDevice) {
         Fragment f = new UsbDeviceInfoLinuxFragment(usbDevice);
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, f);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 

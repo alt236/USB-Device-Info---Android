@@ -15,8 +15,8 @@
  ******************************************************************************/
 package aws.apps.usbDeviceEnumerator.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,7 +40,6 @@ public abstract class AbstractUsbDeviceInfoFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.frag_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-
     }
 
     @Override
@@ -50,7 +49,7 @@ public abstract class AbstractUsbDeviceInfoFragment extends Fragment {
                 UsefulBits.share(getActivity(), "USB Info", this.toString());
                 return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     public abstract String toString();
