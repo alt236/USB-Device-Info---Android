@@ -1,16 +1,26 @@
 apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 14
-    buildToolsVersion "24.0.1"
+final int versionMajor = 0
+final int versionMinor = 0
+final int versionPatch = 5
+final int androidVersionCode = 5
 
+
+final int targetSdk = rootProject.targetSdkVersion;
+final int minSdkRed = rootProject.minSdkVersion;
+
+final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+    
     defaultConfig {
         applicationId "aws.apps.usbDeviceEnumerator"
-        minSdkVersion 12
-        targetSdkVersion 14
 
-        versionCode 5
-        versionName "0.0.5"
+        minSdkVersion minSdkRed
+        targetSdkVersion targetSdk
+        versionCode androidVersionCode
+        versionName semanticVersion
     }
 
     dependencies {
