@@ -1,6 +1,7 @@
-
-/gen
-
-/raw
-
-/bin
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+documents/.~lock.Bluetooth_UUIDs.ods#
