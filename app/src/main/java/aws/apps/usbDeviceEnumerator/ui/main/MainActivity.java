@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.activities;
+package aws.apps.usbDeviceEnumerator.ui.main;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,17 +40,8 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -64,20 +49,20 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
 import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
-import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
-import aws.apps.usbDeviceEnumerator.fragments.ProgressDialogFragment;
-import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
-import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
+import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
+import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
+import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.AndroidUsbInfoFragment;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.BaseInfoFragment;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.LinuxUsbInfoFragment;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbManager;
-import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
 public class MainActivity extends AppCompatActivity implements OnTabChangeListener {
     private final static String TAB_ANDROID_INFO = "Android";
     private final static String TAB_LINUX_INFO = "Linux";
     final String TAG = this.getClass().getName();
-    private final String DIALOG_FRAGMENT_TAG = "progress_dialog";
-    private UsefulBits mUsefulBits;
 
     private ListView mListUsbAndroid;
     private TextView mTvDeviceCountAndroid;
@@ -98,53 +83,12 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     private HashMap<String, SysBusUsbDevice> mLinuxUsbDeviceList;
 
     private boolean mIsSmallScreen = true;
-
-    private void dialogFragmentDismiss(String tag) {
-        Log.d(TAG, "^ Dimissing Fragment : " + tag);
-
-        DialogFragment dialog = (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
-        if (dialog != null) {
-            if (DIALOG_FRAGMENT_TAG.equals(tag)) {
-                Log.d(TAG, "^ Dimissing Fragment!");
-                dialog.dismissAllowingStateLoss();
-            } else {
-                dialog.dismiss();
-            }
-        }
-    }
-
-    private void dialogFragmentShow(String tag) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag(tag);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        DialogFragment newFragment = null;
-        if (DIALOG_FRAGMENT_TAG.equals(tag)) {
-            newFragment = ProgressDialogFragment.newInstance(getString(R.string.text_downloading_files), null);
-        }
-        ft.add(newFragment, tag);
-        ft.commitAllowingStateLoss();
-    }
-
-    private void dialogFragmentUpdate(String tag, String title, Integer progress) {
-        DialogFragment dialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(tag);
-        if (dialogFragment != null) {
-            if (title != null) {
-                ((ProgressDialogFragment) dialogFragment).setTitle(title);
-            }
-            if (progress != null) {
-                ((ProgressDialogFragment) dialogFragment).setProgress(progress);
-            }
-        }
-    }
+    private ProgressDialogControl progressDialogControl;
 
     private void displayAndroidUsbDeviceInfo(String device) {
         if (mIsSmallScreen) {
             Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
-            i.putExtra(UsbInfoActivity.EXTRA_TYPE, AbstractUsbDeviceInfoFragment.TYPE_ANDROID_INFO);
+            i.putExtra(UsbInfoActivity.EXTRA_TYPE, BaseInfoFragment.TYPE_ANDROID_INFO);
             i.putExtra(UsbInfoActivity.EXTRA_DATA_ANDROID, device);
             startActivity(i);
         } else {
@@ -155,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     private void displayLinuxUsbDeviceInfo(SysBusUsbDevice device) {
         if (mIsSmallScreen) {
             Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
-            i.putExtra(UsbInfoActivity.EXTRA_TYPE, AbstractUsbDeviceInfoFragment.TYPE_LINUX_INFO);
+            i.putExtra(UsbInfoActivity.EXTRA_TYPE, BaseInfoFragment.TYPE_LINUX_INFO);
             i.putExtra(UsbInfoActivity.EXTRA_DATA_LINUX, device);
             startActivity(i);
         } else {
@@ -175,9 +119,10 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     private void initialiseDbComponents() {
         // Prompt user to DL db if it is missing.
         if (!new File(mDbUsb.getLocalDbFullPath()).exists()) {
-            mUsefulBits.ShowAlert(getString(R.string.alert_db_not_found_title),
-                    getString(R.string.alert_db_not_found_instructions),
-                    getString(android.R.string.ok));
+            DialogFactory.createOkDialog(this,
+                    R.string.alert_db_not_found_title,
+                    R.string.alert_db_not_found_instructions)
+                    .show();
             Log.w(TAG, "^ Database not found: " + mDbUsb.getLocalDbFullPath());
             return;
         }
@@ -201,13 +146,14 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
         return tabSpec;
     }
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         mIsSmallScreen = isSmallScreen();
-        mUsefulBits = new UsefulBits(this);
 
         mUsbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
         mUsbManagerLinux = new SysBusUsbManager();
@@ -255,69 +201,28 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
         refreshUsbDevices();
     }
 
-    /** Creates the menu items */
+    /**
+     * Creates the menu items
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /** Handles item selections */
+    /**
+     * Handles item selections
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_about:
-                mUsefulBits.showAboutDialogue();
+                AboutDialogFactory.createAboutDialog(this).show();
                 return true;
             case R.id.menu_update_db:
-                if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                    Log.d(TAG, "^ SD card not available.");
-                    mUsefulBits.showToast(getString(R.string.sd_not_available), Toast.LENGTH_SHORT, Gravity.TOP, 0, 0);
-                    return true;
-                }
+                final ProgressDialogControl control = new ProgressDialogControl(getSupportFragmentManager());
+                final DatabaseUpdater databaseUpdater = new DatabaseUpdater(control, mDbComp, mDbUsb, mZipComp);
 
-                if (!mUsefulBits.createDirectories(mDbUsb.getLocalDbLocation())) {
-                    return true;
-                }
-                if (!mUsefulBits.createDirectories(mDbComp.getLocalDbLocation())) {
-                    return true;
-                }
-                if (!mUsefulBits.createDirectories(mZipComp.getLocalZipLocation())) {
-                    return true;
-                }
-
-                if (!mUsefulBits.isOnline()) {  // If we are not online, cancel everything
-                    mUsefulBits.ShowAlert(
-                            getString(R.string.text_device_offline),
-                            getString(R.string.text_device_offline_instructions),
-                            getString(android.R.string.ok));
-                    return true;
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(getString(R.string.alert_update_db))
-                        .setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-                            @SuppressWarnings("unchecked")
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ArrayList<Pair<String, String>> downloads = new ArrayList<Pair<String, String>>();
-
-                                downloads.add(new Pair<String, String>(
-                                        getString(R.string.url_usb_db),
-                                        mDbUsb.getLocalDbFullPath()));
-
-                                downloads.add(new Pair<String, String>(
-                                        getString(R.string.url_company_db),
-                                        mDbComp.getLocalDbFullPath()));
-
-                                downloads.add(new Pair<String, String>(
-                                        getString(R.string.url_company_logo_zip),
-                                        mZipComp.getLocalZipFullPath()));
-
-                                new DownloadFile().execute(downloads);
-                            }
-
-                        })
-                        .setNegativeButton(getString(android.R.string.no), null).show();
+                databaseUpdater.start(this);
                 return true;
             case R.id.menu_refresh:
                 refreshUsbDevices();
@@ -399,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     }
 
     private void stackAFragment(String usbKey) {
-        Fragment f = new UsbDeviceInfoAndroidFragment(usbKey);
+        Fragment f = new AndroidUsbInfoFragment(usbKey);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, f);
@@ -409,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     }
 
     private void stackAFragment(SysBusUsbDevice usbDevice) {
-        Fragment f = new UsbDeviceInfoLinuxFragment(usbDevice);
+        Fragment f = new LinuxUsbInfoFragment(usbDevice);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, f);
@@ -418,97 +323,4 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
         ft.commit();
     }
 
-    private class DownloadFile extends AsyncTask<ArrayList<Pair<String, String>>, Integer, Boolean> {
-        // This is the message which will be shown on the progress bar
-        MessageFormat form = new MessageFormat("Downloading file: {0} of {1}...");
-
-        @Override
-        protected Boolean doInBackground(ArrayList<Pair<String, String>>... downloadLists) {
-            int count;
-
-            URL url;
-            String filePath = "";
-            URLConnection conection;
-            InputStream is;
-            OutputStream os;
-            Boolean bOK = true;
-
-
-            ArrayList<Pair<String, String>> downloads = downloadLists[0];
-
-            int downloadCounter = 0;
-
-            for (Pair<String, String> download : downloads) {
-                try {
-                    url = new URL(download.first);
-                    filePath = download.second;
-
-                    Log.d(TAG, "^ Downloading: " + url);
-                    Log.d(TAG, "^ To         : " + filePath);
-
-                    conection = url.openConnection();
-                    conection.connect();
-                    int lenghtOfFile = conection.getContentLength();
-
-                    // download the file
-                    is = new BufferedInputStream(url.openStream());
-                    os = new FileOutputStream(filePath);
-
-                    byte data[] = new byte[1024];
-
-                    long total = 0;
-
-                    while ((count = is.read(data)) != -1) {
-                        total += count;
-                        // The first number is the current file
-                        // The second is the total number of files to download
-                        // The third is the current progress
-                        publishProgress(downloadCounter + 1, downloads.size(), (int) (total * 100 / lenghtOfFile));
-                        os.write(data, 0, count);
-                    }
-
-                    os.flush();
-                    os.close();
-                    is.close();
-
-                } catch (Exception e) {
-                    Log.e(TAG, "^ Error while downloading.", e);
-                    bOK = false;
-                    e.printStackTrace();
-                }
-
-                downloadCounter += 1;
-            }
-
-
-//			String[][] pair = list[0];
-//			for(int i = 0; i < list[0].length; i++){
-//				
-//			}
-            return bOK;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-
-            if (result) { // The download is ok.
-                Toast.makeText(MainActivity.this, getString(R.string.download_ok), Toast.LENGTH_SHORT).show();
-            } else {     // There was an error.
-                Toast.makeText(MainActivity.this, getString(R.string.download_error), Toast.LENGTH_SHORT).show();
-            }
-
-            dialogFragmentDismiss(DIALOG_FRAGMENT_TAG);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            dialogFragmentShow(DIALOG_FRAGMENT_TAG);
-        }
-
-        @Override
-        public void onProgressUpdate(Integer... args) {
-            Object[] testArgs = {args[0], args[1]};
-            dialogFragmentUpdate(DIALOG_FRAGMENT_TAG, form.format(testArgs), args[2]);
-        }
-    }
 }

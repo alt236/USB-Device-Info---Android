@@ -20,19 +20,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
 import java.io.File;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.util.UsefulBits;
+import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
+import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
 public class DbAccessCompany {
     public final static String UNKNOWN_RESULT = "???";
     private final String TAG = this.getClass().getName();
     private Context context;
-    private UsefulBits uB;
 
     private String localDbLocation = "";
     private String localDbFullPath = "";
@@ -41,23 +39,25 @@ public class DbAccessCompany {
 
     public DbAccessCompany(Context context) {
         this.context = context;
-        uB = new UsefulBits(context);
         doDbPathStuff();
     }
 
     public boolean doDBChecks() {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             Log.d(TAG, "^ SD card not available.");
-            uB.ShowAlert(context.getString(R.string.sd_error),
-                    context.getString(R.string.sd_not_available),
-                    context.getString(android.R.string.ok));
+            DialogFactory.createOkDialog(context,
+                    R.string.sd_error,
+                    R.string.sd_not_available)
+                    .show();
+
             return false;
         }
 
         if (!new File(localDbFullPath).exists()) {
-            uB.ShowAlert(context.getString(R.string.alert_db_not_found_title),
-                    context.getString(R.string.alert_db_not_found_instructions),
-                    context.getString(android.R.string.ok));
+            DialogFactory.createOkDialog(context,
+                    R.string.alert_db_not_found_title,
+                    R.string.alert_db_not_found_instructions)
+                    .show();
             Log.e(TAG, "^ Database not found: " + localDbFullPath);
             return false;
         }
@@ -77,8 +77,7 @@ public class DbAccessCompany {
 
             if (!db.isOpen()) {
                 Log.e(TAG, "^ DB was not opened!");
-                uB.showToast(context.getString(R.string.error_could_not_open_db),
-                        Toast.LENGTH_SHORT, Gravity.TOP, 0, 0);
+                NotifyUser.notify(context, context.getString(R.string.error_could_not_open_db));
                 return null;
             }
 

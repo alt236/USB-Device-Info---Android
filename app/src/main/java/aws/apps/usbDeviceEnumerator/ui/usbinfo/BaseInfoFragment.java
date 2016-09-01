@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.fragments;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,9 +22,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.util.UsefulBits;
 
-public abstract class AbstractUsbDeviceInfoFragment extends Fragment {
+public abstract class BaseInfoFragment extends Fragment {
     public final static int TYPE_ANDROID_INFO = 0;
     public final static int TYPE_LINUX_INFO = 1;
 
@@ -46,11 +45,11 @@ public abstract class AbstractUsbDeviceInfoFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_export:
-                UsefulBits.share(getActivity(), "USB Info", this.toString());
+                ShareUtils.share(getActivity(), "USB Info", getSharePayload());
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public abstract String toString();
+    public abstract String getSharePayload();
 }

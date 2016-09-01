@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.fragments;
+package aws.apps.usbDeviceEnumerator.ui.progress;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -7,16 +7,14 @@ import android.support.v4.app.DialogFragment;
 
 public class ProgressDialogFragment extends DialogFragment {
 
-    public static ProgressDialogFragment newInstance(String title, String message) {
+    protected static ProgressDialogFragment newInstance(int title, String message) {
         ProgressDialogFragment frag = new ProgressDialogFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
+        args.putInt("title", title);
         args.putString("message", message);
         frag.setArguments(args);
         return frag;
     }
-
-    ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +24,7 @@ public class ProgressDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String title = getArguments().getString("title");
+        int title = getArguments().getInt("title");
         String message = getArguments().getString("message");
 
         ProgressDialog dialog = new ProgressDialog(getActivity());
@@ -47,7 +45,7 @@ public class ProgressDialogFragment extends DialogFragment {
     }
 
     public void setTitle(String message) {
-        ((ProgressDialog) this.getDialog()).setTitle(message);
+        (this.getDialog()).setTitle(message);
     }
 
     public void setProgress(int progress) {

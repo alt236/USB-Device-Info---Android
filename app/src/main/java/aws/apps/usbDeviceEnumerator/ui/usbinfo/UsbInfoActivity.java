@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.activities;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,9 +21,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.fragments.AbstractUsbDeviceInfoFragment;
-import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoAndroidFragment;
-import aws.apps.usbDeviceEnumerator.fragments.UsbDeviceInfoLinuxFragment;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 
 public class UsbInfoActivity extends AppCompatActivity {
@@ -31,7 +28,9 @@ public class UsbInfoActivity extends AppCompatActivity {
     public static final String EXTRA_DATA_ANDROID = "data_android";
     public static final String EXTRA_DATA_LINUX = "data_linux";
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
 
     private int mType;
     private String mAndroidKey;
@@ -48,16 +47,16 @@ public class UsbInfoActivity extends AppCompatActivity {
             mAndroidKey = b.getString(EXTRA_DATA_ANDROID);
             mLinuxDevice = b.getParcelable(EXTRA_DATA_LINUX);
 
-            if (mType == AbstractUsbDeviceInfoFragment.TYPE_ANDROID_INFO) {
-                Fragment f = new UsbDeviceInfoAndroidFragment(mAndroidKey);
+            if (mType == BaseInfoFragment.TYPE_ANDROID_INFO) {
+                Fragment f = new AndroidUsbInfoFragment(mAndroidKey);
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, f);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
                 ft.commit();
-            } else if (mType == AbstractUsbDeviceInfoFragment.TYPE_LINUX_INFO) {
-                Fragment f = new UsbDeviceInfoLinuxFragment(mLinuxDevice);
+            } else if (mType == BaseInfoFragment.TYPE_LINUX_INFO) {
+                Fragment f = new LinuxUsbInfoFragment(mLinuxDevice);
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, f);

@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.fragments;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbEndpoint;
-import android.hardware.usb.UsbInterface;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,38 +35,40 @@ import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
 import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
 import aws.apps.usbDeviceEnumerator.usb.UsbConstants;
-import aws.apps.usbDeviceEnumerator.util.UsefulBits;
+import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 
-public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment {
+public class LinuxUsbInfoFragment extends BaseInfoFragment {
     public final static int TYPE_ANDROID_INFO = 0;
     public final static int TYPE_LINUX_INFO = 1;
     public final static String DEFAULT_STRING = "???";
-    private final static String BUNDLE_USB_KEY = "BUNDLE_USBKEY";
+    private final static String BUNDLE_MY_USB_INFO = "BUNDLE_MY_USB_INFO";
     private final String TAG = this.getClass().getName();
-    private String usbKey = DEFAULT_STRING;
     private TableLayout tblUsbInfoHeader;
     private TableLayout tblUsbInfoTop;
     private TableLayout tblUsbInfoBottom;
     private TextView tvVID;
     private TextView tvPID;
+    private TextView tvVendorReported;
+    private TextView tvProductReported;
     private TextView tvVendorDb;
     private TextView tvProductDb;
     private TextView tvDevicePath;
     private TextView tvDeviceClass;
     private ImageButton btnLogo;
-    private UsbManager usbMan;
     private DbAccessUsb dbUsb;
     private DbAccessCompany dbComp;
     private ZipAccessCompany zipComp;
+    private SysBusUsbDevice myUsbDevice;
+
 
     private Context context;
 
-    public UsbDeviceInfoAndroidFragment() {
-
+    public LinuxUsbInfoFragment() {
     }
 
-    public UsbDeviceInfoAndroidFragment(String usbKey) {
-        this.usbKey = usbKey;
+
+    public LinuxUsbInfoFragment(SysBusUsbDevice myUsbDevice) {
+        this.myUsbDevice = myUsbDevice;
     }
 
     private void addDataRow(LayoutInflater inflater, TableLayout tlb, String cell1Text, String cell2Text) {
@@ -84,7 +82,7 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
 
     @Override
     public int getType() {
-        return TYPE_ANDROID_INFO;
+        return TYPE_LINUX_INFO;
     }
 
     private void loadLogo(String logo) {
@@ -100,6 +98,7 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
         btnLogo.setImageDrawable(d);
     }
 
+
     /**
      * If we are being created with saved state, restore our state
      */
@@ -107,22 +106,19 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
     public void onCreate(Bundle saved) {
         super.onCreate(saved);
         if (null != saved) {
-            usbKey = saved.getString(BUNDLE_USB_KEY);
+            myUsbDevice = (SysBusUsbDevice) saved.getParcelable(BUNDLE_MY_USB_INFO);
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saved) {
         View v = new LinearLayout(getActivity().getApplicationContext());
         context = getActivity().getApplicationContext();
-        usbMan = (UsbManager) context.getSystemService(Context.USB_SERVICE);
 
-
-        if (usbMan == null || usbMan.getDeviceList().get(usbKey) == null) {
+        if (myUsbDevice == null) {
             return v;
         } else {
-            v = inflater.inflate(R.layout.usb_info_android, container, false);
+            v = inflater.inflate(R.layout.usb_info_linux, container, false);
         }
 
         tblUsbInfoHeader = (TableLayout) v.findViewById(R.id.tblUsbInfo_title);
@@ -132,6 +128,8 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
         tvPID = ((TextView) v.findViewById(R.id.tvPID));
         tvProductDb = ((TextView) v.findViewById(R.id.tvProductDb));
         tvVendorDb = ((TextView) v.findViewById(R.id.tvVendorDb));
+        tvProductReported = ((TextView) v.findViewById(R.id.tvProductReported));
+        tvVendorReported = ((TextView) v.findViewById(R.id.tvVendorReported));
         tvDevicePath = ((TextView) v.findViewById(R.id.tvDevicePath));
         tvDeviceClass = ((TextView) v.findViewById(R.id.tvDeviceClass));
         btnLogo = (ImageButton) v.findViewById(R.id.btnLogo);
@@ -140,14 +138,14 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
         dbComp = new DbAccessCompany(context);
         zipComp = new ZipAccessCompany(context);
 
-        populateAndroidTable(inflater);
+        populateLinuxTable(inflater);
 
         return v;
     }
 
     @Override
     public void onSaveInstanceState(Bundle toSave) {
-        toSave.putString(BUNDLE_USB_KEY, usbKey);
+        toSave.putParcelable(BUNDLE_MY_USB_INFO, myUsbDevice);
     }
 
     private String padLeft(String string, String padding, int size) {
@@ -158,68 +156,54 @@ public class UsbDeviceInfoAndroidFragment extends AbstractUsbDeviceInfoFragment 
         return pad + string;
     }
 
-    private void populateAndroidTable(LayoutInflater inflater) {
-        UsbDevice device = usbMan.getDeviceList().get(usbKey);
-        tvDevicePath.setText(usbKey);
-
-        if (device != null) {
-            tvVID.setText(padLeft(Integer.toHexString(device.getVendorId()), "0", 4));
-            tvPID.setText(padLeft(Integer.toHexString(device.getDeviceId()), "0", 4));
-            tvDeviceClass.setText(UsbConstants.resolveUsbClass(device.getDeviceClass()));
-            if (dbUsb.doDBChecks()) {
-                String vid = tvVID.getText().toString();
-                String pid = tvPID.getText().toString();
-                String vendor_name = dbUsb.getVendor(vid);
-
-                tvVendorDb.setText(vendor_name);
-                tvProductDb.setText(dbUsb.getProduct(vid, pid));
-
-
-                if (dbComp.doDBChecks()) {
-                    String logo = dbComp.getLogo(vendor_name);
-                    loadLogo(logo);
-                }
-            }
-
-            UsbInterface iface;
-            for (int i = 0; i < device.getInterfaceCount(); i++) {
-                iface = device.getInterface(i);
-                if (iface != null) {
-
-                    addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.interface_) + i, "");
-                    addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.class_), UsbConstants.resolveUsbClass((iface.getInterfaceClass())));
-
-                    String endpointText = getActivity().getString(R.string.none);
-                    if (iface.getEndpointCount() > 0) {
-                        UsbEndpoint endpoint;
-                        for (int j = 0; j < iface.getEndpointCount(); j++) {
-                            endpoint = iface.getEndpoint(j);
-                            endpointText = "#" + j + "\n";
-                            endpointText += getActivity().getString(R.string.address_) + endpoint.getAddress() + " (" + padLeft(Integer.toBinaryString(endpoint.getAddress()), "0", 8) + ")\n";
-                            endpointText += getActivity().getString(R.string.number_) + endpoint.getEndpointNumber() + "\n";
-                            endpointText += getActivity().getString(R.string.direction_) + UsbConstants.resolveUsbEndpointDirection(endpoint.getDirection()) + "\n";
-                            endpointText += getActivity().getString(R.string.type_) + UsbConstants.resolveUsbEndpointType(endpoint.getType()) + "\n";
-                            endpointText += getActivity().getString(R.string.poll_interval_) + endpoint.getInterval() + "\n";
-                            endpointText += getActivity().getString(R.string.max_packet_size_) + endpoint.getMaxPacketSize() + "\n";
-                            endpointText += getActivity().getString(R.string.attributes_) + padLeft(Integer.toBinaryString(endpoint.getAttributes()), "0", 8);
-                            addDataRow(inflater, tblUsbInfoBottom, "\t" + getActivity().getString(R.string.endpoint_), endpointText);
-                        }
-                    } else {
-                        addDataRow(inflater, tblUsbInfoBottom, "\tEndpoints:", "none");
-                    }
-                }
-            }
+    private void populateLinuxTable(LayoutInflater inflater) {
+        if (myUsbDevice == null) {
+            return;
         }
+        tvDevicePath.setText(myUsbDevice.getDevicePath());
+
+        tvVID.setText(padLeft(myUsbDevice.getVID(), "0", 4));
+        tvPID.setText(padLeft(myUsbDevice.getPID(), "0", 4));
+        tvDeviceClass.setText(UsbConstants.resolveUsbClass(myUsbDevice.getDeviceClass()));
+
+        tvVendorReported.setText(myUsbDevice.getReportedVendorName());
+        tvProductReported.setText(myUsbDevice.getReportedProductName());
+
+        if (dbUsb.doDBChecks()) {
+            String vid = tvVID.getText().toString();
+            String pid = tvPID.getText().toString();
+            tvVendorDb.setText(dbUsb.getVendor(vid));
+            tvProductDb.setText(dbUsb.getProduct(vid, pid));
+        }
+
+        if (dbComp.doDBChecks()) {
+            String searchFor = "";
+
+            if (tvVendorDb.getText().toString().trim().length() > 0) {
+                searchFor = tvVendorDb.getText().toString();
+            } else {
+                searchFor = myUsbDevice.getReportedVendorName();
+            }
+            Log.d(TAG, "^ Searching for '" + searchFor + "'");
+            loadLogo(dbComp.getLogo(searchFor));
+        }
+        addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.usb_version_), myUsbDevice.getUsbVersion());
+        addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.speed_), myUsbDevice.getSpeed());
+        addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.protocol_), myUsbDevice.getDeviceProtocol());
+        addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.maximum_power_), myUsbDevice.getMaxPower());
+        addDataRow(inflater, tblUsbInfoBottom, getActivity().getString(R.string.serial_number_), myUsbDevice.getSerialNumber());
+
+        //addHeaderRow(inflater, tblUsbInfo, "Interfaces");
+
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        UsefulBits uB = new UsefulBits(getActivity());
-        sb.append(uB.tableToString(tblUsbInfoHeader));
-        sb.append(uB.tableToString(tblUsbInfoTop));
-        sb.append("\n");
-        sb.append(uB.tableToString(tblUsbInfoBottom));
+    public String getSharePayload() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(ShareUtils.tableToString(tblUsbInfoHeader));
+        sb.append(ShareUtils.tableToString(tblUsbInfoTop));
+        sb.append('\n');
+        sb.append(ShareUtils.tableToString(tblUsbInfoBottom));
         return sb.toString();
     }
 }
