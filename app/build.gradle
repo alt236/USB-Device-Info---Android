@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 final int versionMajor = 0
 final int versionMinor = 0
@@ -24,9 +25,13 @@ android {
     }
 
     dependencies {
+
+        apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
         compile fileTree(dir: 'libs', include: ['*.jar'])
         compile project(':usbdeviceenumerator')
-        compile 'com.jakewharton:butterknife:7.0.1'
+
+        compile 'com.jakewharton:butterknife:8.4.0'
         compile 'com.android.support:appcompat-v7:24.2.0'
         testCompile 'junit:junit:4.12'
     }

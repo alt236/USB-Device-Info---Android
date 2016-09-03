@@ -40,6 +40,7 @@
     <string name="download_error">There was an error while downloading the files.</string>
 
     <string name="text_downloading_files">Downloading files…</string>
+    <string name="text_number_of_devices">Number of devices: %d</string>
 
     <string name="url_usb_db">http://aschillings.co.uk/download/db/android_usb.db3</string>
     <string name="url_company_db">http://aschillings.co.uk/download/db/android_company.db3</string>

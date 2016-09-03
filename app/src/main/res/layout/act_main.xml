@@ -7,9 +7,8 @@
 
     <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@android:id/tabhost"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:minWidth="240dip">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,27 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/lbl_devices_api"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2dip"
-                            android:background="@color/title_bar_color" />
-
-                        <ListView
-                            android:id="@+id/usb_list_api"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
+                    <include layout="@layout/tab_list" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -59,27 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/lbl_devices_linux"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2dip"
-                            android:background="@color/title_bar_color" />
-
-                        <ListView
-                            android:id="@+id/usb_list_linux"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
+                    <include layout="@layout/tab_list" />
                 </FrameLayout>
             </FrameLayout>
         </LinearLayout>
