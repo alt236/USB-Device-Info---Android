@@ -16,12 +16,10 @@
 package aws.apps.usbDeviceEnumerator.ui.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,12 +31,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabSpec;
-import android.widget.TabWidget;
 import android.widget.TextView;
 
 import java.io.File;
@@ -50,18 +45,14 @@ import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
 import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
+import aws.apps.usbDeviceEnumerator.ui.common.Navigation;
 import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.AndroidUsbInfoFragment;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.BaseInfoFragment;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.LinuxUsbInfoFragment;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.InfoFragmentFactory;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbManager;
 
 public class MainActivity extends AppCompatActivity implements OnTabChangeListener {
-    private final static String TAB_ANDROID_INFO = "Android";
-    private final static String TAB_LINUX_INFO = "Linux";
     final String TAG = this.getClass().getName();
 
     private ListView mListUsbAndroid;
@@ -77,44 +68,12 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     private DbAccessCompany mDbComp;
     private ZipAccessCompany mZipComp;
 
-    private TabHost mTabHost;
-    private TabWidget mTabWidget;
+
     private HashMap<String, UsbDevice> mAndroidUsbDeviceList;
     private HashMap<String, SysBusUsbDevice> mLinuxUsbDeviceList;
 
-    private boolean mIsSmallScreen = true;
     private ProgressDialogControl progressDialogControl;
-
-    private void displayAndroidUsbDeviceInfo(String device) {
-        if (mIsSmallScreen) {
-            Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
-            i.putExtra(UsbInfoActivity.EXTRA_TYPE, BaseInfoFragment.TYPE_ANDROID_INFO);
-            i.putExtra(UsbInfoActivity.EXTRA_DATA_ANDROID, device);
-            startActivity(i);
-        } else {
-            stackAFragment(device);
-        }
-    }
-
-    private void displayLinuxUsbDeviceInfo(SysBusUsbDevice device) {
-        if (mIsSmallScreen) {
-            Intent i = new Intent(getApplicationContext(), UsbInfoActivity.class);
-            i.putExtra(UsbInfoActivity.EXTRA_TYPE, BaseInfoFragment.TYPE_LINUX_INFO);
-            i.putExtra(UsbInfoActivity.EXTRA_DATA_LINUX, device);
-            startActivity(i);
-        } else {
-            stackAFragment(device);
-        }
-    }
-
-    private View getListViewEmptyView(String text) {
-        TextView emptyView = new TextView(getApplicationContext());
-        emptyView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-        emptyView.setText(text);
-        emptyView.setTextSize(20f);
-        emptyView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-        return emptyView;
-    }
+    private Navigation mNavigation;
 
     private void initialiseDbComponents() {
         // Prompt user to DL db if it is missing.
@@ -128,24 +87,6 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
         }
     }
 
-    private boolean isSmallScreen() {
-        Boolean res;
-        if (findViewById(R.id.fragment_container) == null) {
-            res = true;
-        } else {
-            res = false;
-        }
-        Log.d(TAG, "^ Is this device a small screen? " + res);
-        return res;
-    }
-
-    private TabSpec newTab(String tag, int labelId, int tabContentId) {
-        TabSpec tabSpec = mTabHost.newTabSpec(tag);
-        tabSpec.setIndicator(tag);
-        tabSpec.setContent(tabContentId);
-        return tabSpec;
-    }
-
     /**
      * Called when the activity is first created.
      */
@@ -153,14 +94,12 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
-        mIsSmallScreen = isSmallScreen();
+        mNavigation = new Navigation(this);
 
         mUsbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
         mUsbManagerLinux = new SysBusUsbManager();
         mTvDeviceCountAndroid = (TextView) findViewById(R.id.lbl_devices_api);
         mTvDeviceCountLinux = (TextView) findViewById(R.id.lbl_devices_linux);
-
-        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 
         mDbUsb = new DbAccessUsb(this);
         mDbComp = new DbAccessCompany(this);
@@ -173,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mListUsbAndroid.setItemChecked(position, true);
-                displayAndroidUsbDeviceInfo(((TextView) view).getText().toString());
+                mNavigation.showAndroidUsbDeviceInfo(((TextView) view).getText().toString());
             }
         });
         View emptyView = getListViewEmptyView(getString(R.string.label_empty_list));
@@ -187,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mListUsbLinux.setItemChecked(position, true);
-                displayLinuxUsbDeviceInfo(mLinuxUsbDeviceList.get(((TextView) view).getText().toString()));
+                mNavigation.showLinuxUsbDeviceInfo(mLinuxUsbDeviceList.get(((TextView) view).getText().toString()));
             }
         });
 
@@ -195,7 +134,8 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
         ((ViewGroup) mListUsbLinux.getParent()).addView(emptyView);
         mListUsbLinux.setEmptyView(emptyView);
 
-        setupTabs();
+        final TabSetup tabSetup = new TabSetup(this);
+        tabSetup.setup(this);
 
         initialiseDbComponents();
         refreshUsbDevices();
@@ -234,29 +174,39 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
 
     @Override
     public void onTabChanged(String tabId) {
-        if (mIsSmallScreen) {
+        if (mNavigation.isSmallScreen()) {
             return;
         }
-        int position = -1;
 
-        if (tabId.equals(TAB_ANDROID_INFO)) {
-            position = mListUsbAndroid.getCheckedItemPosition();
-            if (position != ListView.INVALID_POSITION) {
-                String text = (String) mListUsbAndroid.getItemAtPosition(position);
-                stackAFragment(text);
-            } else {
-                stackAFragment(new String());
-            }
-        } else if (tabId.equals(TAB_LINUX_INFO)) {
-            position = mListUsbLinux.getCheckedItemPosition();
-            if (position != ListView.INVALID_POSITION) {
-                String text = (String) mListUsbLinux.getItemAtPosition(position);
-                stackAFragment(mLinuxUsbDeviceList.get(text));
-            } else {
-                stackAFragment(new String());
-            }
+        final int position;
 
+        final Fragment fragment;
+
+        switch (tabId) {
+            case TabSetup.TAB_ANDROID_INFO:
+                position = mListUsbAndroid.getCheckedItemPosition();
+                if (position != ListView.INVALID_POSITION) {
+                    final String text = (String) mListUsbAndroid.getItemAtPosition(position);
+                    fragment = InfoFragmentFactory.getFragment(text);
+                } else {
+                    fragment = InfoFragmentFactory.getFragment("");
+                }
+                break;
+            case TabSetup.TAB_LINUX_INFO:
+                position = mListUsbLinux.getCheckedItemPosition();
+                if (position != ListView.INVALID_POSITION) {
+                    final String text = (String) mListUsbLinux.getItemAtPosition(position);
+                    fragment = InfoFragmentFactory.getFragment(mLinuxUsbDeviceList.get(text));
+                } else {
+                    fragment = InfoFragmentFactory.getFragment("");
+                }
+                break;
+            default:
+                fragment = InfoFragmentFactory.getFragment("");
+                break;
         }
+
+        mNavigation.stackFragment(fragment);
     }
 
 
@@ -287,40 +237,12 @@ public class MainActivity extends AppCompatActivity implements OnTabChangeListen
         }
     }
 
-    private void setupTabs() {
-        mTabHost.setup(); // you must call this before adding your tabs!
-
-        mTabHost.addTab(newTab(TAB_ANDROID_INFO, R.string.label_tab_api, R.id.tab_1));
-        mTabHost.addTab(newTab(TAB_LINUX_INFO, R.string.label_tab_linux, R.id.tab_2));
-
-        mTabWidget = mTabHost.getTabWidget();
-
-        for (int i = 0; i < mTabWidget.getChildCount(); i++) {
-            final TextView tv = (TextView) mTabWidget.getChildAt(i).findViewById(android.R.id.title);
-            tv.setTextColor(this.getResources().getColorStateList(R.drawable.tab_text_selector));
-        }
-
-        mTabHost.setOnTabChangedListener(this);
+    private View getListViewEmptyView(String text) {
+        TextView emptyView = new TextView(getApplicationContext());
+        emptyView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+        emptyView.setText(text);
+        emptyView.setTextSize(20f);
+        emptyView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+        return emptyView;
     }
-
-    private void stackAFragment(String usbKey) {
-        Fragment f = new AndroidUsbInfoFragment(usbKey);
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container, f);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        ft.commit();
-    }
-
-    private void stackAFragment(SysBusUsbDevice usbDevice) {
-        Fragment f = new LinuxUsbInfoFragment(usbDevice);
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container, f);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        ft.commit();
-    }
-
 }
