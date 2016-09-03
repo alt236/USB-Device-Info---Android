@@ -18,7 +18,7 @@ public class DialogFactory {
         textView.setText(message);
 
         return new AlertDialog.Builder(context)
-                .setTitle(message)
+                .setTitle(title)
                 .setCancelable(false)
                 .setPositiveButton(android.R.string.ok, null)
                 .setView(view)
