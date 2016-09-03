@@ -23,11 +23,7 @@ import android.view.MenuItem;
 
 import aws.apps.usbDeviceEnumerator.R;
 
-public abstract class BaseInfoFragment extends Fragment {
-    public final static int TYPE_ANDROID_INFO = 0;
-    public final static int TYPE_LINUX_INFO = 1;
-
-    public abstract int getType();
+/*package*/ abstract class BaseInfoFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle saved) {
@@ -45,7 +41,7 @@ public abstract class BaseInfoFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_export:
-                ShareUtils.share(getActivity(), "USB Info", getSharePayload());
+                ShareUtils.share(getContext(), getString(R.string.app_name), getSharePayload());
                 return true;
         }
         return super.onOptionsItemSelected(item);

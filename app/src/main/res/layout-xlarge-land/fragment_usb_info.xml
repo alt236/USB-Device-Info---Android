@@ -78,7 +78,20 @@
 
                     <TextView
                         style="@style/table_row_title_cell"
-                        android:text="@string/vendor_name_" />
+                        android:text="@string/vendor_name_reported_" />
+
+                    <TextView
+                        android:id="@+id/tvVendorReported"
+                        style="@style/table_row_data_cell" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/table_row_title_cell"
+                        android:text="@string/vendor_name_from_db_" />
 
                     <TextView
                         android:id="@+id/tvVendorDb"
@@ -104,7 +117,20 @@
 
                     <TextView
                         style="@style/table_row_title_cell"
-                        android:text="@string/product_name_" />
+                        android:text="@string/product_name_reported_" />
+
+                    <TextView
+                        android:id="@+id/tvProductReported"
+                        style="@style/table_row_data_cell" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/table_row_title_cell"
+                        android:text="@string/product_name_from_db_" />
 
                     <TextView
                         android:id="@+id/tvProductDb"
@@ -117,14 +143,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dip"
-                android:layout_marginTop="5dip"
+                android:layout_margin="6dip"
                 android:background="@drawable/image_border"
                 android:contentDescription="@string/logo"
                 android:maxHeight="130dip"
                 android:maxWidth="130dip"
                 android:minHeight="130dip"
-                android:minWidth="130dip" />
+                android:minWidth="130dip"
+                android:scaleType="fitXY"
+                android:src="@drawable/no_image" />
         </RelativeLayout>
 
         <TableLayout
@@ -137,7 +164,7 @@
 
                 <TextView
                     style="@style/table_section_title_row_data"
-                    android:text="@string/interfaces" />
+                    android:text="@string/additional_info" />
             </TableRow>
         </TableLayout>
     </LinearLayout>

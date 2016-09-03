@@ -27,14 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginRight="5dip"
-            android:layout_marginTop="5dip"
+            android:layout_margin="6dip"
             android:background="@drawable/image_border"
             android:contentDescription="@string/logo"
             android:maxHeight="130dip"
             android:maxWidth="130dip"
             android:minHeight="130dip"
-            android:minWidth="130dip" />
+            android:minWidth="130dip"
+            android:scaleType="fitXY"
+            android:src="@drawable/no_image" />
 
         <TableLayout
             android:id="@+id/tblUsbInfo_top"

@@ -67,7 +67,7 @@ public class TabController {
         tabViewHolders = new TabViewHolder[TAB_TAGS.length];
 
         for (int i = 0; i < TAB_TAGS.length; i++) {
-            views[i] = LayoutInflater.from(activity).inflate(R.layout.tab_list, viewPager, false);
+            views[i] = LayoutInflater.from(activity).inflate(R.layout.tab_device_list, viewPager, false);
             tabViewHolders[i] = new TabViewHolder(views[i]);
         }
 

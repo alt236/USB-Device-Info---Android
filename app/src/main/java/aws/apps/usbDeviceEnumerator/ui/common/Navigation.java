@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.BaseInfoFragment;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.InfoFragmentFactory;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
@@ -26,8 +25,7 @@ public class Navigation {
 
     public void showAndroidUsbDeviceInfo(String device) {
         if (isSmallScreen()) {
-            Intent i = new Intent(activity.getApplicationContext(), UsbInfoActivity.class);
-            i.putExtra(UsbInfoActivity.EXTRA_TYPE, BaseInfoFragment.TYPE_ANDROID_INFO);
+            final Intent i = new Intent(activity.getApplicationContext(), UsbInfoActivity.class);
             i.putExtra(UsbInfoActivity.EXTRA_DATA_ANDROID, device);
             startActivity(i);
         } else {
@@ -38,8 +36,7 @@ public class Navigation {
 
     public void showLinuxUsbDeviceInfo(SysBusUsbDevice device) {
         if (isSmallScreen()) {
-            Intent i = new Intent(activity.getApplicationContext(), UsbInfoActivity.class);
-            i.putExtra(UsbInfoActivity.EXTRA_TYPE, BaseInfoFragment.TYPE_LINUX_INFO);
+            final Intent i = new Intent(activity.getApplicationContext(), UsbInfoActivity.class);
             i.putExtra(UsbInfoActivity.EXTRA_DATA_LINUX, device);
             startActivity(i);
         } else {

@@ -24,50 +24,43 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 
 public class UsbInfoActivity extends AppCompatActivity {
-    public static final String EXTRA_TYPE = "type";
-    public static final String EXTRA_DATA_ANDROID = "data_android";
-    public static final String EXTRA_DATA_LINUX = "data_linux";
-
-    /**
-     * Called when the activity is first created.
-     */
-
-    private int mType;
-    private String mAndroidKey;
-    private SysBusUsbDevice mLinuxDevice;
+    public static final String EXTRA_DATA_ANDROID = UsbInfoActivity.class.getName() + ".EXTRA_DATA_ANDROID";
+    public static final String EXTRA_DATA_LINUX = UsbInfoActivity.class.getName() + ".EXTRA_DATA_LINUX";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_usb_info);
 
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            mType = b.getInt(EXTRA_TYPE);
-            mAndroidKey = b.getString(EXTRA_DATA_ANDROID);
-            mLinuxDevice = b.getParcelable(EXTRA_DATA_LINUX);
-
-            if (mType == BaseInfoFragment.TYPE_ANDROID_INFO) {
-                Fragment f = new AndroidUsbInfoFragment(mAndroidKey);
-
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_container, f);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-                ft.commit();
-            } else if (mType == BaseInfoFragment.TYPE_LINUX_INFO) {
-                Fragment f = new LinuxUsbInfoFragment(mLinuxDevice);
-
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_container, f);
-                ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-
-                ft.commit();
-            } else {
-                finish();
-            }
-        } else {
+        final Bundle b = getIntent().getExtras();
+        if (b == null) {
             finish();
+        } else {
+            final String androidKey = b.getString(EXTRA_DATA_ANDROID);
+            final SysBusUsbDevice linuxDevice = b.getParcelable(EXTRA_DATA_LINUX);
+
+            final Fragment fragment;
+
+            if (androidKey != null) {
+                fragment = InfoFragmentFactory.getFragment(androidKey);
+            } else if (linuxDevice != null) {
+                fragment = InfoFragmentFactory.getFragment(linuxDevice);
+            } else {
+                fragment = null;
+            }
+
+            if (fragment == null) {
+                finish();
+            } else {
+                showFragment(fragment);
+            }
         }
+    }
+
+    private void showFragment(final Fragment fragment) {
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.commit();
     }
 }
