@@ -16,13 +16,13 @@
 		·v0.0.2 Added Interface and Endpoint resolution\n
 		·v0.0.3 Databases can now be downloaded.\n
 		·v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.\n
-		·v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.
+		·v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.\n
+        ·v1.0.0 Updated to material, better tablet support, code overhaul
 	</string>
 
 	<string name="app_notes" formatted="false">
 		Notes:\n
-		·To fully use  this application, you need to download copies of the Vendor ID Database, the Company Name Database and the Company logo zip file.\nTo do that, Press Menu->Update DBs. Keep in mind it is about 2.5MB.\n
-		·The Vendor ID database is the one used by my "USB VEN/DEV Database" application. Updating in one application will also update the other\n
+		·To fully use  this application, you need to download copies of the Vendor ID Database, the Company Name Database and the Company logo zip file.\nTo do that, Press Menu->Update DBs.\n
 		·The VID/PID database is created by parsing the following file: http://www.linux-usb.org/usb.ids
 	</string>
 

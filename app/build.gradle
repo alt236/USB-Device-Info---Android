@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
-final int versionMajor = 0
+final int versionMajor = 1
 final int versionMinor = 0
-final int versionPatch = 5
-final int androidVersionCode = 5
+final int versionPatch = 0
+final int androidVersionCode = 6
 
 
 final int targetSdk = rootProject.targetSdkVersion;
