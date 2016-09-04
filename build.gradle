@@ -21,3 +21,18 @@ allprojects {
         jcenter()
     }
 }
+
+
+def quoteString(final String str) {
+    final String quote = "\"";
+
+    if (str.length() > 0) {
+        if (str.startsWith(quote) && str.endsWith(quote)) {
+            return str;
+        } else {
+            return quote + str + quote;
+        }
+    } else {
+        return quote + quote;
+    }
+}
