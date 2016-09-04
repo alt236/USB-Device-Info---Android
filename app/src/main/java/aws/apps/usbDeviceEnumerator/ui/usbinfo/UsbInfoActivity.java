@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
@@ -31,6 +32,8 @@ public class UsbInfoActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_usb_info);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final Bundle b = getIntent().getExtras();
         if (b == null) {
@@ -55,6 +58,16 @@ public class UsbInfoActivity extends AppCompatActivity {
                 showFragment(fragment);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showFragment(final Fragment fragment) {
