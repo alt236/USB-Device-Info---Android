@@ -23,23 +23,24 @@ import android.util.Log;
 
 import java.io.File;
 
+import aws.apps.usbDeviceEnumerator.BuildConfig;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
-public class DbAccessUsb {
+public class DbAccessUsb implements DataAccess {
+
     public final static String UNKNOWN_RESULT = "not in database";
     private final String TAG = this.getClass().getName();
     private Context context;
 
-    private String localDbLocation = "";
-    private String localDbFullPath = "";
+    private String fileFullPath = "";
 
     private SQLiteDatabase db;
 
     public DbAccessUsb(Context context) {
         this.context = context;
-        doDbPathStuff();
+        doPathStuff();
     }
 
     public boolean doDBChecks() {
@@ -52,27 +53,32 @@ public class DbAccessUsb {
             return false;
         }
 
-        if (!new File(localDbFullPath).exists()) {
+        if (!new File(fileFullPath).exists()) {
             DialogFactory.createOkDialog(context,
                     R.string.alert_db_not_found_title,
                     R.string.alert_db_not_found_instructions)
                     .show();
-            Log.e(TAG, "^ Database not found: " + localDbFullPath);
+            Log.e(TAG, "^ Database not found: " + fileFullPath);
             return false;
         }
 
         return true;
     }
 
-    private void doDbPathStuff() {
-        localDbLocation = Environment.getExternalStorageDirectory() + context.getString(R.string.sd_db_location_usb);
-        localDbFullPath = localDbLocation + context.getString(R.string.sd_db_name_usb);
+    private void doPathStuff() {
+        final File baseDir = StorageUtils.getExternalStorageLocation(context);
+
+        if (baseDir == null) {
+            fileFullPath = "";
+        } else {
+            fileFullPath = new File(baseDir, BuildConfig.USB_DB_FILE_NAME).getAbsolutePath();
+        }
     }
 
     private Cursor executeQuery(String table, String[] fields, String where, String order) {
 
         try {
-            db = SQLiteDatabase.openDatabase(localDbFullPath, null, SQLiteDatabase.OPEN_READONLY);
+            db = SQLiteDatabase.openDatabase(fileFullPath, null, SQLiteDatabase.OPEN_READONLY);
 
             if (!db.isOpen()) {
                 Log.e(TAG, "^ DB was not opened!");
@@ -90,13 +96,14 @@ public class DbAccessUsb {
         return null;
     }
 
-
-    public String getLocalDbFullPath() {
-        return localDbFullPath;
+    @Override
+    public String getFilePath() {
+        return fileFullPath;
     }
 
-    public String getLocalDbLocation() {
-        return localDbLocation;
+    @Override
+    public String getUrl() {
+        return BuildConfig.USB_DB_URL;
     }
 
     public String getProduct(String VID, String PID) {

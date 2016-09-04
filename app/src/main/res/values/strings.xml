@@ -45,19 +45,6 @@
     <string name="text_downloading_files">Downloading files…</string>
     <string name="text_number_of_devices">Number of devices: %d</string>
 
-    <string name="url_usb_db">http://aschillings.co.uk/download/db/android_usb.db3</string>
-    <string name="url_company_db">http://aschillings.co.uk/download/db/android_company.db3</string>
-    <string name="url_company_logo_zip">http://aschillings.co.uk/download/db/company_logos.zip</string>
-
-    <string name="sd_db_location_usb">/data/alt236/usb_db/</string>
-    <string name="sd_db_name_usb">android_usb.db3</string>
-
-    <string name="sd_db_location_company">/data/alt236/company_db/</string>
-    <string name="sd_db_name_company">android_company.db3</string>
-
-    <string name="sd_zip_location_company">/data/alt236/company_db/</string>
-    <string name="sd_zip_name_company">company_logos.zip</string>
-
     <string name="text_device_offline">Device offline</string>
     <string name="text_device_offline_instructions">The device seems to be offline.\nPlease enable either WiFi or Mobile Internet before continuing.</string>
 

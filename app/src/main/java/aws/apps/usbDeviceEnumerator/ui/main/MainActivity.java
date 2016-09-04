@@ -71,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkIfDbPresent() {
         // Prompt user to DL db if it is missing.
-        if (!new File(mDbUsb.getLocalDbFullPath()).exists()) {
+        if (!new File(mDbUsb.getFilePath()).exists()) {
             DialogFactory.createOkDialog(this,
                     R.string.alert_db_not_found_title,
                     R.string.alert_db_not_found_instructions)
                     .show();
-            Log.w(TAG, "^ Database not found: " + mDbUsb.getLocalDbFullPath());
+            Log.w(TAG, "^ Database not found: " + mDbUsb.getFilePath());
         }
     }
 

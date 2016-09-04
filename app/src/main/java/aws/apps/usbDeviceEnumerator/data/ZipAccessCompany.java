@@ -18,24 +18,23 @@ package aws.apps.usbDeviceEnumerator.data;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.BuildConfig;
 
-public class ZipAccessCompany {
+public class ZipAccessCompany implements DataAccess {
     private final String TAG = this.getClass().getName();
     private Context context;
 
-    private String localZipLocation = "";
-    private String localZipFullPath = "";
+    private String fileFullPath = "";
 
     public ZipAccessCompany(Context context) {
         this.context = context;
@@ -43,27 +42,34 @@ public class ZipAccessCompany {
     }
 
     private void doPathStuff() {
-        localZipLocation = Environment.getExternalStorageDirectory() + context.getString(R.string.sd_zip_location_company);
-        localZipFullPath = localZipLocation + context.getString(R.string.sd_zip_name_company);
+        final File baseDir = StorageUtils.getExternalStorageLocation(context);
+
+        if (baseDir == null) {
+            fileFullPath = "";
+        } else {
+            fileFullPath = new File(baseDir, BuildConfig.LOGO_ZIP_FILE_NAME).getAbsolutePath();
+        }
     }
 
-    public String getLocalZipFullPath() {
-        return localZipFullPath;
+    @Override
+    public String getFilePath() {
+        return fileFullPath;
     }
 
-    public String getLocalZipLocation() {
-        return localZipLocation;
+    @Override
+    public String getUrl() {
+        return BuildConfig.LOGO_ZIP_URL;
     }
 
     public Bitmap getLogo(final String logo) {
-        Log.d(TAG, "^ Getting logo '" + logo + "' from '" + localZipFullPath + "'");
+        Log.d(TAG, "^ Getting logo '" + logo + "' from '" + fileFullPath + "'");
 
         Bitmap result = null;
         if (TextUtils.isEmpty(logo)) {
             result = null;
         } else {
             try {
-                FileInputStream fis = new FileInputStream(localZipFullPath);
+                FileInputStream fis = new FileInputStream(fileFullPath);
                 ZipInputStream zis = new ZipInputStream(fis);
                 ZipEntry ze = null;
 
@@ -75,8 +81,6 @@ public class ZipAccessCompany {
                         Log.d(TAG, "^ Found it!");
                         result = BitmapFactory.decodeStream(zis);
                         break;
-                    } else {
-
                     }
                 }
 

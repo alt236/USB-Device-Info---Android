@@ -15,7 +15,6 @@ import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
 import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
-import aws.apps.usbDeviceEnumerator.util.FileUtils;
 import aws.apps.usbDeviceEnumerator.util.NetworkUtils;
 import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
@@ -68,12 +67,6 @@ public class DatabaseUpdater {
             Log.d(TAG, "^ SD card not available.");
             NotifyUser.notify(context, R.string.sd_not_available);
             valid = false;
-        } else if (!FileUtils.createDirectories(dbAccessUsb.getLocalDbLocation())) {
-            valid = false;
-        } else if (!FileUtils.createDirectories(dbAccessCompany.getLocalDbLocation())) {
-            valid = false;
-        } else if (!FileUtils.createDirectories(zipAccessCompany.getLocalZipLocation())) {
-            valid = false;
         } else if (!NetworkUtils.isOnline(context)) {  // If we are not online, cancel everything
             DialogFactory.createOkDialog(
                     context,
@@ -92,16 +85,16 @@ public class DatabaseUpdater {
         final List<FileDownloadTask.Downloadable> downloads = new ArrayList<FileDownloadTask.Downloadable>();
 
         downloads.add(new FileDownloadTask.Downloadable(
-                context.getString(R.string.url_usb_db),
-                dbAccessUsb.getLocalDbFullPath()));
+                dbAccessUsb.getUrl(),
+                dbAccessUsb.getFilePath()));
 
         downloads.add(new FileDownloadTask.Downloadable(
-                context.getString(R.string.url_company_db),
-                dbAccessCompany.getLocalDbFullPath()));
+                dbAccessCompany.getUrl(),
+                dbAccessCompany.getFilePath()));
 
         downloads.add(new FileDownloadTask.Downloadable(
-                context.getString(R.string.url_company_logo_zip),
-                zipAccessCompany.getLocalZipFullPath()));
+                zipAccessCompany.getUrl(),
+                zipAccessCompany.getFilePath()));
 
         return downloads;
     }

@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="aws.apps.usbDeviceEnumerator"
-    android:versionCode="5"
-    android:versionName="0.0.5">
-
-    <uses-sdk
-        android:minSdkVersion="12"
-        android:targetSdkVersion="14" />
+    package="aws.apps.usbDeviceEnumerator">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application

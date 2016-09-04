@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -39,7 +41,6 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
         OutputStream os;
         Boolean bOK = true;
 
-
         int downloadCounter = 0;
 
         for (Downloadable download : downloadables) {
@@ -50,32 +51,36 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
                 Log.d(TAG, "^ Downloading: " + url);
                 Log.d(TAG, "^ To         : " + filePath);
 
-                connection = url.openConnection();
-                connection.connect();
-                int lenghtOfFile = connection.getContentLength();
+                if (createDirStructure(filePath)) {
+                    connection = url.openConnection();
+                    connection.connect();
+                    final int contentLength = connection.getContentLength();
 
-                // download the file
-                is = new BufferedInputStream(url.openStream());
-                os = new FileOutputStream(filePath);
+                    // download the file
+                    is = new BufferedInputStream(url.openStream());
+                    os = new FileOutputStream(filePath);
 
-                byte data[] = new byte[1024];
+                    final byte data[] = new byte[1024];
 
-                long total = 0;
+                    long total = 0;
 
-                while ((count = is.read(data)) != -1) {
-                    total += count;
-                    // The first number is the current file
-                    // The second is the total number of files to download
-                    // The third is the current progress
-                    publishProgress(downloadCounter + 1, downloadables.length, (int) (total * 100 / lenghtOfFile));
-                    os.write(data, 0, count);
+                    while ((count = is.read(data)) != -1) {
+                        total += count;
+                        // The first number is the current file
+                        // The second is the total number of files to download
+                        // The third is the current progress
+                        publishProgress(downloadCounter + 1, downloadables.length, (int) (total * 100 / contentLength));
+                        os.write(data, 0, count);
+                    }
+
+                    os.flush();
+                    os.close();
+                    is.close();
+                } else {
+                    Log.e(TAG, "^ Failed to create directory structure");
+                    bOK = false;
                 }
-
-                os.flush();
-                os.close();
-                is.close();
-
-            } catch (Exception e) {
+            } catch (IOException e) {
                 Log.e(TAG, "^ Error while downloading.", e);
                 bOK = false;
                 e.printStackTrace();
@@ -85,6 +90,28 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
         }
 
         return bOK;
+    }
+
+    private boolean createDirStructure(final String filePath) {
+        final File file = new File(filePath);
+        final File parent = file.getParentFile();
+
+        final boolean createFile;
+
+        if (parent.exists()) {
+            createFile = false;
+        } else {
+            createFile = true;
+        }
+
+        Log.d(TAG, "^ Need to create path for '" + file.getAbsolutePath() + "'? " + createFile);
+
+        if (createFile) {
+            Log.d(TAG, "^ Creating path for: " + file.getAbsolutePath());
+            return parent.mkdirs();
+        } else {
+            return true;
+        }
     }
 
     @Override

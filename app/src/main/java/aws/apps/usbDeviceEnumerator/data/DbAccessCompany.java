@@ -23,23 +23,23 @@ import android.util.Log;
 
 import java.io.File;
 
+import aws.apps.usbDeviceEnumerator.BuildConfig;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
-public class DbAccessCompany {
+public class DbAccessCompany implements DataAccess {
     public final static String UNKNOWN_RESULT = "???";
     private final String TAG = this.getClass().getName();
     private Context context;
 
-    private String localDbLocation = "";
-    private String localDbFullPath = "";
+    private String fileFullPath = "";
 
     private SQLiteDatabase db;
 
     public DbAccessCompany(Context context) {
         this.context = context;
-        doDbPathStuff();
+        doPathStuff();
     }
 
     public boolean doDBChecks() {
@@ -53,27 +53,33 @@ public class DbAccessCompany {
             return false;
         }
 
-        if (!new File(localDbFullPath).exists()) {
+        if (!new File(fileFullPath).exists()) {
             DialogFactory.createOkDialog(context,
                     R.string.alert_db_not_found_title,
                     R.string.alert_db_not_found_instructions)
                     .show();
-            Log.e(TAG, "^ Database not found: " + localDbFullPath);
+            Log.e(TAG, "^ Database not found: " + fileFullPath);
             return false;
         }
 
         return true;
     }
 
-    private void doDbPathStuff() {
-        localDbLocation = Environment.getExternalStorageDirectory() + context.getString(R.string.sd_db_location_company);
-        localDbFullPath = localDbLocation + context.getString(R.string.sd_db_name_company);
+
+    private void doPathStuff() {
+        final File baseDir = StorageUtils.getExternalStorageLocation(context);
+
+        if (baseDir == null) {
+            fileFullPath = "";
+        } else {
+            fileFullPath = new File(baseDir, BuildConfig.COMPANY_DB_FILE_NAME).getAbsolutePath();
+        }
     }
 
     private Cursor executeQuery(String table, String[] fields, String where, String order) {
 
         try {
-            db = SQLiteDatabase.openDatabase(localDbFullPath, null, SQLiteDatabase.OPEN_READONLY);
+            db = SQLiteDatabase.openDatabase(fileFullPath, null, SQLiteDatabase.OPEN_READONLY);
 
             if (!db.isOpen()) {
                 Log.e(TAG, "^ DB was not opened!");
@@ -91,12 +97,14 @@ public class DbAccessCompany {
         return null;
     }
 
-    public String getLocalDbFullPath() {
-        return localDbFullPath;
+    @Override
+    public String getFilePath() {
+        return fileFullPath;
     }
 
-    public String getLocalDbLocation() {
-        return localDbLocation;
+    @Override
+    public String getUrl() {
+        return BuildConfig.COMPANY_DB_URL;
     }
 
     public String getLogo(String CompanyNameString) {
