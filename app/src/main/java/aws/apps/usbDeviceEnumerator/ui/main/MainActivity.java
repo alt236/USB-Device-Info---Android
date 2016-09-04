@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         final Fragment fragment;
 
         if (checkedItemPosition == ListView.INVALID_POSITION) {
-            fragment = InfoFragmentFactory.getFragment("");
+            fragment = null;
         } else {
             final String text = (String) listView.getItemAtPosition(checkedItemPosition);
 
@@ -185,12 +185,16 @@ public class MainActivity extends AppCompatActivity {
                     fragment = InfoFragmentFactory.getFragment(mLinuxDeviceMap.get(text));
                     break;
                 default:
-                    fragment = InfoFragmentFactory.getFragment("");
+                    fragment = null;
                     break;
             }
         }
 
-        mNavigation.stackFragment(fragment);
+        if (fragment == null) {
+            mNavigation.removeFragmentsFromContainer();
+        } else {
+            mNavigation.stackFragment(fragment);
+        }
     }
 
 

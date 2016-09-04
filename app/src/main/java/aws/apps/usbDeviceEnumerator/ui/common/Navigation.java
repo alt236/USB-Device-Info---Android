@@ -59,6 +59,17 @@ public class Navigation {
         ft.commit();
     }
 
+    public void removeFragmentsFromContainer() {
+        final Fragment fragment = activity.getSupportFragmentManager().findFragmentById(FRAGMENT_CONTAINER);
+
+        if (fragment != null) {
+            final FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+            ft.remove(fragment);
+            ft.setTransition(DEFAULT_FRAGMENT_TRANSACTION);
+            ft.commit();
+        }
+    }
+
     private void startActivity(final Intent intent) {
         ActivityCompat.startActivity(activity, intent, null);
     }
