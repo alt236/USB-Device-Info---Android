@@ -38,9 +38,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
-import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
-import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.ui.common.Navigation;
 import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
     private UsbManager mUsbManAndroid;
     private SysBusUsbManager mUsbManagerLinux;
 
-    private DbAccessUsb mDbUsb;
-    private DbAccessCompany mDbComp;
-    private ZipAccessCompany mZipComp;
+    private DataProviderUsbInfo mDbUsb;
+    private DataProviderCompanyInfo mDbComp;
+    private DataProviderCompanyLogo mZipComp;
 
     private Map<String, UsbDevice> mAndroidDeviceMap;
     private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
@@ -71,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkIfDbPresent() {
         // Prompt user to DL db if it is missing.
-        if (!new File(mDbUsb.getFilePath()).exists()) {
+        if (!new File(mDbUsb.getDataFilePath()).exists()) {
             DialogFactory.createOkDialog(this,
                     R.string.alert_db_not_found_title,
                     R.string.alert_db_not_found_instructions)
                     .show();
-            Log.w(TAG, "^ Database not found: " + mDbUsb.getFilePath());
+            Log.w(TAG, "^ Database not found: " + mDbUsb.getDataFilePath());
         }
     }
 
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
         mUsbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
         mUsbManagerLinux = new SysBusUsbManager();
 
-        mDbUsb = new DbAccessUsb(this);
-        mDbComp = new DbAccessCompany(this);
-        mZipComp = new ZipAccessCompany(this);
+        mDbUsb = new DataProviderUsbInfo(this);
+        mDbComp = new DataProviderCompanyInfo(this);
+        mZipComp = new DataProviderCompanyLogo(this);
 
         mTabController.setup(new TabController.OnTabChangeListener() {
             @Override

@@ -27,9 +27,9 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
-import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
-import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import aws.apps.usbDeviceEnumerator.usb.UsbConstants;
 import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 
@@ -56,9 +56,9 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     public void onAttach(final Context context) {
         super.onAttach(context);
         dataFetcher = new DataFetcher(
-                new DbAccessCompany(context),
-                new DbAccessUsb(context),
-                new ZipAccessCompany(context));
+                new DataProviderCompanyInfo(context),
+                new DataProviderUsbInfo(context),
+                new DataProviderCompanyLogo(context));
     }
 
     @Override

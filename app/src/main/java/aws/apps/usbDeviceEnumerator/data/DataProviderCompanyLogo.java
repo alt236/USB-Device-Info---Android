@@ -30,14 +30,14 @@ import java.util.zip.ZipInputStream;
 
 import aws.apps.usbDeviceEnumerator.BuildConfig;
 
-public class ZipAccessCompany implements DataAccess {
+public class DataProviderCompanyLogo implements DataProvider {
     private final String TAG = this.getClass().getName();
     private Context context;
 
     private String fileFullPath = "";
 
-    public ZipAccessCompany(Context context) {
-        this.context = context;
+    public DataProviderCompanyLogo(Context context) {
+        this.context = context.getApplicationContext();
         doPathStuff();
     }
 
@@ -52,7 +52,7 @@ public class ZipAccessCompany implements DataAccess {
     }
 
     @Override
-    public String getFilePath() {
+    public String getDataFilePath() {
         return fileFullPath;
     }
 
@@ -61,11 +61,11 @@ public class ZipAccessCompany implements DataAccess {
         return BuildConfig.LOGO_ZIP_URL;
     }
 
-    public Bitmap getLogo(final String logo) {
-        Log.d(TAG, "^ Getting logo '" + logo + "' from '" + fileFullPath + "'");
+    public Bitmap getLogoBitmap(final String logoName) {
+        Log.d(TAG, "^ Getting logo '" + logoName + "' from '" + fileFullPath + "'");
 
         Bitmap result = null;
-        if (TextUtils.isEmpty(logo)) {
+        if (TextUtils.isEmpty(logoName)) {
             result = null;
         } else {
             try {
@@ -77,7 +77,7 @@ public class ZipAccessCompany implements DataAccess {
                 if (zis.getNextEntry() != null) ze = zis.getNextEntry();
 
                 while ((ze = zis.getNextEntry()) != null) {
-                    if (ze.getName().equals(logo)) {
+                    if (ze.getName().equals(logoName)) {
                         Log.d(TAG, "^ Found it!");
                         result = BitmapFactory.decodeStream(zis);
                         break;
@@ -94,5 +94,19 @@ public class ZipAccessCompany implements DataAccess {
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean isDataAvailable() {
+        final boolean okToAccessData;
+
+        if (!new File(getDataFilePath()).exists()) {
+            Log.e(TAG, "^ Cannot access: " + fileFullPath);
+            okToAccessData = false;
+        } else {
+            okToAccessData = true;
+        }
+
+        return okToAccessData;
     }
 }

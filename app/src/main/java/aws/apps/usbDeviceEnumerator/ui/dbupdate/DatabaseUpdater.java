@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
-import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
-import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.util.NetworkUtils;
@@ -22,14 +22,14 @@ public class DatabaseUpdater {
     private static final String TAG = DatabaseUpdater.class.getSimpleName();
 
     private final ProgressDialogControl progressDialogControl;
-    private final DbAccessCompany dbAccessCompany;
-    private final DbAccessUsb dbAccessUsb;
-    private final ZipAccessCompany zipAccessCompany;
+    private final DataProviderCompanyInfo dbAccessCompany;
+    private final DataProviderUsbInfo dbAccessUsb;
+    private final DataProviderCompanyLogo zipAccessCompany;
 
     public DatabaseUpdater(final ProgressDialogControl progressDialogControl,
-                           final DbAccessCompany dbAccessCompany,
-                           final DbAccessUsb dbAccessUsb,
-                           final ZipAccessCompany zipAccessCompany) {
+                           final DataProviderCompanyInfo dbAccessCompany,
+                           final DataProviderUsbInfo dbAccessUsb,
+                           final DataProviderCompanyLogo zipAccessCompany) {
 
         this.progressDialogControl = progressDialogControl;
         this.dbAccessCompany = dbAccessCompany;
@@ -86,15 +86,15 @@ public class DatabaseUpdater {
 
         downloads.add(new FileDownloadTask.Downloadable(
                 dbAccessUsb.getUrl(),
-                dbAccessUsb.getFilePath()));
+                dbAccessUsb.getDataFilePath()));
 
         downloads.add(new FileDownloadTask.Downloadable(
                 dbAccessCompany.getUrl(),
-                dbAccessCompany.getFilePath()));
+                dbAccessCompany.getDataFilePath()));
 
         downloads.add(new FileDownloadTask.Downloadable(
                 zipAccessCompany.getUrl(),
-                zipAccessCompany.getFilePath()));
+                zipAccessCompany.getDataFilePath()));
 
         return downloads;
     }

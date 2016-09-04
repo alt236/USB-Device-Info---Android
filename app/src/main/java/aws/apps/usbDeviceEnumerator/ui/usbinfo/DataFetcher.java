@@ -3,17 +3,17 @@ package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
-import aws.apps.usbDeviceEnumerator.data.DbAccessUsb;
-import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
+import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 
 /*package*/ class DataFetcher {
 
-    private final DbAccessCompany dbComp;
-    private final DbAccessUsb dbUsb;
-    private final ZipAccessCompany zipComp;
+    private final DataProviderCompanyInfo dbComp;
+    private final DataProviderUsbInfo dbUsb;
+    private final DataProviderCompanyLogo zipComp;
 
-    public DataFetcher(DbAccessCompany dbComp, DbAccessUsb dbUsb, ZipAccessCompany zipComp) {
+    public DataFetcher(DataProviderCompanyInfo dbComp, DataProviderUsbInfo dbUsb, DataProviderCompanyLogo zipComp) {
         this.dbComp = dbComp;
         this.dbUsb = dbUsb;
         this.zipComp = zipComp;
@@ -31,11 +31,11 @@ import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
                 final String productFromDb;
                 final Bitmap bitmap;
 
-                if (dbUsb.doDBChecks()) {
-                    vendorFromDb = dbUsb.getVendor(vid);
-                    productFromDb = dbUsb.getProduct(vid, pid);
+                if (dbUsb.isDataAvailable()) {
+                    vendorFromDb = dbUsb.getVendorName(vid);
+                    productFromDb = dbUsb.getProductName(vid, pid);
 
-                    if (dbComp.doDBChecks()) {
+                    if (dbComp.isDataAvailable()) {
                         final String searchFor;
 
                         if (!TextUtils.isEmpty(vendorFromDb)) {
@@ -44,8 +44,8 @@ import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
                             searchFor = reportedVendorName;
                         }
 
-                        final String logo = dbComp.getLogo(searchFor);
-                        bitmap = zipComp.getLogo(logo);
+                        final String logo = dbComp.getLogoName(searchFor);
+                        bitmap = zipComp.getLogoBitmap(logo);
                     } else {
                         bitmap = null;
                     }
