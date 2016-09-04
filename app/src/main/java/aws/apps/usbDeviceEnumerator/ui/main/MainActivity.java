@@ -48,8 +48,8 @@ import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.InfoFragmentFactory;
-import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
-import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbManager;
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();

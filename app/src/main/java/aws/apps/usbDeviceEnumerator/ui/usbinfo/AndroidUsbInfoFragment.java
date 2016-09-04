@@ -34,7 +34,7 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
-import aws.apps.usbDeviceEnumerator.usb.UsbConstants;
+import uk.co.alt236.usbdeviceenumerator.UsbConstants;
 
 public class AndroidUsbInfoFragment extends BaseInfoFragment {
     public final static int TYPE_ANDROID_INFO = 0;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.usb.sysbususb;
+package uk.co.alt236.usbdeviceenumerator.sysbususb;
 
 import android.os.Parcel;
 import android.os.Parcelable;

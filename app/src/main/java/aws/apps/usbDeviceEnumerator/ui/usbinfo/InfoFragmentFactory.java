@@ -2,7 +2,7 @@ package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
 import android.support.v4.app.Fragment;
 
-import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public final class InfoFragmentFactory {
 

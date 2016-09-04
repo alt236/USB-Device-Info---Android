@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.usb.sysbususb;
+package uk.co.alt236.usbdeviceenumerator;
 
-/*package*/ class SysBusUsbConstantsResolver {
+public class UsbConstants {
 
     private final static int USB_CLASS_PER_INTERFACE = 0x00;
     private final static int USB_CLASS_AUDIO = 0x01;
@@ -45,7 +45,8 @@ package aws.apps.usbDeviceEnumerator.usb.sysbususb;
     private final static int USB_ENDPOINT_XFER_BULK = 2;
     private final static int USB_ENDPOINT_XFER_INT = 3;
 
-    protected static String resolveUsbClass(int usbClass) {
+
+    public static String resolveUsbClass(int usbClass) {
         switch (usbClass) {
             case USB_CLASS_PER_INTERFACE:
                 return "Use class information in the Interface Descriptors (0x" + Integer.toHexString(usbClass) + ")";
@@ -90,7 +91,15 @@ package aws.apps.usbDeviceEnumerator.usb.sysbususb;
         }
     }
 
-    protected static String resolveUsbEndpointDirection(int usbEndpointDirection) {
+    public static String resolveUsbClass(String usbClass) {
+        try {
+            return resolveUsbClass(Integer.parseInt(usbClass));
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public static String resolveUsbEndpointDirection(int usbEndpointDirection) {
 
         switch (usbEndpointDirection) {
             case USB_DIR_OUT:
@@ -102,7 +111,7 @@ package aws.apps.usbDeviceEnumerator.usb.sysbususb;
         }
     }
 
-    protected static String resolveUsbEndpointType(int usbEndpointType) {
+    public static String resolveUsbEndpointType(int usbEndpointType) {
 
         switch (usbEndpointType) {
             case USB_ENDPOINT_XFER_CONTROL:
@@ -117,4 +126,6 @@ package aws.apps.usbDeviceEnumerator.usb.sysbususb;
                 return "Unknown (0x" + Integer.toHexString(usbEndpointType) + ")";
         }
     }
+
+
 }

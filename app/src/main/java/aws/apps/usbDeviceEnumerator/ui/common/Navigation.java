@@ -10,7 +10,7 @@ import android.util.Log;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.InfoFragmentFactory;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
-import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class Navigation {
     private static final String TAG = Navigation.class.getSimpleName();

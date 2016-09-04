@@ -30,8 +30,8 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
-import aws.apps.usbDeviceEnumerator.usb.UsbConstants;
-import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
+import uk.co.alt236.usbdeviceenumerator.UsbConstants;
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class LinuxUsbInfoFragment extends BaseInfoFragment {
     public final static String DEFAULT_STRING = "???";

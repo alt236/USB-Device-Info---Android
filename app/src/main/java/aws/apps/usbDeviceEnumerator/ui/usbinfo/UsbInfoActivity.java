@@ -22,7 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class UsbInfoActivity extends AppCompatActivity {
     public static final String EXTRA_DATA_ANDROID = UsbInfoActivity.class.getName() + ".EXTRA_DATA_ANDROID";
