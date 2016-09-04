@@ -30,6 +30,9 @@
     <string name="label_menu_about">About</string>
     <string name="label_menu_export">Export</string>
 
+    <string name="error_loading_device_info_device_disconnected">Could not fetch device info.\nHas the device been disconnected?</string>
+    <string name="error_loading_device_info_unknown">Could not fetch device info.</string>
+
     <string name="label_tab_api">API</string>
     <string name="label_tab_linux">Linux</string>
 

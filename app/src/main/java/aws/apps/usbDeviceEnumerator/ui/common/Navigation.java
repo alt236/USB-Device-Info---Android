@@ -15,7 +15,7 @@ import aws.apps.usbDeviceEnumerator.usb.sysbususb.SysBusUsbDevice;
 public class Navigation {
     private static final String TAG = Navigation.class.getSimpleName();
     private static final int FRAGMENT_CONTAINER = R.id.fragment_container;
-    private static final int DEFAULT_FRAGMENT_TRANSACTION = FragmentTransaction.TRANSIT_FRAGMENT_OPEN;
+    private static final int DEFAULT_FRAGMENT_TRANSACTION = FragmentTransaction.TRANSIT_FRAGMENT_FADE;
 
     private final AppCompatActivity activity;
 

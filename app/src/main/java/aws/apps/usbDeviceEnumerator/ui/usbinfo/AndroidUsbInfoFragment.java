@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
@@ -47,6 +48,8 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
     private InfoViewHolder viewHolder;
     private UsbManager usbMan;
     private DataFetcher dataFetcher;
+    private UsbDevice device;
+    private boolean validData;
 
     public static Fragment create(final String usbKey) {
         final Fragment fragment = new AndroidUsbInfoFragment();
@@ -69,7 +72,20 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        return inflater.inflate(LAYOUT_ID, container, false);
+        usbKey = getArguments().getString(EXTRA_DATA, DEFAULT_STRING);
+        device = usbMan.getDeviceList().get(usbKey);
+
+        final View view;
+
+        if (usbKey == null || device == null) {
+            view = inflater.inflate(R.layout.fragment_error, container, false);
+            validData = false;
+        } else {
+            view = inflater.inflate(LAYOUT_ID, container, false);
+            validData = true;
+        }
+
+        return view;
     }
 
     @Override
@@ -79,15 +95,21 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
 
         usbKey = getArguments().getString(EXTRA_DATA, DEFAULT_STRING);
 
-        populateAndroidTable(LayoutInflater.from(getContext()));
+
+        if (validData) {
+            viewHolder = new InfoViewHolder(view);
+            populateDataTable(LayoutInflater.from(getContext()));
+        } else {
+            final TextView textView = (TextView) view.findViewById(R.id.errorText);
+            if (usbKey == null) {
+                textView.setText(R.string.error_loading_device_info_unknown);
+            } else {
+                textView.setText(R.string.error_loading_device_info_device_disconnected);
+            }
+        }
     }
 
-    private void populateAndroidTable(LayoutInflater inflater) {
-        final UsbDevice device = usbMan.getDeviceList().get(usbKey);
-
-        if (device == null) {
-            return;
-        }
+    private void populateDataTable(LayoutInflater inflater) {
         final String vid = CommonLogic.padLeft(Integer.toHexString(device.getVendorId()), "0", 4);
         final String pid = CommonLogic.padLeft(Integer.toHexString(device.getDeviceId()), "0", 4);
         final String deviceClass = UsbConstants.resolveUsbClass(device.getDeviceClass());

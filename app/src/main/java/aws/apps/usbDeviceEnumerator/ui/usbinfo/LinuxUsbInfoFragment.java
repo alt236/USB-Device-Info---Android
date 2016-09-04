@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DbAccessCompany;
@@ -38,6 +39,8 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     private static final int LAYOUT_ID = R.layout.fragment_usb_info;
     private final String TAG = this.getClass().getName();
     private SysBusUsbDevice device;
+    private boolean validData;
+
     private InfoViewHolder viewHolder;
     private DataFetcher dataFetcher;
 
@@ -60,24 +63,34 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        return inflater.inflate(LAYOUT_ID, container, false);
+        device = getArguments().getParcelable(EXTRA_DATA);
+        final View view;
+
+        if (device == null) {
+            view = inflater.inflate(R.layout.fragment_error, container, false);
+            validData = false;
+        } else {
+            view = inflater.inflate(LAYOUT_ID, container, false);
+            validData = true;
+        }
+
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle bundle) {
         super.onViewCreated(view, bundle);
-        viewHolder = new InfoViewHolder(view);
 
-        device = getArguments().getParcelable(EXTRA_DATA);
-
-        populateLinuxTable(LayoutInflater.from(getContext()));
+        if (validData) {
+            viewHolder = new InfoViewHolder(view);
+            populateDataTable(LayoutInflater.from(getContext()));
+        } else {
+            final TextView textView = (TextView) view.findViewById(R.id.errorText);
+            textView.setText(R.string.error_loading_device_info_unknown);
+        }
     }
 
-    private void populateLinuxTable(LayoutInflater inflater) {
-        if (device == null) {
-            return;
-        }
-
+    private void populateDataTable(LayoutInflater inflater) {
         final String vid = CommonLogic.padLeft(device.getVID(), "0", 4);
         final String pid = CommonLogic.padLeft(device.getPID(), "0", 4);
         final String deviceClass = UsbConstants.resolveUsbClass(device.getDeviceClass());
