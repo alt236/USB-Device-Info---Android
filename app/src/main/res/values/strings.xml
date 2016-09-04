@@ -16,19 +16,22 @@
 		·v0.0.2 Added Interface and Endpoint resolution\n
 		·v0.0.3 Databases can now be downloaded.\n
 		·v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.\n
-		·v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.
+		·v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.\n
+        ·v1.0.0 Updated to material, better tablet support, code overhaul
 	</string>
 
 	<string name="app_notes" formatted="false">
 		Notes:\n
-		·To fully use  this application, you need to download copies of the Vendor ID Database, the Company Name Database and the Company logo zip file.\nTo do that, Press Menu->Update DBs. Keep in mind it is about 2.5MB.\n
-		·The Vendor ID database is the one used by my "USB VEN/DEV Database" application. Updating in one application will also update the other\n
+		·To fully use  this application, you need to download copies of the Vendor ID Database, the Company Name Database and the Company logo zip file.\nTo do that, Press Menu->Update DBs.\n
 		·The VID/PID database is created by parsing the following file: http://www.linux-usb.org/usb.ids
 	</string>
 
     <string name="label_menu_update_db">Update DBs</string>
     <string name="label_menu_about">About</string>
     <string name="label_menu_export">Export</string>
+
+    <string name="error_loading_device_info_device_disconnected">Could not fetch device info.\nHas the device been disconnected?</string>
+    <string name="error_loading_device_info_unknown">Could not fetch device info.</string>
 
     <string name="label_tab_api">API</string>
     <string name="label_tab_linux">Linux</string>
@@ -40,19 +43,7 @@
     <string name="download_error">There was an error while downloading the files.</string>
 
     <string name="text_downloading_files">Downloading files…</string>
-
-    <string name="url_usb_db">http://aschillings.co.uk/download/db/android_usb.db3</string>
-    <string name="url_company_db">http://aschillings.co.uk/download/db/android_company.db3</string>
-    <string name="url_company_logo_zip">http://aschillings.co.uk/download/db/company_logos.zip</string>
-
-    <string name="sd_db_location_usb">/data/alt236/usb_db/</string>
-    <string name="sd_db_name_usb">android_usb.db3</string>
-
-    <string name="sd_db_location_company">/data/alt236/company_db/</string>
-    <string name="sd_db_name_company">android_company.db3</string>
-
-    <string name="sd_zip_location_company">/data/alt236/company_db/</string>
-    <string name="sd_zip_name_company">company_logos.zip</string>
+    <string name="text_number_of_devices">Number of devices: %d</string>
 
     <string name="text_device_offline">Device offline</string>
     <string name="text_device_offline_instructions">The device seems to be offline.\nPlease enable either WiFi or Mobile Internet before continuing.</string>

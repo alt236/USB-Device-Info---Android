@@ -1,15 +1,23 @@
 apply plugin: 'com.android.library'
 
+final int versionMajor = 0
+final int versionMinor = 0
+final int versionPatch = 5
+final int androidVersionCode = 5
+
+final int targetSdk = rootProject.targetSdkVersion;
+final int minSdkRed = rootProject.minSdkVersion;
+final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
+
 android {
-    compileSdkVersion 14
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 12
-        targetSdkVersion 14
-
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion minSdkRed
+        targetSdkVersion targetSdk
+        versionCode androidVersionCode
+        versionName semanticVersion
     }
     buildTypes {
         release {

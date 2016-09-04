@@ -1,22 +1,48 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
+final int versionMajor = 1
+final int versionMinor = 0
+final int versionPatch = 0
+final int androidVersionCode = 6
+
+
+final int targetSdk = rootProject.targetSdkVersion;
+final int minSdkRed = rootProject.minSdkVersion;
+
+final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
 android {
-    compileSdkVersion 14
-    buildToolsVersion "24.0.1"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "aws.apps.usbDeviceEnumerator"
-        minSdkVersion 12
-        targetSdkVersion 14
 
-        versionCode 5
-        versionName "0.0.5"
+        minSdkVersion minSdkRed
+        targetSdkVersion targetSdk
+        versionCode androidVersionCode
+        versionName semanticVersion
+
+        buildConfigField "String", "USB_DB_URL", quoteString("http://aschillings.co.uk/download/db/android_usb.db3")
+        buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
+
+        buildConfigField "String", "COMPANY_DB_URL", quoteString("http://aschillings.co.uk/download/db/android_company.db3")
+        buildConfigField "String", "COMPANY_DB_FILE_NAME", quoteString("company.db3")
+
+        buildConfigField "String", "LOGO_ZIP_URL", quoteString("http://aschillings.co.uk/download/db/company_logos.zip")
+        buildConfigField "String", "LOGO_ZIP_FILE_NAME", quoteString("logos.zip")
     }
 
     dependencies {
+
+        apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
         compile fileTree(dir: 'libs', include: ['*.jar'])
         compile project(':usbdeviceenumerator')
 
+        compile 'com.jakewharton:butterknife:8.4.0'
+        compile 'com.android.support:appcompat-v7:24.2.0'
+        compile 'com.android.support:design:24.2.0'
         testCompile 'junit:junit:4.12'
     }
 
