@@ -19,10 +19,8 @@ Notes
 -----------
 
 * If you download the accompanying databases, the application will also be able to provide you with additional info such as the Vendor of the device (which is not necessarily the brand!), the vendor's logo and the product name.
-* The Vendor ID database is the one used by my "USB VEN/DEV Database" application. Updating in one application will also update the other.
 * As this application is using the default Android API some devices might not appear. USB Hubs (and devices connected to them) are invisible event though they seem to function properly, and mice seem to be filtered out of the provided list. I'm looking into ways to fix this.
-* Export to file/email and Device Subclass resolution will be added in the next version.
-* I wrote this application as an exercise to explore fragments and the new USB host API. Hopefully it will be useful to someone else.
+* Device Subclass resolution will be added in the next version.
 * The database is parsed from: [http://www.linux-usb.org/usb.ids]()
 
 Changelog
@@ -32,7 +30,8 @@ Changelog
 * v0.0.3 Databases can now be downloaded.\n
 * v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.
 * v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.
-	
+* v1.0.0 Materialise design, better tablet support, code overhaul
+
 Permission Explanation
 -----------
 * ACCESS_NETWORK_STATE: Used to check if the device is on-line and using which interface.
