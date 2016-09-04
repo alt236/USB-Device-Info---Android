@@ -41,7 +41,10 @@ import aws.apps.usbDeviceEnumerator.R;
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_export:
-                ShareUtils.share(getContext(), getString(R.string.app_name), getSharePayload());
+                ShareUtils.share(
+                        getActivity(),
+                        getString(R.string.app_name),
+                        getSharePayload());
                 return true;
         }
         return super.onOptionsItemSelected(item);
