@@ -16,6 +16,8 @@
 package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
@@ -44,9 +46,7 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
     private String usbKey = DEFAULT_STRING;
     private InfoViewHolder viewHolder;
     private UsbManager usbMan;
-    private DbAccessUsb dbUsb;
-    private DbAccessCompany dbComp;
-    private ZipAccessCompany zipComp;
+    private DataFetcher dataFetcher;
 
     public static Fragment create(final String usbKey) {
         final Fragment fragment = new AndroidUsbInfoFragment();
@@ -61,10 +61,10 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         super.onAttach(context);
 
         usbMan = (UsbManager) getContext().getSystemService(Context.USB_SERVICE);
-
-        dbUsb = new DbAccessUsb(context);
-        dbComp = new DbAccessCompany(context);
-        zipComp = new ZipAccessCompany(context);
+        dataFetcher = new DataFetcher(
+                new DbAccessCompany(context),
+                new DbAccessUsb(context),
+                new ZipAccessCompany(context));
     }
 
     @Override
@@ -102,18 +102,6 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         viewHolder.getReportedVendor().setText("n/a");
         viewHolder.getReportedProduct().setText("n/a");
 
-        if (dbUsb.doDBChecks()) {
-            String vendor_name = dbUsb.getVendor(vid);
-
-            viewHolder.getVendorFromDb().setText(vendor_name);
-            viewHolder.getProductFromDb().setText(dbUsb.getProduct(vid, pid));
-
-            if (dbComp.doDBChecks()) {
-                final String logo = dbComp.getLogo(vendor_name);
-                CommonLogic.loadLogo(viewHolder.getLogo(), zipComp, logo);
-            }
-        }
-
         UsbInterface iFace;
         for (int i = 0; i < device.getInterfaceCount(); i++) {
             iFace = device.getInterface(i);
@@ -135,6 +123,8 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
                 }
             }
         }
+
+        loadAsyncData(vid, pid, null);
     }
 
     private String getEndpointText(final UsbEndpoint endpoint, final int index) {
@@ -150,6 +140,32 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         endpointText += getString(R.string.attributes_) + CommonLogic.padLeft(Integer.toBinaryString(endpoint.getAttributes()), "0", 8);
 
         return endpointText;
+    }
+
+    private void loadAsyncData(String vid, String pid, String reportedVendorName) {
+        dataFetcher.fetchData(vid, pid, reportedVendorName, new DataFetcher.Callback() {
+            @Override
+            public void onSuccess(final String vendorFromDb,
+                                  final String productFromDb,
+                                  final Bitmap bitmap) {
+
+                if (isAdded() && getActivity() != null && getView() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewHolder.getVendorFromDb().setText(vendorFromDb);
+                            viewHolder.getProductFromDb().setText(productFromDb);
+                            if (bitmap != null) {
+                                final BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), bitmap);
+                                viewHolder.getLogo().setImageDrawable(drawable);
+                            } else {
+                                viewHolder.getLogo().setImageResource(R.drawable.no_image);
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override

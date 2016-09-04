@@ -1,34 +1,14 @@
 package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.ZipAccessCompany;
 
 /*package*/ class CommonLogic {
     private static final String TAG = CommonLogic.class.getSimpleName();
-
-    private static final int NO_IMAGE_DRAWABLE = R.drawable.no_image;
-
-    public static void loadLogo(final ImageView imageView, final ZipAccessCompany zipComp, final String logo) {
-        imageView.setImageResource(NO_IMAGE_DRAWABLE);
-
-        final Bitmap bitmap = zipComp.getLogo(logo);
-        if (bitmap != null) {
-            final Drawable drawable = new BitmapDrawable(bitmap);
-            imageView.setImageDrawable(drawable);
-        } else {
-            Log.w(TAG, "^ Could not load/find bitmap for " + logo);
-        }
-    }
 
     public static void addDataRow(LayoutInflater inflater, TableLayout tlb, String cell1Text, String cell2Text) {
         final TableRow row = (TableRow) inflater.inflate(R.layout.usb_table_row_data, null);

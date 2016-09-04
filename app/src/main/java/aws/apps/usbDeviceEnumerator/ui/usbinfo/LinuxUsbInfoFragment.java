@@ -16,9 +16,10 @@
 package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +37,9 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     private final static String EXTRA_DATA = LinuxUsbInfoFragment.class.getName() + ".BUNDLE_DATA";
     private static final int LAYOUT_ID = R.layout.fragment_usb_info;
     private final String TAG = this.getClass().getName();
-    private DbAccessUsb dbUsb;
-    private DbAccessCompany dbComp;
-    private ZipAccessCompany zipComp;
     private SysBusUsbDevice device;
     private InfoViewHolder viewHolder;
+    private DataFetcher dataFetcher;
 
     public static Fragment create(final SysBusUsbDevice usbDevice) {
         final Fragment fragment = new LinuxUsbInfoFragment();
@@ -53,10 +52,10 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
-
-        dbUsb = new DbAccessUsb(context);
-        dbComp = new DbAccessCompany(context);
-        zipComp = new ZipAccessCompany(context);
+        dataFetcher = new DataFetcher(
+                new DbAccessCompany(context),
+                new DbAccessUsb(context),
+                new ZipAccessCompany(context));
     }
 
     @Override
@@ -93,31 +92,40 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
         viewHolder.getReportedVendor().setText(device.getReportedVendorName());
         viewHolder.getReportedProduct().setText(device.getReportedProductName());
 
-        if (dbUsb.doDBChecks()) {
-            final String vendorFromDb = dbUsb.getVendor(vid);
-            viewHolder.getVendorFromDb().setText(vendorFromDb);
-            viewHolder.getProductFromDb().setText(dbUsb.getProduct(vid, pid));
-
-            if (dbComp.doDBChecks()) {
-                final String searchFor;
-
-                if (!TextUtils.isEmpty(vendorFromDb)) {
-                    searchFor = vendorFromDb;
-                } else {
-                    searchFor = device.getReportedVendorName();
-                }
-
-                final String logo = dbComp.getLogo(searchFor);
-                CommonLogic.loadLogo(viewHolder.getLogo(), zipComp, logo);
-            }
-        }
-
         final TableLayout bottomTable = viewHolder.getBottomTable();
         CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.usb_version_), device.getUsbVersion());
         CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.speed_), device.getSpeed());
         CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.protocol_), device.getDeviceProtocol());
         CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.maximum_power_), device.getMaxPower());
         CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.serial_number_), device.getSerialNumber());
+
+        loadAsyncData(vid, pid, device.getReportedVendorName());
+    }
+
+    private void loadAsyncData(String vid, String pid, String reportedVendorName) {
+        dataFetcher.fetchData(vid, pid, reportedVendorName, new DataFetcher.Callback() {
+            @Override
+            public void onSuccess(final String vendorFromDb,
+                                  final String productFromDb,
+                                  final Bitmap bitmap) {
+
+                if (isAdded() && getActivity() != null && getView() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewHolder.getVendorFromDb().setText(vendorFromDb);
+                            viewHolder.getProductFromDb().setText(productFromDb);
+                            if (bitmap != null) {
+                                final BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), bitmap);
+                                viewHolder.getLogo().setImageDrawable(drawable);
+                            } else {
+                                viewHolder.getLogo().setImageResource(R.drawable.no_image);
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override

@@ -19,6 +19,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -56,33 +57,38 @@ public class ZipAccessCompany {
 
     public Bitmap getLogo(final String logo) {
         Log.d(TAG, "^ Getting logo '" + logo + "' from '" + localZipFullPath + "'");
+
         Bitmap result = null;
-        try {
-            FileInputStream fis = new FileInputStream(localZipFullPath);
-            ZipInputStream zis = new ZipInputStream(fis);
-            ZipEntry ze = null;
+        if (TextUtils.isEmpty(logo)) {
+            result = null;
+        } else {
+            try {
+                FileInputStream fis = new FileInputStream(localZipFullPath);
+                ZipInputStream zis = new ZipInputStream(fis);
+                ZipEntry ze = null;
 
-            // Until we find their map, or we run out of options
-            if (zis.getNextEntry() != null) ze = zis.getNextEntry();
+                // Until we find their map, or we run out of options
+                if (zis.getNextEntry() != null) ze = zis.getNextEntry();
 
-            while ((ze = zis.getNextEntry()) != null) {
-                if (ze.getName().equals(logo)) {
-                    Log.d(TAG, "^ Found it!");
-                    result = BitmapFactory.decodeStream(zis);
-                    break;
-                } else {
+                while ((ze = zis.getNextEntry()) != null) {
+                    if (ze.getName().equals(logo)) {
+                        Log.d(TAG, "^ Found it!");
+                        result = BitmapFactory.decodeStream(zis);
+                        break;
+                    } else {
 
+                    }
                 }
+
+                zis.close();
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "^ Error opening zip file: ", e);
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.e(TAG, "^ Error opening zip file: ", e);
+                e.printStackTrace();
             }
-
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "^ Error opening zip file: ", e);
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e(TAG, "^ Error opening zip file: ", e);
-            e.printStackTrace();
         }
-
         return result;
     }
 }
