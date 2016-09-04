@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 /*package*/ class TabPagerAdapter extends PagerAdapter {
 
@@ -25,18 +24,18 @@ import android.widget.TextView;
 
     @Override
     public Object instantiateItem(ViewGroup collection, int position) {
-        collection.addView(pages[position], position);
+        collection.addView(pages[position], 0);
         return pages[position];
     }
 
     @Override
     public void destroyItem(ViewGroup collection, int position, Object view) {
-        collection.removeView((TextView) view);
+        collection.removeView((View) view);
     }
 
     @Override
     public int getCount() {
-        return labels.length;
+        return pages.length;
     }
 
     @Override

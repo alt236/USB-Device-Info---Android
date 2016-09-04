@@ -38,6 +38,7 @@ public class TabController {
         final View[] pages = createPages();
         final TabPagerAdapter adapter = new TabPagerAdapter(activity, pages, TAB_LABELS, TAB_TAGS);
 
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
