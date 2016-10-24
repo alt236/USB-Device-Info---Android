@@ -35,7 +35,7 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
-import uk.co.alt236.usbdeviceenumerator.UsbConstants;
+import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
 
 public class AndroidUsbInfoFragment extends BaseInfoFragment {
     public final static int TYPE_ANDROID_INFO = 0;
@@ -113,7 +113,7 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
     private void populateDataTable(LayoutInflater inflater) {
         final String vid = CommonLogic.padLeft(Integer.toHexString(device.getVendorId()), "0", 4);
         final String pid = CommonLogic.padLeft(Integer.toHexString(device.getProductId()), "0", 4);
-        final String deviceClass = UsbConstants.resolveUsbClass(device.getDeviceClass());
+        final String deviceClass = UsbConstantResolver.resolveUsbClass(device.getDeviceClass());
 
         viewHolder.getLogo().setImageResource(R.drawable.no_image);
 
@@ -135,7 +135,7 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
             iFace = device.getInterface(i);
             if (iFace != null) {
                 final TableLayout bottomTable = viewHolder.getBottomTable();
-                final String usbClass = UsbConstants.resolveUsbClass((iFace.getInterfaceClass()));
+                final String usbClass = UsbConstantResolver.resolveUsbClass((iFace.getInterfaceClass()));
 
                 CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.interface_) + i, "");
                 CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.class_), usbClass);
@@ -167,8 +167,8 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         String endpointText = "#" + index + "\n";
         endpointText += getString(R.string.address_) + "0x" + addressInHex + " (" + addressInBinary + ")\n";
         endpointText += getString(R.string.number_) + endpoint.getEndpointNumber() + "\n";
-        endpointText += getString(R.string.direction_) + UsbConstants.resolveUsbEndpointDirection(endpoint.getDirection()) + "\n";
-        endpointText += getString(R.string.type_) + UsbConstants.resolveUsbEndpointType(endpoint.getType()) + "\n";
+        endpointText += getString(R.string.direction_) + UsbConstantResolver.resolveUsbEndpointDirection(endpoint.getDirection()) + "\n";
+        endpointText += getString(R.string.type_) + UsbConstantResolver.resolveUsbEndpointType(endpoint.getType()) + "\n";
         endpointText += getString(R.string.poll_interval_) + endpoint.getInterval() + "\n";
         endpointText += getString(R.string.max_packet_size_) + endpoint.getMaxPacketSize() + "\n";
         endpointText += getString(R.string.attributes_) + attributesInBinary;
