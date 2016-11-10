@@ -162,6 +162,7 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
     private String getEndpointText(final UsbEndpoint endpoint, final int index) {
         final String addressInBinary = CommonLogic.padLeft(Integer.toBinaryString(endpoint.getAddress()), "0", 8);
         final String addressInHex = CommonLogic.padLeft(Integer.toHexString(endpoint.getAddress()), "0", 2);
+        final String attributesInBinary = CommonLogic.padLeft(Integer.toBinaryString(endpoint.getAttributes()), "0", 8);
 
         String endpointText = "#" + index + "\n";
         endpointText += getString(R.string.address_) + "0x" + addressInHex + " (" + addressInBinary + ")\n";
@@ -170,7 +171,7 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         endpointText += getString(R.string.type_) + UsbConstants.resolveUsbEndpointType(endpoint.getType()) + "\n";
         endpointText += getString(R.string.poll_interval_) + endpoint.getInterval() + "\n";
         endpointText += getString(R.string.max_packet_size_) + endpoint.getMaxPacketSize() + "\n";
-        endpointText += getString(R.string.attributes_) + CommonLogic.padLeft(Integer.toBinaryString(endpoint.getAttributes()), "0", 8);
+        endpointText += getString(R.string.attributes_) + attributesInBinary;
 
         return endpointText;
     }
