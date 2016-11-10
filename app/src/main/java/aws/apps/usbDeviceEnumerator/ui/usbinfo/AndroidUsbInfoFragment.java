@@ -22,6 +22,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -111,7 +112,7 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
 
     private void populateDataTable(LayoutInflater inflater) {
         final String vid = CommonLogic.padLeft(Integer.toHexString(device.getVendorId()), "0", 4);
-        final String pid = CommonLogic.padLeft(Integer.toHexString(device.getDeviceId()), "0", 4);
+        final String pid = CommonLogic.padLeft(Integer.toHexString(device.getProductId()), "0", 4);
         final String deviceClass = UsbConstants.resolveUsbClass(device.getDeviceClass());
 
         viewHolder.getLogo().setImageResource(R.drawable.no_image);
@@ -121,8 +122,13 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         viewHolder.getDevicePath().setText(usbKey);
         viewHolder.getDeviceClass().setText(deviceClass);
 
-        viewHolder.getReportedVendor().setText("n/a");
-        viewHolder.getReportedProduct().setText("n/a");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            viewHolder.getReportedVendor().setText(device.getManufacturerName());
+            viewHolder.getReportedProduct().setText(device.getProductName());
+        } else {
+            viewHolder.getReportedVendor().setText("not provided");
+            viewHolder.getReportedProduct().setText("not provided");
+        }
 
         UsbInterface iFace;
         for (int i = 0; i < device.getInterfaceCount(); i++) {
@@ -146,7 +152,11 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
             }
         }
 
-        loadAsyncData(vid, pid, null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            loadAsyncData(vid, pid, device.getManufacturerName());
+        } else {
+            loadAsyncData(vid, pid, null);
+        }
     }
 
     private String getEndpointText(final UsbEndpoint endpoint, final int index) {
