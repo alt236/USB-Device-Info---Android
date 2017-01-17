@@ -27,10 +27,12 @@ public class SysBusUsbManager {
 
     private final HashMap<String, SysBusUsbDevice> myUsbDevices;
     private final SysBusUsbDeviceFactory mSysBusUsbDeviceFactory;
+    private final Validation validation;
 
     public SysBusUsbManager() {
         myUsbDevices = new HashMap<>();
         mSysBusUsbDeviceFactory = new SysBusUsbDeviceFactory();
+        validation = new Validation();
     }
 
     @Nonnull
@@ -42,11 +44,12 @@ public class SysBusUsbManager {
     private void populateList(@Nonnull String path) {
         myUsbDevices.clear();
 
-        final File[] children = getListOfChildren(path);
+        final File pathAsFile = new File(path);
+        final File[] children = validation.getListOfChildren(pathAsFile);
 
         SysBusUsbDevice usb;
         for (File child : children) {
-            if (isValidUsbDeviceCandidate(child)) {
+            if (validation.isValidUsbDeviceCandidate(child)) {
                 usb = mSysBusUsbDeviceFactory.create(child.getAbsoluteFile());
 
                 if (usb != null) {
@@ -55,39 +58,6 @@ public class SysBusUsbManager {
                 }
             }
         }
-    }
-
-    private boolean isValidUsbDeviceCandidate(@Nonnull final File file) {
-        final boolean retVal;
-
-        if (!file.exists()) {
-            retVal = false;
-        } else if (!file.isDirectory()) {
-            retVal = false;
-        } else if (".".equals(file.getName()) || "..".equals(file.getName())) {
-            retVal = false;
-        } else {
-            retVal = true;
-        }
-
-        return retVal;
-    }
-
-    @Nonnull
-    private File[] getListOfChildren(@Nonnull final String path) {
-        final File[] retVal;
-
-        final File tmp = new File(path);
-
-        if (tmp.exists()
-                && tmp.isDirectory()
-                && tmp.listFiles() != null) {
-            retVal = tmp.listFiles();
-        } else {
-            retVal = new File[0];
-        }
-
-        return retVal;
     }
 
     @Nonnull
