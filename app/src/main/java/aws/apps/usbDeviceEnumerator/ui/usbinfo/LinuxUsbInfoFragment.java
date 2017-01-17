@@ -30,7 +30,7 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
-import uk.co.alt236.usbdeviceenumerator.UsbConstants;
+import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class LinuxUsbInfoFragment extends BaseInfoFragment {
@@ -91,9 +91,9 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     }
 
     private void populateDataTable(LayoutInflater inflater) {
-        final String vid = CommonLogic.padLeft(device.getVID(), "0", 4);
-        final String pid = CommonLogic.padLeft(device.getPID(), "0", 4);
-        final String deviceClass = UsbConstants.resolveUsbClass(device.getDeviceClass());
+        final String vid = CommonLogic.padLeft(device.getVid(), "0", 4);
+        final String pid = CommonLogic.padLeft(device.getPid(), "0", 4);
+        final String deviceClass = UsbConstantResolver.resolveUsbClass(device);
 
         viewHolder.getLogo().setImageResource(R.drawable.no_image);
 

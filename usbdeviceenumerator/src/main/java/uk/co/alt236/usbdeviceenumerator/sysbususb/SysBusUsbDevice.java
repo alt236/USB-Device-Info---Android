@@ -18,8 +18,10 @@ package uk.co.alt236.usbdeviceenumerator.sysbususb;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SysBusUsbDevice implements Parcelable {
-    public static final Parcelable.Creator<SysBusUsbDevice> CREATOR = new Parcelable.Creator<SysBusUsbDevice>() {
+import javax.annotation.Nonnull;
+
+public final class SysBusUsbDevice implements Parcelable {
+    public static final Creator<SysBusUsbDevice> CREATOR = new Creator<SysBusUsbDevice>() {
         public SysBusUsbDevice createFromParcel(Parcel in) {
             return new SysBusUsbDevice(in);
         }
@@ -28,39 +30,53 @@ public class SysBusUsbDevice implements Parcelable {
             return new SysBusUsbDevice[size];
         }
     };
-    private String VID;
-    private String PID;
-    private String ReportedProductName;
-    private String ReportedVendorName;
-    private String SerialNumber;
-    private String Speed;
-    private String DeviceClass;
-    private String DeviceProtocol;
-    private String MaxPower;
-    private String DeviceSubClass;
-    private String BusNumber;
-    private String DeviceNumber;
-    private String UsbVersion;
-    private String DevicePath;
-
-    public SysBusUsbDevice() {
-    }
+    private final String vid;
+    private final String pid;
+    private final String reportedProductName;
+    private final String reportedVendorName;
+    private final String serialNumber;
+    private final String speed;
+    private final String serviceClass;
+    private final String deviceProtocol;
+    private final String maxPower;
+    private final String deviceSubClass;
+    private final String busNumber;
+    private final String deviceNumber;
+    private final String usbVersion;
+    private final String devicePath;
 
     public SysBusUsbDevice(Parcel in) {
-        VID = in.readString();
-        PID = in.readString();
-        ReportedProductName = in.readString();
-        ReportedVendorName = in.readString();
-        SerialNumber = in.readString();
-        Speed = in.readString();
-        DeviceClass = in.readString();
-        DeviceProtocol = in.readString();
-        MaxPower = in.readString();
-        DeviceSubClass = in.readString();
-        BusNumber = in.readString();
-        DeviceNumber = in.readString();
-        UsbVersion = in.readString();
-        DevicePath = in.readString();
+        this.vid = in.readString();
+        this.pid = in.readString();
+        this.reportedProductName = in.readString();
+        this.reportedVendorName = in.readString();
+        this.serialNumber = in.readString();
+        this.speed = in.readString();
+        this.serviceClass = in.readString();
+        this.deviceProtocol = in.readString();
+        this.maxPower = in.readString();
+        this.deviceSubClass = in.readString();
+        this.busNumber = in.readString();
+        this.deviceNumber = in.readString();
+        this.usbVersion = in.readString();
+        this.devicePath = in.readString();
+    }
+
+    private SysBusUsbDevice(final Builder builder) {
+        this.vid = builder.vid;
+        this.pid = builder.pid;
+        this.reportedProductName = builder.reportedProductName;
+        this.reportedVendorName = builder.reportedVendorName;
+        this.serialNumber = builder.serialNumber;
+        this.speed = builder.speed;
+        this.serviceClass = builder.serviceClass;
+        this.deviceProtocol = builder.deviceProtocol;
+        this.maxPower = builder.maxPower;
+        this.deviceSubClass = builder.deviceSubClass;
+        this.busNumber = builder.busNumber;
+        this.deviceNumber = builder.deviceNumber;
+        this.usbVersion = builder.usbVersion;
+        this.devicePath = builder.devicePath;
     }
 
     @Override
@@ -69,132 +85,185 @@ public class SysBusUsbDevice implements Parcelable {
     }
 
     public String getBusNumber() {
-        return BusNumber;
+        return busNumber;
     }
 
-    public void setBusNumber(String busNumber) {
-        BusNumber = busNumber;
-    }
-
-    public String getDeviceClass() {
-        return DeviceClass;
-    }
-
-    public void setDeviceClass(String deviceClass) {
-        DeviceClass = deviceClass;
+    public String getServiceClass() {
+        return serviceClass;
     }
 
     public String getDeviceNumber() {
-        return DeviceNumber;
-    }
-
-    public void setDeviceNumber(String deviceNumber) {
-        DeviceNumber = deviceNumber;
+        return deviceNumber;
     }
 
     public String getDevicePath() {
-        return DevicePath;
-    }
-
-    public void setDevicePath(String devicePath) {
-        DevicePath = devicePath;
+        return devicePath;
     }
 
     public String getDeviceProtocol() {
-        return DeviceProtocol;
-    }
-
-    public void setDeviceProtocol(String deviceProtocol) {
-        DeviceProtocol = deviceProtocol;
+        return deviceProtocol;
     }
 
     public String getDeviceSubClass() {
-        return DeviceSubClass;
-    }
-
-    public void setDeviceSubClass(String deviceSubClass) {
-        DeviceSubClass = deviceSubClass;
+        return deviceSubClass;
     }
 
     public String getMaxPower() {
-        return MaxPower;
+        return maxPower;
     }
 
-    public void setMaxPower(String maxPower) {
-        MaxPower = maxPower;
-    }
-
-    public String getPID() {
-        return PID;
-    }
-
-    public void setPID(String pID) {
-        PID = pID;
+    public String getPid() {
+        return pid;
     }
 
     public String getReportedProductName() {
-        return ReportedProductName;
-    }
-
-    public void setReportedProductName(String reportedProductName) {
-        ReportedProductName = reportedProductName;
+        return reportedProductName;
     }
 
     public String getReportedVendorName() {
-        return ReportedVendorName;
-    }
-
-    public void setReportedVendorName(String reportedVendorName) {
-        ReportedVendorName = reportedVendorName;
+        return reportedVendorName;
     }
 
     public String getSerialNumber() {
-        return SerialNumber;
-    }
-
-    public void setSerialNumber(String serial) {
-        SerialNumber = serial;
+        return serialNumber;
     }
 
     public String getSpeed() {
-        return Speed;
-    }
-
-    public void setSpeed(String speed) {
-        Speed = speed;
+        return speed;
     }
 
     public String getUsbVersion() {
-        return UsbVersion;
+        return usbVersion;
     }
 
-    public void setUsbVersion(String usbVersion) {
-        UsbVersion = usbVersion;
-    }
-
-    public String getVID() {
-        return VID;
-    }
-
-    public void setVID(String vID) {
-        VID = vID;
+    public String getVid() {
+        return vid;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(VID);
-        dest.writeString(PID);
-        dest.writeString(ReportedProductName);
-        dest.writeString(ReportedVendorName);
-        dest.writeString(SerialNumber);
-        dest.writeString(Speed);
-        dest.writeString(DeviceClass);
-        dest.writeString(DeviceProtocol);
-        dest.writeString(MaxPower);
-        dest.writeString(DeviceSubClass);
-        dest.writeString(BusNumber);
-        dest.writeString(DeviceNumber);
-        dest.writeString(UsbVersion);
-        dest.writeString(DevicePath);
+        dest.writeString(vid);
+        dest.writeString(pid);
+        dest.writeString(reportedProductName);
+        dest.writeString(reportedVendorName);
+        dest.writeString(serialNumber);
+        dest.writeString(speed);
+        dest.writeString(serviceClass);
+        dest.writeString(deviceProtocol);
+        dest.writeString(maxPower);
+        dest.writeString(deviceSubClass);
+        dest.writeString(busNumber);
+        dest.writeString(deviceNumber);
+        dest.writeString(usbVersion);
+        dest.writeString(devicePath);
+    }
+
+    public static final class Builder {
+        private String vid;
+        private String pid;
+        private String reportedProductName;
+        private String reportedVendorName;
+        private String serialNumber;
+        private String speed;
+        private String serviceClass;
+        private String deviceProtocol;
+        private String maxPower;
+        private String deviceSubClass;
+        private String busNumber;
+        private String deviceNumber;
+        private String usbVersion;
+        private String devicePath;
+
+        public Builder() {
+        }
+
+        @Nonnull
+        public Builder withVid(@Nonnull final String val) {
+            vid = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withPid(@Nonnull final String val) {
+            pid = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withReportedProductName(@Nonnull final String val) {
+            reportedProductName = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withReportedVendorName(@Nonnull final String val) {
+            reportedVendorName = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withSerialNumber(@Nonnull final String val) {
+            serialNumber = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withSpeed(@Nonnull final String val) {
+            speed = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withServiceClass(@Nonnull final String val) {
+            serviceClass = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withDeviceProtocol(@Nonnull final String val) {
+            deviceProtocol = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withMaxPower(@Nonnull final String val) {
+            maxPower = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withDeviceSubClass(@Nonnull final String val) {
+            deviceSubClass = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withBusNumber(@Nonnull final String val) {
+            busNumber = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withDeviceNumber(@Nonnull final String val) {
+            deviceNumber = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withUsbVersion(@Nonnull final String val) {
+            usbVersion = val;
+            return this;
+        }
+
+        @Nonnull
+        public Builder withDevicePath(@Nonnull final String val) {
+            devicePath = val;
+            return this;
+        }
+
+        @Nonnull
+        public SysBusUsbDevice build() {
+            return new SysBusUsbDevice(this);
+        }
     }
 }
