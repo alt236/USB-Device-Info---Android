@@ -126,8 +126,8 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
             viewHolder.getReportedVendor().setText(device.getManufacturerName());
             viewHolder.getReportedProduct().setText(device.getProductName());
         } else {
-            viewHolder.getReportedVendor().setText("not provided");
-            viewHolder.getReportedProduct().setText("not provided");
+            viewHolder.getReportedVendor().setText(R.string.not_provided);
+            viewHolder.getReportedProduct().setText(R.string.not_provided);
         }
 
         UsbInterface iFace;
