@@ -44,14 +44,6 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     private InfoViewHolder viewHolder;
     private DataFetcher dataFetcher;
 
-    public static Fragment create(final SysBusUsbDevice usbDevice) {
-        final Fragment fragment = new LinuxUsbInfoFragment();
-        final Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_DATA, usbDevice);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
@@ -63,7 +55,7 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        device = getArguments().getParcelable(EXTRA_DATA);
+        device = (SysBusUsbDevice) getArguments().getSerializable(EXTRA_DATA);
         final View view;
 
         if (device == null) {
@@ -144,5 +136,13 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     @Override
     public String getSharePayload() {
         return CommonLogic.getSharePayload(viewHolder);
+    }
+
+    public static Fragment create(final SysBusUsbDevice usbDevice) {
+        final Fragment fragment = new LinuxUsbInfoFragment();
+        final Bundle bundle = new Bundle();
+        bundle.putSerializable(EXTRA_DATA, usbDevice);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }
