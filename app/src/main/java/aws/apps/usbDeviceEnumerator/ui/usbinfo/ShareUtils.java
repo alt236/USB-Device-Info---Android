@@ -26,7 +26,7 @@ import aws.apps.usbDeviceEnumerator.R;
         intent.addCategory(Intent.CATEGORY_DEFAULT);
 
         final Intent share = Intent.createChooser(intent, activity.getString(R.string.share_result_via));
-        ActivityCompat.startActivity(activity, intent, null);
+        ActivityCompat.startActivity(activity, share, null);
     }
 
     public static String tableToString(TableLayout t) {
