@@ -26,18 +26,24 @@ public class SysBusUsbManager {
     private static final String PATH_SYS_BUS_USB = "/sys/bus/usb/devices/";
 
     private final HashMap<String, SysBusUsbDevice> myUsbDevices;
-    private final SysBusUsbDeviceFactory mSysBusUsbDeviceFactory;
+    private final SysBusUsbDeviceFactory sysBusUsbDeviceFactory;
     private final Validation validation;
+    private final String usbSysPath;
 
     public SysBusUsbManager() {
-        myUsbDevices = new HashMap<>();
-        mSysBusUsbDeviceFactory = new SysBusUsbDeviceFactory();
-        validation = new Validation();
+        this(PATH_SYS_BUS_USB);
+    }
+
+    public SysBusUsbManager(final String usbSysPath) {
+        this.usbSysPath = usbSysPath;
+        this.myUsbDevices = new HashMap<>();
+        this.sysBusUsbDeviceFactory = new SysBusUsbDeviceFactory();
+        this.validation = new Validation();
     }
 
     @Nonnull
     public Map<String, SysBusUsbDevice> getUsbDevices() {
-        populateList(PATH_SYS_BUS_USB);
+        populateList(usbSysPath);
         return Collections.unmodifiableMap(myUsbDevices);
     }
 
@@ -50,7 +56,7 @@ public class SysBusUsbManager {
         SysBusUsbDevice usb;
         for (File child : children) {
             if (validation.isValidUsbDeviceCandidate(child)) {
-                usb = mSysBusUsbDeviceFactory.create(child.getAbsoluteFile());
+                usb = sysBusUsbDeviceFactory.create(child.getAbsoluteFile());
 
                 if (usb != null) {
                     final String key = child.getName();
@@ -62,6 +68,11 @@ public class SysBusUsbManager {
 
     @Nonnull
     public static String getUsbInfoViaShell() {
-        return ShellSysBusDumper.getDump();
+        return getUsbInfoViaShell(PATH_SYS_BUS_USB);
+    }
+
+    @Nonnull
+    public static String getUsbInfoViaShell(final String usbSysPath) {
+        return ShellSysBusDumper.getDump(usbSysPath);
     }
 }

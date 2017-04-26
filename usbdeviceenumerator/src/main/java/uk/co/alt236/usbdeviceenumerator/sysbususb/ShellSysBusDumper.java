@@ -1,11 +1,13 @@
 package uk.co.alt236.usbdeviceenumerator.sysbususb;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 /*package*/ class ShellSysBusDumper {
-    private static final String DEVICE_START = "__DEV_START__";
-    private static final String DEVICE_END = "__DEV_END__";
-    private static final String COMMAND_GET_USB_INFO = "for DEVICE in /sys/bus/usb/devices/*; do " +
+    private static final String DEVICE_START = "-- DEVICE START--";
+    private static final String DEVICE_END = "-- DEVICE END--";
+    private static final String COMMAND_GET_USB_INFO = "for DEVICE in %s*; do " +
             " echo " + DEVICE_START + ";" +
             " [ -f $DEVICE/idProduct ] && echo PID: $(cat $DEVICE/idProduct);" +
             " [ -f $DEVICE/idVendor ] && echo BUSNUM: $(cat $DEVICE/busnum);" +
@@ -24,8 +26,9 @@ import javax.annotation.Nonnull;
             " done";
 
     @Nonnull
-    public static String getDump() {
-        final String dump = (new ExecTerminal()).exec(COMMAND_GET_USB_INFO);
+    public static String getDump(final String usbDevicesPath) {
+        final String command = String.format(Locale.US, COMMAND_GET_USB_INFO, usbDevicesPath);
+        final String dump = (new ExecTerminal()).exec(command);
         return dump.replace(DEVICE_START + "\n" + DEVICE_END + "\n", "");
     }
 }
