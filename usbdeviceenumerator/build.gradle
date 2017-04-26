@@ -9,6 +9,9 @@ final int targetSdk = rootProject.targetSdkVersion;
 final int minSdkRed = rootProject.minSdkVersion;
 final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
 
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
 //android {
 //    compileSdkVersion rootProject.compileSdkVersion
 //    buildToolsVersion rootProject.buildToolsVersion
