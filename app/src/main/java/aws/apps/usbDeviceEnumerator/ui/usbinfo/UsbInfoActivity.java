@@ -40,7 +40,7 @@ public class UsbInfoActivity extends AppCompatActivity {
             finish();
         } else {
             final String androidKey = b.getString(EXTRA_DATA_ANDROID);
-            final SysBusUsbDevice linuxDevice = b.getParcelable(EXTRA_DATA_LINUX);
+            final SysBusUsbDevice linuxDevice = (SysBusUsbDevice) b.getSerializable(EXTRA_DATA_LINUX);
 
             final Fragment fragment;
 
