@@ -29,9 +29,10 @@ import javax.annotation.Nullable;
     @Nullable
     public SysBusUsbDevice create(final File usbDeviceDir) {
         final String devicePath = usbDeviceDir.getAbsolutePath() + File.separator;
+        final ContentsReader reader = new ContentsReader(devicePath);
 
-        final String busNumber = readFileContents(devicePath + "busnum");
-        final String deviceNumber = readFileContents(devicePath + "devnum");
+        final String busNumber = reader.read(UsbProperty.BUS_NUMBER);
+        final String deviceNumber = reader.read(UsbProperty.DEVICE_NUMBER);
 
         final SysBusUsbDevice retVal;
 
@@ -40,17 +41,17 @@ import javax.annotation.Nullable;
                     .withDevicePath(devicePath)
                     .withBusNumber(busNumber)
                     .withDeviceNumber(deviceNumber)
-                    .withServiceClass(readFileContents(devicePath + "bDeviceClass"))
-                    .withDeviceProtocol(readFileContents(devicePath + "bDeviceProtocol"))
-                    .withDeviceSubClass(readFileContents(devicePath + "bDeviceSubClass"))
-                    .withMaxPower(readFileContents(devicePath + "bMaxPower"))
-                    .withPid(readFileContents(devicePath + "idProduct"))
-                    .withReportedProductName(readFileContents(devicePath + "product"))
-                    .withReportedVendorName(readFileContents(devicePath + "manufacturer"))
-                    .withSerialNumber(readFileContents(devicePath + "serial"))
-                    .withSpeed(readFileContents(devicePath + "speed"))
-                    .withVid(readFileContents(devicePath + "idVendor"))
-                    .withUsbVersion(readFileContents(devicePath + "version"))
+                    .withServiceClass(reader.read(UsbProperty.DEVICE_CLASS))
+                    .withDeviceProtocol(reader.read(UsbProperty.DEVICE_PROTOCOL))
+                    .withDeviceSubClass(reader.read(UsbProperty.DEVICE_SUBCLASS))
+                    .withMaxPower(reader.read(UsbProperty.MAX_POWER))
+                    .withPid(reader.read(UsbProperty.PID))
+                    .withReportedProductName(reader.read(UsbProperty.PRODUCT))
+                    .withReportedVendorName(reader.read(UsbProperty.MANUFACTURER))
+                    .withSerialNumber(reader.read(UsbProperty.SERIAL))
+                    .withSpeed(reader.read(UsbProperty.SPEED))
+                    .withVid(reader.read(UsbProperty.VID))
+                    .withUsbVersion(reader.read(UsbProperty.VERSION))
                     .build();
         } else {
             retVal = null;
@@ -59,42 +60,54 @@ import javax.annotation.Nullable;
         return retVal;
     }
 
-    @Nonnull
-    private String readFileContents(String filePath) {
-        final File file = new File(filePath);
-        final StringBuilder fileContents = new StringBuilder(1000);
-        final int bufferSize = 1024;
 
-        if (file.exists() && !file.isDirectory()) {
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new FileReader(filePath));
+    private static class ContentsReader {
 
-                char[] buf = new char[bufferSize];
-                int numRead = 0;
+        private final String basePath;
 
-                while ((numRead = reader.read(buf)) != -1) {
-                    String readData = String.valueOf(buf, 0, numRead);
-                    fileContents.append(readData);
-                    buf = new char[bufferSize];
-                }
-            } catch (FileNotFoundException e) {
-                fileContents.setLength(0);
-                e.printStackTrace();
-            } catch (IOException e) {
-                fileContents.setLength(0);
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        ContentsReader(final String basePath) {
+            this.basePath = basePath;
+        }
+
+        @Nonnull
+        private String read(final UsbProperty property) {
+            final String filePath = basePath + property.getFileName();
+
+            final File file = new File(filePath);
+            final StringBuilder fileContents = new StringBuilder(1000);
+            final int bufferSize = 1024;
+
+            if (file.exists() && !file.isDirectory()) {
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new FileReader(file));
+
+                    char[] buf = new char[bufferSize];
+                    int numRead = 0;
+
+                    while ((numRead = reader.read(buf)) != -1) {
+                        String readData = String.valueOf(buf, 0, numRead);
+                        fileContents.append(readData);
+                        buf = new char[bufferSize];
+                    }
+                } catch (FileNotFoundException e) {
+                    fileContents.setLength(0);
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    fileContents.setLength(0);
+                    e.printStackTrace();
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
-        }
 
-        return fileContents.toString().trim();
+            return fileContents.toString().trim();
+        }
     }
 }
