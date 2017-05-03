@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="label_tab_device_dump">Device Dump</string>
+    <string name="label_tab_directory_dump">Directory Dump</string>
+
+    <string name="debug_unexpected_result_explanation">
+        If this result is unexpected (as in Android detects a device but nothing is shown here), keep in mind that SELinux policies can prevent access to sysfs.
+        \nThis will stop the \'Linux\' part of the app from working.
+    </string>
+</resources>

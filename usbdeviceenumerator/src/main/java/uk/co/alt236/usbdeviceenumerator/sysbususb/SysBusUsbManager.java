@@ -23,15 +23,13 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class SysBusUsbManager {
-    private static final String PATH_SYS_BUS_USB = "/sys/bus/usb/devices/";
-
     private final HashMap<String, SysBusUsbDevice> myUsbDevices;
     private final SysBusUsbDeviceFactory sysBusUsbDeviceFactory;
     private final Validation validation;
     private final String usbSysPath;
 
     public SysBusUsbManager() {
-        this(PATH_SYS_BUS_USB);
+        this(Constants.PATH_SYS_BUS_USB);
     }
 
     public SysBusUsbManager(final String usbSysPath) {
@@ -64,15 +62,5 @@ public class SysBusUsbManager {
                 }
             }
         }
-    }
-
-    @Nonnull
-    public static String getUsbInfoViaShell() {
-        return getUsbInfoViaShell(PATH_SYS_BUS_USB);
-    }
-
-    @Nonnull
-    public static String getUsbInfoViaShell(final String usbSysPath) {
-        return ShellSysBusDumper.getDump(usbSysPath);
     }
 }

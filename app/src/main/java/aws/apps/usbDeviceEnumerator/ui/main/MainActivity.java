@@ -16,9 +16,11 @@
 package aws.apps.usbDeviceEnumerator.ui.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -44,10 +46,12 @@ import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.ui.common.Navigation;
 import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
+import aws.apps.usbDeviceEnumerator.ui.debug.DebugActivity;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
+import aws.apps.usbDeviceEnumerator.util.Constants;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
 
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         mNavigation = new Navigation(this);
 
         mUsbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
-        mUsbManagerLinux = new SysBusUsbManager();
+        mUsbManagerLinux = new SysBusUsbManager(Constants.PATH_SYS_BUS_USB);
 
         mDbUsb = new DataProviderUsbInfo(this);
         mDbComp = new DataProviderCompanyInfo(this);
@@ -135,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Creates the menu items
      */
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
@@ -144,10 +149,15 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Handles item selections
      */
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_about:
                 AboutDialogFactory.createAboutDialog(this).show();
+                return true;
+            case R.id.menu_debug:
+                final Intent intent = new Intent(this, DebugActivity.class);
+                ActivityCompat.startActivity(this, intent, null);
                 return true;
             case R.id.menu_update_db:
                 final ProgressDialogControl control = new ProgressDialogControl(getSupportFragmentManager());
