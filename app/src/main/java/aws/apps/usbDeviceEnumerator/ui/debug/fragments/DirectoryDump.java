@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.debug;
+package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,11 +10,16 @@ import java.util.Comparator;
 
 import aws.apps.usbDeviceEnumerator.R;
 
-/*package*/ class DirectoryDumper {
+/*package*/ class DirectoryDump {
     private static final Comparator<File> FILE_COMPARATOR = new FileComparator();
     private static final String FILE_PREFIX = "    ";
     private static final String DIR_PREFIX = "[D] ";
     private static final char BOX_CORNER = '\u2514';
+
+    public static CharSequence getDump(@NonNull final Context context,
+                                       @NonNull final String dir) {
+        return getDump(context, new File(dir));
+    }
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public static CharSequence getDump(@NonNull final Context context,

@@ -3,9 +3,10 @@
 
     <string name="label_tab_device_dump">Device Dump</string>
     <string name="label_tab_directory_dump">Directory Dump</string>
+    <string name="label_tab_directory_dump_native">Native Directory Dump</string>
 
     <string name="debug_unexpected_result_explanation">
-        If this result is unexpected (as in Android detects a device but nothing is shown here), keep in mind that SELinux policies can prevent access to sysfs.
-        \nThis will stop the \'Linux\' part of the app from working.
+        If this result is unexpected (for example Android detects a device but nothing is shown here), SELinux might be the culprit as policies can prevent access to sysfs.
+        \nThis will stop the \'Linux\' part of this app from working.
     </string>
 </resources>

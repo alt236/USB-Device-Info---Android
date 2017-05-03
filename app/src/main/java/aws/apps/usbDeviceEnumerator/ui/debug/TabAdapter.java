@@ -10,14 +10,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DeviceDumpFragment;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpFragment;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragment;
 
 /*package*/ class TabAdapter extends FragmentPagerAdapter {
-    private static String[] FRAGMENT_ARRAY = {
-            DirectoryDumpFragment.class.getName(),
-            DeviceDumpFragment.class.getName(),
+    private static Class<?>[] FRAGMENT_ARRAY = {
+            DirectoryDumpFragment.class,
+            DirectoryDumpNativeFragment.class,
+            DeviceDumpFragment.class,
     };
     private static int[] TITLE_ARRAY = {
             R.string.label_tab_directory_dump,
+            R.string.label_tab_directory_dump_native,
             R.string.label_tab_device_dump,
     };
 
@@ -42,7 +47,7 @@ import aws.apps.usbDeviceEnumerator.R;
 
     @Override
     public Fragment getItem(int position) {
-        final Fragment fragment = Fragment.instantiate(context, FRAGMENT_ARRAY[position]);
+        final Fragment fragment = Fragment.instantiate(context, FRAGMENT_ARRAY[position].getName());
         registeredFragments.add(fragment);
         return fragment;
     }

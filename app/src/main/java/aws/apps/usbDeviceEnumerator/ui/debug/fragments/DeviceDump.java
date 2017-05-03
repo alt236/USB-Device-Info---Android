@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.debug;
+package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
 
 import android.content.Context;
 import android.support.annotation.ColorInt;
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import aws.apps.usbDeviceEnumerator.R;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.dump.ShellSysBusDumper;
 
-/*package*/ class DeviceDumper {
+/*package*/ class DeviceDump {
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public static CharSequence getDump(@NonNull final Context context,
                                        @NonNull final String directory) {

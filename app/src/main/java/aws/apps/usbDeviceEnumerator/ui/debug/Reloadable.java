@@ -1,5 +1,5 @@
 package aws.apps.usbDeviceEnumerator.ui.debug;
 
-interface Reloadable {
+public interface Reloadable {
     void reload();
 }
