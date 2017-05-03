@@ -8,11 +8,10 @@
 
     <TextView
         android:id="@android:id/content"
+        style="@style/TextAppearance.AppCompat.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:textSize="16sp"
-        android:typeface="monospace"
         tools:text="ABC\n\tABC\nABC"/>
 
 </ScrollView>
