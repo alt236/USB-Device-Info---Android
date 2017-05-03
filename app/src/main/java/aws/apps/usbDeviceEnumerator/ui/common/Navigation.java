@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.InfoFragmentFactory;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class Navigation {
@@ -29,7 +29,7 @@ public class Navigation {
             i.putExtra(UsbInfoActivity.EXTRA_DATA_ANDROID, device);
             startActivity(i);
         } else {
-            final Fragment fragment = InfoFragmentFactory.getFragment(device);
+            final Fragment fragment = FragmentFactory.getFragment(device);
             stackFragment(fragment);
         }
     }
@@ -40,7 +40,7 @@ public class Navigation {
             i.putExtra(UsbInfoActivity.EXTRA_DATA_LINUX, device);
             startActivity(i);
         } else {
-            final Fragment fragment = InfoFragmentFactory.getFragment(device);
+            final Fragment fragment = FragmentFactory.getFragment(device);
             stackFragment(fragment);
         }
     }

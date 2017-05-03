@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.ui.usbinfo;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
@@ -32,43 +30,26 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
 
-public class AndroidUsbInfoFragment extends BaseInfoFragment {
+public class InfoFragmentAndroid extends BaseInfoFragment {
     public final static int TYPE_ANDROID_INFO = 0;
     public final static int TYPE_LINUX_INFO = 1;
     public final static String DEFAULT_STRING = "???";
-    private final static String EXTRA_DATA = AndroidUsbInfoFragment.class.getName() + ".BUNDLE_DATA";
+    private final static String EXTRA_DATA = InfoFragmentAndroid.class.getName() + ".BUNDLE_DATA";
     private static final int LAYOUT_ID = R.layout.fragment_usb_info;
 
     private final String TAG = this.getClass().getName();
     private String usbKey = DEFAULT_STRING;
-    private InfoViewHolder viewHolder;
+    private ViewHolder viewHolder;
     private UsbManager usbMan;
-    private DataFetcher dataFetcher;
     private UsbDevice device;
     private boolean validData;
-
-    public static Fragment create(final String usbKey) {
-        final Fragment fragment = new AndroidUsbInfoFragment();
-        final Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_DATA, usbKey);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
     @Override
     public void onAttach(final Context context) {
         super.onAttach(context);
-
         usbMan = (UsbManager) getContext().getSystemService(Context.USB_SERVICE);
-        dataFetcher = new DataFetcher(
-                new DataProviderCompanyInfo(context),
-                new DataProviderUsbInfo(context),
-                new DataProviderCompanyLogo(context));
     }
 
     @Override
@@ -92,13 +73,13 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
     @Override
     public void onViewCreated(View view, Bundle bundle) {
         super.onViewCreated(view, bundle);
-        viewHolder = new InfoViewHolder(view);
+        viewHolder = new ViewHolder(view);
 
         usbKey = getArguments().getString(EXTRA_DATA, DEFAULT_STRING);
 
 
         if (validData) {
-            viewHolder = new InfoViewHolder(view);
+            viewHolder = new ViewHolder(view);
             populateDataTable(LayoutInflater.from(getContext()));
         } else {
             final TextView textView = (TextView) view.findViewById(R.id.errorText);
@@ -111,8 +92,8 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
     }
 
     private void populateDataTable(LayoutInflater inflater) {
-        final String vid = CommonLogic.padLeft(Integer.toHexString(device.getVendorId()), "0", 4);
-        final String pid = CommonLogic.padLeft(Integer.toHexString(device.getProductId()), "0", 4);
+        final String vid = padLeft(Integer.toHexString(device.getVendorId()), "0", 4);
+        final String pid = padLeft(Integer.toHexString(device.getProductId()), "0", 4);
         final String deviceClass = UsbConstantResolver.resolveUsbClass(device.getDeviceClass());
 
         viewHolder.getLogo().setImageResource(R.drawable.no_image);
@@ -137,32 +118,32 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
                 final TableLayout bottomTable = viewHolder.getBottomTable();
                 final String usbClass = UsbConstantResolver.resolveUsbClass((iFace.getInterfaceClass()));
 
-                CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.interface_) + i, "");
-                CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.class_), usbClass);
+                addDataRow(inflater, bottomTable, getString(R.string.interface_) + i, "");
+                addDataRow(inflater, bottomTable, getString(R.string.class_), usbClass);
 
                 if (iFace.getEndpointCount() > 0) {
                     String endpointText;
                     for (int j = 0; j < iFace.getEndpointCount(); j++) {
                         endpointText = getEndpointText(iFace.getEndpoint(j), j);
-                        CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.endpoint_), endpointText);
+                        addDataRow(inflater, bottomTable, getString(R.string.endpoint_), endpointText);
                     }
                 } else {
-                    CommonLogic.addDataRow(inflater, bottomTable, "\tEndpoints:", "none");
+                    addDataRow(inflater, bottomTable, "\tEndpoints:", "none");
                 }
             }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            loadAsyncData(vid, pid, device.getManufacturerName());
+            loadAsyncData(viewHolder, vid, pid, device.getManufacturerName());
         } else {
-            loadAsyncData(vid, pid, null);
+            loadAsyncData(viewHolder, vid, pid, null);
         }
     }
 
     private String getEndpointText(final UsbEndpoint endpoint, final int index) {
-        final String addressInBinary = CommonLogic.padLeft(Integer.toBinaryString(endpoint.getAddress()), "0", 8);
-        final String addressInHex = CommonLogic.padLeft(Integer.toHexString(endpoint.getAddress()), "0", 2);
-        final String attributesInBinary = CommonLogic.padLeft(Integer.toBinaryString(endpoint.getAttributes()), "0", 8);
+        final String addressInBinary = padLeft(Integer.toBinaryString(endpoint.getAddress()), "0", 8);
+        final String addressInHex = padLeft(Integer.toHexString(endpoint.getAddress()), "0", 2);
+        final String attributesInBinary = padLeft(Integer.toBinaryString(endpoint.getAttributes()), "0", 8);
 
         String endpointText = "#" + index + "\n";
         endpointText += getString(R.string.address_) + "0x" + addressInHex + " (" + addressInBinary + ")\n";
@@ -176,34 +157,16 @@ public class AndroidUsbInfoFragment extends BaseInfoFragment {
         return endpointText;
     }
 
-    private void loadAsyncData(String vid, String pid, String reportedVendorName) {
-        dataFetcher.fetchData(vid, pid, reportedVendorName, new DataFetcher.Callback() {
-            @Override
-            public void onSuccess(final String vendorFromDb,
-                                  final String productFromDb,
-                                  final Bitmap bitmap) {
-
-                if (isAdded() && getActivity() != null && getView() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            viewHolder.getVendorFromDb().setText(vendorFromDb);
-                            viewHolder.getProductFromDb().setText(productFromDb);
-                            if (bitmap != null) {
-                                final BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), bitmap);
-                                viewHolder.getLogo().setImageDrawable(drawable);
-                            } else {
-                                viewHolder.getLogo().setImageResource(R.drawable.no_image);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    }
-
     @Override
     public String getSharePayload() {
-        return CommonLogic.getSharePayload(viewHolder);
+        return ShareUtils.getSharePayload(viewHolder);
+    }
+
+    public static Fragment create(final String usbKey) {
+        final Fragment fragment = new InfoFragmentAndroid();
+        final Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_DATA, usbKey);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

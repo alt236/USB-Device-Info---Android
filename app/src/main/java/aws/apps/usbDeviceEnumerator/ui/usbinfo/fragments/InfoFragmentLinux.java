@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package aws.apps.usbDeviceEnumerator.ui.usbinfo;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,31 +24,18 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
-public class LinuxUsbInfoFragment extends BaseInfoFragment {
+public class InfoFragmentLinux extends BaseInfoFragment {
     public final static String DEFAULT_STRING = "???";
-    private final static String EXTRA_DATA = LinuxUsbInfoFragment.class.getName() + ".BUNDLE_DATA";
+    private final static String EXTRA_DATA = InfoFragmentLinux.class.getName() + ".BUNDLE_DATA";
     private static final int LAYOUT_ID = R.layout.fragment_usb_info;
     private final String TAG = this.getClass().getName();
     private SysBusUsbDevice device;
     private boolean validData;
 
-    private InfoViewHolder viewHolder;
-    private DataFetcher dataFetcher;
-
-    @Override
-    public void onAttach(final Context context) {
-        super.onAttach(context);
-        dataFetcher = new DataFetcher(
-                new DataProviderCompanyInfo(context),
-                new DataProviderUsbInfo(context),
-                new DataProviderCompanyLogo(context));
-    }
+    private ViewHolder viewHolder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saved) {
@@ -74,7 +58,7 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
         super.onViewCreated(view, bundle);
 
         if (validData) {
-            viewHolder = new InfoViewHolder(view);
+            viewHolder = new ViewHolder(view);
             populateDataTable(LayoutInflater.from(getContext()));
         } else {
             final TextView textView = (TextView) view.findViewById(R.id.errorText);
@@ -83,8 +67,8 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
     }
 
     private void populateDataTable(LayoutInflater inflater) {
-        final String vid = CommonLogic.padLeft(device.getVid(), "0", 4);
-        final String pid = CommonLogic.padLeft(device.getPid(), "0", 4);
+        final String vid = padLeft(device.getVid(), "0", 4);
+        final String pid = padLeft(device.getPid(), "0", 4);
         final String deviceClass = UsbConstantResolver.resolveUsbClass(device);
 
         viewHolder.getLogo().setImageResource(R.drawable.no_image);
@@ -98,48 +82,22 @@ public class LinuxUsbInfoFragment extends BaseInfoFragment {
         viewHolder.getReportedProduct().setText(device.getReportedProductName());
 
         final TableLayout bottomTable = viewHolder.getBottomTable();
-        CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.usb_version_), device.getUsbVersion());
-        CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.speed_), device.getSpeed());
-        CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.protocol_), device.getDeviceProtocol());
-        CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.maximum_power_), device.getMaxPower());
-        CommonLogic.addDataRow(inflater, bottomTable, getString(R.string.serial_number_), device.getSerialNumber());
+        addDataRow(inflater, bottomTable, getString(R.string.usb_version_), device.getUsbVersion());
+        addDataRow(inflater, bottomTable, getString(R.string.speed_), device.getSpeed());
+        addDataRow(inflater, bottomTable, getString(R.string.protocol_), device.getDeviceProtocol());
+        addDataRow(inflater, bottomTable, getString(R.string.maximum_power_), device.getMaxPower());
+        addDataRow(inflater, bottomTable, getString(R.string.serial_number_), device.getSerialNumber());
 
-        loadAsyncData(vid, pid, device.getReportedVendorName());
-    }
-
-    private void loadAsyncData(String vid, String pid, String reportedVendorName) {
-        dataFetcher.fetchData(vid, pid, reportedVendorName, new DataFetcher.Callback() {
-            @Override
-            public void onSuccess(final String vendorFromDb,
-                                  final String productFromDb,
-                                  final Bitmap bitmap) {
-
-                if (isAdded() && getActivity() != null && getView() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            viewHolder.getVendorFromDb().setText(vendorFromDb);
-                            viewHolder.getProductFromDb().setText(productFromDb);
-                            if (bitmap != null) {
-                                final BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), bitmap);
-                                viewHolder.getLogo().setImageDrawable(drawable);
-                            } else {
-                                viewHolder.getLogo().setImageResource(R.drawable.no_image);
-                            }
-                        }
-                    });
-                }
-            }
-        });
+        loadAsyncData(viewHolder, vid, pid, device.getReportedVendorName());
     }
 
     @Override
     public String getSharePayload() {
-        return CommonLogic.getSharePayload(viewHolder);
+        return ShareUtils.getSharePayload(viewHolder);
     }
 
     public static Fragment create(final SysBusUsbDevice usbDevice) {
-        final Fragment fragment = new LinuxUsbInfoFragment();
+        final Fragment fragment = new InfoFragmentLinux();
         final Bundle bundle = new Bundle();
         bundle.putSerializable(EXTRA_DATA, usbDevice);
         fragment.setArguments(bundle);

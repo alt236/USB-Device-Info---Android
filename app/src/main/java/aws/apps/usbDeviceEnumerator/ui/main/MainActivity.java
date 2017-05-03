@@ -47,7 +47,7 @@ import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.InfoFragmentFactory;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
 
@@ -179,10 +179,10 @@ public class MainActivity extends AppCompatActivity {
 
             switch (tabId) {
                 case TabController.TAB_ANDROID_INFO:
-                    fragment = InfoFragmentFactory.getFragment(text);
+                    fragment = FragmentFactory.getFragment(text);
                     break;
                 case TabController.TAB_LINUX_INFO:
-                    fragment = InfoFragmentFactory.getFragment(mLinuxDeviceMap.get(text));
+                    fragment = FragmentFactory.getFragment(mLinuxDeviceMap.get(text));
                     break;
                 default:
                     fragment = null;
