@@ -1,35 +1,22 @@
 apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
-final int versionMajor = 0
+final int versionMajor = 2
 final int versionMinor = 0
-final int versionPatch = 5
-final int androidVersionCode = 5
+final int versionPatch = 0
 
-final int targetSdk = rootProject.targetSdkVersion;
-final int minSdkRed = rootProject.minSdkVersion;
+final String gitHubRepo = 'alt236/USB-Device-Info---Android'
+final String artifactName = 'usbdeviceenumerator'
+final String artifactDesc = 'List USB devices by parsing sysfs. Linux/Android only.'
+final String[] tags = ['usb', 'java', 'android']
+
+final String artifactGroupId = 'uk.co.alt236'
 final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
+final String gitHubUrl = "https://github.com/${gitHubRepo}"
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
-
-//android {
-//    compileSdkVersion rootProject.compileSdkVersion
-//    buildToolsVersion rootProject.buildToolsVersion
-//
-//    defaultConfig {
-//        minSdkVersion minSdkRed
-//        targetSdkVersion targetSdk
-//        versionCode androidVersionCode
-//        versionName semanticVersion
-//    }
-//    buildTypes {
-//        release {
-//            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//        }
-//    }
-//    buildToolsVersion '25.0.0'
-//}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -38,3 +25,71 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.9.5'
     testCompile 'junit:junit:4.12'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            if (plugins.hasPlugin('war')) {
+                from components.web
+            } else {
+                from components.java
+            }
+
+            groupId artifactGroupId
+            artifactId artifactName
+            version semanticVersion
+
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+bintray {
+    user = project.hasProperty('alt236JCenterUser') ? alt236JCenterUser : "<NO USER NAME>"
+    key = project.hasProperty('alt236JCenterToken') ? alt236JCenterToken : "<NO TOKEN>"
+
+    dryRun = false
+    publish = false
+    publications = ['mavenJava']
+    pkg {
+        repo = 'maven'
+        // userOrg = 'myorg' //An optional organization name when the repo belongs to one of the user's orgs
+        name = artifactName
+        desc = artifactDesc
+        websiteUrl = "${gitHubUrl}"
+        issueTrackerUrl = "${gitHubUrl}/issues"
+        vcsUrl = "${gitHubUrl}.git"
+        labels = tags
+        licenses = ['Apache-2.0']
+        publicDownloadNumbers = true
+        githubRepo = "${gitHubRepo}"
+        githubReleaseNotesFile = 'README.md'
+
+        version {
+            name = semanticVersion
+            //desc = 'optional, version-specific description'
+            mavenCentralSync {
+                sync = false
+                // Optional (true by default). Determines whether to sync the version to Maven Central.
+                user = 'userToken' //OSS user token
+                password = 'paasword' //OSS user password
+                close = '1'
+                // Optional property. By default the staging repository is closed and artifacts are released to Maven Central.
+                // You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            }
+        }
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+}
+
+
