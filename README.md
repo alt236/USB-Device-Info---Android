@@ -15,6 +15,9 @@ No ads.
 
 Apart from using the build in API it now also parses "/sys/bus/usb/devices/" to display devices which are hidden by the Android OS, although in less detail. 
 
+##### Important
+As of version 2.0.0 `SysBusUsbDevice` is no longer `Parcelable`; it is now `Serializable`. This is so that the library can be used in pure java projects. 
+
 Notes
 -----------
 
@@ -22,6 +25,7 @@ Notes
 * As this application is using the default Android API some devices might not appear. USB Hubs (and devices connected to them) are invisible event though they seem to function properly, and mice seem to be filtered out of the provided list. I'm looking into ways to fix this.
 * Device Subclass resolution will be added in the next version.
 * The database is parsed from: [http://www.linux-usb.org/usb.ids]()
+* SELinux can interfere with accessing sysfs which will block the Linux part of the app from working.
 
 Changelog
 -----------
@@ -31,6 +35,7 @@ Changelog
 * v0.0.4 Now also parses /sys/bus/usb/devices/ for those pesky devices android hides. Added export.
 * v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.
 * v1.0.0 Materialise design, better tablet support, code overhaul
+* v2.0.0 Added debug screens, SysBusUsbDevice is now Serializable instead of Parcelable
 
 Permission Explanation
 -----------
@@ -52,4 +57,4 @@ All logos are the property of their respective owners
 
 The code in this project is licensed under the Apache Software License 2.0.
 
-Copyright (c) 2011 Alexandros Schillings.
+Copyright (c) 2017 Alexandros Schillings.
