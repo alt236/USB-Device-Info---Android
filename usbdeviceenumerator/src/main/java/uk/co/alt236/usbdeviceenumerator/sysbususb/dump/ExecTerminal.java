@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package uk.co.alt236.usbdeviceenumerator.sysbususb;
-
-import android.util.Log;
+package uk.co.alt236.usbdeviceenumerator.sysbususb.dump;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -27,7 +25,7 @@ import java.io.InputStreamReader;
     final String TAG = this.getClass().getName();
 
     public String exec(String cmd) {
-        Log.d(TAG, "^ Executing '" + cmd + "'");
+        System.out.println("^Executing '" + cmd + "'");
         try {
             Process process = Runtime.getRuntime().exec("sh");
             DataInputStream is = new DataInputStream(process.getInputStream());
@@ -47,25 +45,25 @@ import java.io.InputStreamReader;
                 }
                 return fullOutput;
             } catch (IOException e) {
-                Log.e(TAG, "^ exec, IOException 1");
+                System.err.println("exec, IOException 1");
                 e.printStackTrace();
             }
 
             process.waitFor();
 
         } catch (IOException e) {
-            Log.e(TAG, "^ exec, IOException 2");
+            System.err.println("exec, IOException 2");
             e.printStackTrace();
 
         } catch (InterruptedException e) {
-            Log.e(TAG, "^ exec, InterruptedException");
+            System.err.println("exec, InterruptedException");
             e.printStackTrace();
         }
         return "";
     }
 
     public String execSu(String cmd) {
-        Log.d(TAG, "^ Executing as SU '" + cmd + "'");
+        System.out.println("Executing as SU '" + cmd + "'");
         try {
             Process process = Runtime.getRuntime().exec("su");
             DataInputStream is = new DataInputStream(process.getInputStream());
@@ -87,16 +85,16 @@ import java.io.InputStreamReader;
                 return fullOutput;
             } catch (IOException e) {// It seems IOException is thrown when it reaches EOF.
                 e.printStackTrace();
-                Log.e(TAG, "^ execSU, IOException 1");
+                System.err.println("execSU, IOException 1");
             }
             process.waitFor();
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "^ execSU, IOException 2");
+            System.err.println("execSU, IOException 2");
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Log.e(TAG, "^ execSU, InterruptedException");
+            System.err.println("execSU, InterruptedException");
         }
         return "";
     }

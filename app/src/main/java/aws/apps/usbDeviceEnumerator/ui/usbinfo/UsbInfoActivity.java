@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class UsbInfoActivity extends AppCompatActivity {
@@ -40,14 +41,14 @@ public class UsbInfoActivity extends AppCompatActivity {
             finish();
         } else {
             final String androidKey = b.getString(EXTRA_DATA_ANDROID);
-            final SysBusUsbDevice linuxDevice = b.getParcelable(EXTRA_DATA_LINUX);
+            final SysBusUsbDevice linuxDevice = (SysBusUsbDevice) b.getSerializable(EXTRA_DATA_LINUX);
 
             final Fragment fragment;
 
             if (androidKey != null) {
-                fragment = InfoFragmentFactory.getFragment(androidKey);
+                fragment = FragmentFactory.getFragment(androidKey);
             } else if (linuxDevice != null) {
-                fragment = InfoFragmentFactory.getFragment(linuxDevice);
+                fragment = FragmentFactory.getFragment(linuxDevice);
             } else {
                 fragment = null;
             }

@@ -28,6 +28,7 @@
 
     <string name="label_menu_update_db">Update DBs</string>
     <string name="label_menu_about">About</string>
+    <string name="label_menu_debug">Debug</string>
     <string name="label_menu_export">Export</string>
 
     <string name="error_loading_device_info_device_disconnected">Could not fetch device info.\nHas the device been disconnected?</string>

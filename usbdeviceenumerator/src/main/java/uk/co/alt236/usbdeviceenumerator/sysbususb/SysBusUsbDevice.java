@@ -15,21 +15,11 @@
  ******************************************************************************/
 package uk.co.alt236.usbdeviceenumerator.sysbususb;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 
-public final class SysBusUsbDevice implements Parcelable {
-    public static final Creator<SysBusUsbDevice> CREATOR = new Creator<SysBusUsbDevice>() {
-        public SysBusUsbDevice createFromParcel(Parcel in) {
-            return new SysBusUsbDevice(in);
-        }
-
-        public SysBusUsbDevice[] newArray(int size) {
-            return new SysBusUsbDevice[size];
-        }
-    };
+public final class SysBusUsbDevice implements Serializable {
     private final String vid;
     private final String pid;
     private final String reportedProductName;
@@ -44,23 +34,6 @@ public final class SysBusUsbDevice implements Parcelable {
     private final String deviceNumber;
     private final String usbVersion;
     private final String devicePath;
-
-    public SysBusUsbDevice(Parcel in) {
-        this.vid = in.readString();
-        this.pid = in.readString();
-        this.reportedProductName = in.readString();
-        this.reportedVendorName = in.readString();
-        this.serialNumber = in.readString();
-        this.speed = in.readString();
-        this.serviceClass = in.readString();
-        this.deviceProtocol = in.readString();
-        this.maxPower = in.readString();
-        this.deviceSubClass = in.readString();
-        this.busNumber = in.readString();
-        this.deviceNumber = in.readString();
-        this.usbVersion = in.readString();
-        this.devicePath = in.readString();
-    }
 
     private SysBusUsbDevice(final Builder builder) {
         this.vid = builder.vid;
@@ -77,11 +50,6 @@ public final class SysBusUsbDevice implements Parcelable {
         this.deviceNumber = builder.deviceNumber;
         this.usbVersion = builder.usbVersion;
         this.devicePath = builder.devicePath;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public String getBusNumber() {
@@ -138,24 +106,6 @@ public final class SysBusUsbDevice implements Parcelable {
 
     public String getVid() {
         return vid;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(vid);
-        dest.writeString(pid);
-        dest.writeString(reportedProductName);
-        dest.writeString(reportedVendorName);
-        dest.writeString(serialNumber);
-        dest.writeString(speed);
-        dest.writeString(serviceClass);
-        dest.writeString(deviceProtocol);
-        dest.writeString(maxPower);
-        dest.writeString(deviceSubClass);
-        dest.writeString(busNumber);
-        dest.writeString(deviceNumber);
-        dest.writeString(usbVersion);
-        dest.writeString(devicePath);
     }
 
     public static final class Builder {

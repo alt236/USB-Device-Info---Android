@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.usbinfo;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
 
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
 
-/*package*/ class InfoViewHolder {
+/*package*/ class ViewHolder {
     private final TableLayout tblUsbInfoHeader;
     private final TableLayout tblUsbInfoTop;
     private final TableLayout tblUsbInfoBottom;
@@ -22,7 +22,7 @@ import aws.apps.usbDeviceEnumerator.R;
     private final TextView tvDeviceClass;
     private final ImageButton logo;
 
-    public InfoViewHolder(final View rootView) {
+    public ViewHolder(final View rootView) {
         tblUsbInfoHeader = (TableLayout) rootView.findViewById(R.id.tblUsbInfo_title);
         tblUsbInfoTop = (TableLayout) rootView.findViewById(R.id.tblUsbInfo_top);
         tblUsbInfoBottom = (TableLayout) rootView.findViewById(R.id.tblUsbInfo_bottom);

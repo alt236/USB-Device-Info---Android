@@ -1,1 +1,1 @@
-include ':app', ':usbdeviceenumerator'
+include ':app', ':usbdeviceenumerator', ':linuxapp'

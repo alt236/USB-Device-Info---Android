@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.usbinfo;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,15 @@ import aws.apps.usbDeviceEnumerator.R;
 
 /*package*/ class ShareUtils {
     private static final String TAG = ShareUtils.class.getSimpleName();
+
+    public static String getSharePayload(final ViewHolder holder) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(tableToString(holder.getHeaderTable()));
+        sb.append(tableToString(holder.getTopTable()));
+        sb.append('\n');
+        sb.append(ShareUtils.tableToString(holder.getBottomTable()));
+        return sb.toString();
+    }
 
     public static void share(final Activity activity,
                              final String subject,
@@ -29,10 +38,10 @@ import aws.apps.usbDeviceEnumerator.R;
         ActivityCompat.startActivity(activity, share, null);
     }
 
-    public static String tableToString(TableLayout t) {
-        StringBuilder sb = new StringBuilder();
-        if (t != null) {
+    private static String tableToString(TableLayout t) {
+        final StringBuilder sb = new StringBuilder();
 
+        if (t != null) {
             for (int i = 0; i <= t.getChildCount() - 1; i++) {
                 final TableRow row = (TableRow) t.getChildAt(i);
 
