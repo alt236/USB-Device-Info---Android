@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/USB-Device-Info---Android.iml" filepath="$PROJECT_DIR$/USB-Device-Info---Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/linuxapp/linuxapp.iml" filepath="$PROJECT_DIR$/linuxapp/linuxapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/usb-device-info.iml" filepath="$PROJECT_DIR$/usb-device-info.iml" />
       <module fileurl="file://$PROJECT_DIR$/usbdeviceenumerator/usbdeviceenumerator.iml" filepath="$PROJECT_DIR$/usbdeviceenumerator/usbdeviceenumerator.iml" />
     </modules>
   </component>
