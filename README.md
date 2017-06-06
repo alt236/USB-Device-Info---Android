@@ -14,9 +14,37 @@ Information includes:
 No ads.
 
 Apart from using the build in API it now also parses "/sys/bus/usb/devices/" to display devices which are hidden by the Android OS, although in less detail. 
+This part is also available as a Java library (see <i>Library</i> below)
 
 ##### Important
 As of version 2.0.0 `SysBusUsbDevice` is no longer `Parcelable`; it is now `Serializable`. This is so that the library can be used in pure java projects. 
+
+Library
+-----------
+The Linux part of the project is available as an artifact for use with Gradle/Maven. 
+To use that, add the following blocks:
+
+<b>gradle</b>
+```groovy
+	repositories {
+		maven {
+			url "https://dl.bintray.com/alt236/maven"
+		}
+	}
+
+	dependencies {
+		compile 'uk.co.alt236:usbdeviceenumerator:2.0.0'
+	}
+```
+<b>maven</b>
+```xml
+    <dependency>
+      <groupId>uk.co.alt236</groupId>
+      <artifactId>usbdeviceenumerator</artifactId>
+      <version>2.0.0</version>
+      <type>pom</type>
+    </dependency>
+```
 
 Notes
 -----------
