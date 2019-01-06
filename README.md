@@ -1,5 +1,8 @@
-Description
+USB Device Info
 -----------
+
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-USB%20Device%20Info-brightgreen.svg?style=flat)](https://android-arsenal.com/details/3/667)
+
 Android 3.1 introduced USB host mode which allows the user to plug USB devices to your Android tablet in the same way as a Desktop PC and extend its functionality (if the tablet has the correct drivers of course).
 
 This application will provide information about almost all currently plugged-in USB device (see below for more info about the 'almost').
