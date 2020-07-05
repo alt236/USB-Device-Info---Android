@@ -5,25 +5,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TabViewHolder {
 
     private final View rootView;
-    @BindView(android.R.id.list)
-    protected ListView list;
-    @BindView(android.R.id.empty)
-    protected View empty;
-    @BindView(R.id.count)
-    protected TextView count;
+    private final ListView list;
+    private final View empty;
+    private final TextView count;
 
     public TabViewHolder(final View rootView) {
-        ButterKnife.bind(this, rootView);
-
         this.rootView = rootView;
-        this.list.setEmptyView(empty);
-        this.list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        list = rootView.findViewById(android.R.id.list);
+        empty = rootView.findViewById(android.R.id.empty);
+        count = rootView.findViewById(R.id.count);
+
+        list.setEmptyView(empty);
+        list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     public ListView getList() {

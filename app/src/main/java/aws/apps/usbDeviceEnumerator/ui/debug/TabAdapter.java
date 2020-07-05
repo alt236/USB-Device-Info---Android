@@ -1,26 +1,27 @@
 package aws.apps.usbDeviceEnumerator.ui.debug;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DeviceDumpFragment;
 import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpFragment;
 import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragment;
 
 /*package*/ class TabAdapter extends FragmentPagerAdapter {
-    private static Class<?>[] FRAGMENT_ARRAY = {
+    private static final Class<?>[] FRAGMENT_ARRAY = {
             DirectoryDumpFragment.class,
             DirectoryDumpNativeFragment.class,
             DeviceDumpFragment.class,
     };
-    private static int[] TITLE_ARRAY = {
+    private static final int[] TITLE_ARRAY = {
             R.string.label_tab_directory_dump,
             R.string.label_tab_directory_dump_native,
             R.string.label_tab_device_dump,
@@ -45,6 +46,7 @@ import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragme
         return context.getString(TITLE_ARRAY[position]);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         final Fragment fragment = Fragment.instantiate(context, FRAGMENT_ARRAY[position].getName());
@@ -53,13 +55,14 @@ import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragme
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.destroyItem(container, position, object);
         registeredFragments.remove(object);
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         final Object fragment = super.instantiateItem(container, position);
         registeredFragments.add((Fragment) fragment);
         return fragment;

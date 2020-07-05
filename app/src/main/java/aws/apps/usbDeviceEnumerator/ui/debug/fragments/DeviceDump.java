@@ -1,9 +1,6 @@
 package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.CharacterStyle;
@@ -12,6 +9,9 @@ import android.text.style.ForegroundColorSpan;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import aws.apps.usbDeviceEnumerator.R;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.dump.ShellSysBusDumper;
 

@@ -22,7 +22,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void isValidUsbDeviceCandidate_not_existent() throws Exception {
+    public void isValidUsbDeviceCandidate_not_existent() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(false);
 
@@ -30,7 +30,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void isValidUsbDeviceCandidate_not_directory() throws Exception {
+    public void isValidUsbDeviceCandidate_not_directory() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
         Mockito.when(mockFile.isDirectory()).thenReturn(false);
@@ -39,7 +39,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void isValidUsbDeviceCandidate_is_current_dir() throws Exception {
+    public void isValidUsbDeviceCandidate_is_current_dir() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
         Mockito.when(mockFile.isDirectory()).thenReturn(true);
@@ -49,7 +49,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void isValidUsbDeviceCandidate_is_parent_dir() throws Exception {
+    public void isValidUsbDeviceCandidate_is_parent_dir() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
         Mockito.when(mockFile.isDirectory()).thenReturn(true);
@@ -59,7 +59,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void isValidUsbDeviceCandidate_is_valid() throws Exception {
+    public void isValidUsbDeviceCandidate_is_valid() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
         Mockito.when(mockFile.isDirectory()).thenReturn(true);
@@ -69,19 +69,19 @@ public class ValidationTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void isValidUsbDeviceCandidate_is_null() throws Exception {
+    public void isValidUsbDeviceCandidate_is_null() {
         final File mockFile = null;
         cut.isValidUsbDeviceCandidate(mockFile);
     }
 
     @Test(expected = NullPointerException.class)
-    public void getListOfChildren_is_null() throws Exception {
+    public void getListOfChildren_is_null() {
         final File mockFile = null;
         cut.getListOfChildren(mockFile);
     }
 
     @Test
-    public void getListOfChildren_not_existent() throws Exception {
+    public void getListOfChildren_not_existent() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(false);
 
@@ -90,7 +90,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void getListOfChildren_not_directory() throws Exception {
+    public void getListOfChildren_not_directory() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
         Mockito.when(mockFile.isDirectory()).thenReturn(false);
@@ -100,7 +100,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void getListOfChildren_null_children() throws Exception {
+    public void getListOfChildren_null_children() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
         Mockito.when(mockFile.isDirectory()).thenReturn(true);
@@ -111,7 +111,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void getListOfChildren_no_children() throws Exception {
+    public void getListOfChildren_no_children() {
         final File[] children = new File[0];
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);
@@ -123,7 +123,7 @@ public class ValidationTest {
     }
 
     @Test
-    public void getListOfChildren_valid_children() throws Exception {
+    public void getListOfChildren_valid_children() {
         final File[] children = new File[5];
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.exists()).thenReturn(true);

@@ -3,7 +3,9 @@ package aws.apps.usbDeviceEnumerator.ui.progress;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 public class ProgressDialogFragment extends DialogFragment {
 
@@ -22,6 +24,7 @@ public class ProgressDialogFragment extends DialogFragment {
         setRetainInstance(true);
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         int title = getArguments().getInt("title");

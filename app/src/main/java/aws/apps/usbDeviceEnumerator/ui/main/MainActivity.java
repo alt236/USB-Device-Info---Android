@@ -1,18 +1,18 @@
-/*******************************************************************************
- * Copyright 2011 Alexandros Schillings
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+/*
+ Copyright 2011 Alexandros Schillings
+ <p/>
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ <p/>
+ http://www.apache.org/licenses/LICENSE-2.0
+ <p/>
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 package aws.apps.usbDeviceEnumerator.ui.main;
 
 import android.content.Context;
@@ -20,16 +20,10 @@ import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -39,6 +33,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
@@ -101,34 +98,21 @@ public class MainActivity extends AppCompatActivity {
         mDbComp = new DataProviderCompanyInfo(this);
         mZipComp = new DataProviderCompanyLogo(this);
 
-        mTabController.setup(new TabController.OnTabChangeListener() {
-            @Override
-            public void onTabChangeListener(String tag, TabViewHolder holder) {
-                onTabChanged(tag, holder);
-            }
-        });
+        mTabController.setup(this::onTabChanged);
 
         // Setup android list - tab1;
         mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO)
-                .getList().setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((ListView) parent).setItemChecked(position, true);
-                mNavigation.showAndroidUsbDeviceInfo(((TextView) view).getText().toString());
-            }
+                .getList().setOnItemClickListener((parent, view, position, id) -> {
+            ((ListView) parent).setItemChecked(position, true);
+            mNavigation.showAndroidUsbDeviceInfo(((TextView) view).getText().toString());
         });
 
 
         // Setup linux list - tab2
         mTabController.getHolderForTag(TabController.TAB_LINUX_INFO)
-                .getList().setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((ListView) parent).setItemChecked(position, true);
-                mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(((TextView) view).getText().toString()));
-            }
+                .getList().setOnItemClickListener((parent, view, position, id) -> {
+            ((ListView) parent).setItemChecked(position, true);
+            mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(((TextView) view).getText().toString()));
         });
 
 
@@ -217,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(final TabViewHolder holder, final Map<String, ?> map) {
-        final String[] array = map.keySet().toArray(new String[map.keySet().size()]);
+        final String[] array = map.keySet().toArray(new String[0]);
 
         Arrays.sort(array);
 

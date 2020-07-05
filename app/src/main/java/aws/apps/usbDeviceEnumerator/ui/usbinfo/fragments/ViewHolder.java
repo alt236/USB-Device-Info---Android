@@ -23,18 +23,18 @@ import aws.apps.usbDeviceEnumerator.R;
     private final ImageButton logo;
 
     public ViewHolder(final View rootView) {
-        tblUsbInfoHeader = (TableLayout) rootView.findViewById(R.id.tblUsbInfo_title);
-        tblUsbInfoTop = (TableLayout) rootView.findViewById(R.id.tblUsbInfo_top);
-        tblUsbInfoBottom = (TableLayout) rootView.findViewById(R.id.tblUsbInfo_bottom);
-        tvVID = ((TextView) rootView.findViewById(R.id.tvVID));
-        tvPID = ((TextView) rootView.findViewById(R.id.tvPID));
-        tvProductDb = ((TextView) rootView.findViewById(R.id.tvProductDb));
-        tvVendorDb = ((TextView) rootView.findViewById(R.id.tvVendorDb));
-        tvProductReported = ((TextView) rootView.findViewById(R.id.tvProductReported));
-        tvVendorReported = ((TextView) rootView.findViewById(R.id.tvVendorReported));
-        tvDevicePath = ((TextView) rootView.findViewById(R.id.tvDevicePath));
-        tvDeviceClass = ((TextView) rootView.findViewById(R.id.tvDeviceClass));
-        logo = (ImageButton) rootView.findViewById(R.id.btnLogo);
+        tblUsbInfoHeader = rootView.findViewById(R.id.tblUsbInfo_title);
+        tblUsbInfoTop = rootView.findViewById(R.id.tblUsbInfo_top);
+        tblUsbInfoBottom = rootView.findViewById(R.id.tblUsbInfo_bottom);
+        tvVID = rootView.findViewById(R.id.tvVID);
+        tvPID = rootView.findViewById(R.id.tvPID);
+        tvProductDb = rootView.findViewById(R.id.tvProductDb);
+        tvVendorDb = rootView.findViewById(R.id.tvVendorDb);
+        tvProductReported = rootView.findViewById(R.id.tvProductReported);
+        tvVendorReported = rootView.findViewById(R.id.tvVendorReported);
+        tvDevicePath = rootView.findViewById(R.id.tvDevicePath);
+        tvDeviceClass = rootView.findViewById(R.id.tvDeviceClass);
+        logo = rootView.findViewById(R.id.btnLogo);
     }
 
     public ImageView getLogo() {

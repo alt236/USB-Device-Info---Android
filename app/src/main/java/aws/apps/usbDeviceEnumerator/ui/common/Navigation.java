@@ -1,12 +1,12 @@
 package aws.apps.usbDeviceEnumerator.ui.common;
 
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;

@@ -19,11 +19,9 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-
-    testCompile 'org.mockito:mockito-all:1.10.19'
-    testCompile 'junit:junit:4.13'
+    testImplementation 'org.mockito:mockito-all:1.10.19'
+    testImplementation 'junit:junit:4.13'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

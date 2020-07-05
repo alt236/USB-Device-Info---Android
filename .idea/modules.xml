@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="usb-device-info/app" />
-      <module fileurl="file://$PROJECT_DIR$/linuxapp/linuxapp.iml" filepath="$PROJECT_DIR$/linuxapp/linuxapp.iml" group="usb-device-info/linuxapp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mine-android-usb-device-info.iml" filepath="$PROJECT_DIR$/.idea/modules/mine-android-usb-device-info.iml" group="usb-device-info" />
-      <module fileurl="file://$PROJECT_DIR$/usb-device-info.iml" filepath="$PROJECT_DIR$/usb-device-info.iml" group="usb-device-info" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info-linuxapp.iml" filepath="$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info-linuxapp.iml" group="usb-device-info/linuxapp" />
-      <module fileurl="file://$PROJECT_DIR$/usbdeviceenumerator/usbdeviceenumerator.iml" filepath="$PROJECT_DIR$/usbdeviceenumerator/usbdeviceenumerator.iml" group="usb-device-info/usbdeviceenumerator" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="usb-device-info/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/linuxapp/linuxapp.iml" filepath="$PROJECT_DIR$/.idea/modules/linuxapp/linuxapp.iml" group="usb-device-info/linuxapp" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usb-device-info.iml" filepath="$PROJECT_DIR$/.idea/modules/usb-device-info.iml" group="usb-device-info" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usbdeviceenumerator.iml" filepath="$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usbdeviceenumerator.iml" group="usb-device-info/usbdeviceenumerator" />
     </modules>
   </component>
 </project>

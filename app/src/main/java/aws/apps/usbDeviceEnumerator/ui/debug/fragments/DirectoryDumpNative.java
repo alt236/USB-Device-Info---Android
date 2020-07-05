@@ -1,7 +1,6 @@
 package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -9,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+import androidx.annotation.NonNull;
+
 /*package*/ class DirectoryDumpNative {
 
-    @SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "TryWithIdenticalCatches"})
+    @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
     public static CharSequence getDump(@NonNull final Context context,
                                        @NonNull final String dir) {
 

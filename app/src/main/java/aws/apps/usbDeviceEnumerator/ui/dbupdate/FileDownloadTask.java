@@ -60,7 +60,7 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
                     is = new BufferedInputStream(url.openStream());
                     os = new FileOutputStream(filePath);
 
-                    final byte data[] = new byte[1024];
+                    final byte[] data = new byte[1024];
 
                     long total = 0;
 
