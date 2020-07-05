@@ -1,7 +1,6 @@
 package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
 
-import android.support.v4.app.Fragment;
-
+import androidx.fragment.app.Fragment;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public final class FragmentFactory {

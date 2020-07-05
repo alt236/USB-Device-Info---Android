@@ -1,14 +1,13 @@
 package aws.apps.usbDeviceEnumerator.ui.main.tabs;
 
 import android.app.Activity;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.viewpager.widget.ViewPager;
 import aws.apps.usbDeviceEnumerator.R;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TabController {
     public final static String TAB_ANDROID_INFO = "tab_android";
@@ -18,18 +17,15 @@ public class TabController {
     private static final String[] TAB_TAGS = {TAB_ANDROID_INFO, TAB_LINUX_INFO};
 
     private final Activity activity;
-
-    @BindView(R.id.tabs)
-    protected TabLayout tabLayout;
-
-    @BindView(R.id.pager)
-    protected ViewPager viewPager;
+    private final TabLayout tabLayout;
+    private final ViewPager viewPager;
 
     private TabViewHolder[] tabViewHolders;
 
     public TabController(final Activity activity) {
-        ButterKnife.bind(this, activity);
         this.activity = activity;
+        viewPager = activity.findViewById(R.id.pager);
+        tabLayout = activity.findViewById(R.id.tabs);
     }
 
     public void setup(final OnTabChangeListener listener) {

@@ -2,13 +2,13 @@ package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.core.app.ActivityCompat;
 import aws.apps.usbDeviceEnumerator.R;
 
 /*package*/ class ShareUtils {

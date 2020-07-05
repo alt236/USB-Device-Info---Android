@@ -2,7 +2,6 @@ package aws.apps.usbDeviceEnumerator.ui.dbupdate;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Environment;
 import android.util.Log;
 
@@ -46,14 +45,10 @@ public class DatabaseUpdater {
 
             builder.setMessage(R.string.alert_update_db)
                     .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @SuppressWarnings("unchecked")
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            final FileDownloadTask.Downloadable[] array
-                                    = downloadables.toArray(new FileDownloadTask.Downloadable[downloadables.size()]);
-                            new FileDownloadTask(context, progressDialogControl).execute(array);
-                        }
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        final FileDownloadTask.Downloadable[] array
+                                = downloadables.toArray(new FileDownloadTask.Downloadable[0]);
+                        new FileDownloadTask(context, progressDialogControl).execute(array);
                     });
 
             builder.create().show();
@@ -82,7 +77,7 @@ public class DatabaseUpdater {
     }
 
     private List<FileDownloadTask.Downloadable> createDownloadables(final Context context) {
-        final List<FileDownloadTask.Downloadable> downloads = new ArrayList<FileDownloadTask.Downloadable>();
+        final List<FileDownloadTask.Downloadable> downloads = new ArrayList<>();
 
         downloads.add(new FileDownloadTask.Downloadable(
                 dbAccessUsb.getUrl(),

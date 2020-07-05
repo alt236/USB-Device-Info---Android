@@ -1,23 +1,21 @@
 package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.debug.Reloadable;
 import aws.apps.usbDeviceEnumerator.util.Constants;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class DeviceDumpFragment extends Fragment implements Reloadable {
     private static final int LAYOUT_ID = R.layout.fragment_monospace_textview;
 
-    @BindView(android.R.id.content)
-    protected TextView textView;
+    private TextView textView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saved) {
@@ -25,9 +23,9 @@ public class DeviceDumpFragment extends Fragment implements Reloadable {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle bundle) {
+    public void onViewCreated(@NonNull View view, Bundle bundle) {
         super.onViewCreated(view, bundle);
-        ButterKnife.bind(this, view);
+        textView = view.findViewById(android.R.id.content);
         textView.setMaxLines(Integer.MAX_VALUE);
     }
 

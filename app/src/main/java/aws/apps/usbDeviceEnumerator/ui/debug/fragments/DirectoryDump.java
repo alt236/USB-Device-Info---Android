@@ -1,13 +1,13 @@
 package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import androidx.annotation.NonNull;
 import aws.apps.usbDeviceEnumerator.R;
 
 /*package*/ class DirectoryDump {

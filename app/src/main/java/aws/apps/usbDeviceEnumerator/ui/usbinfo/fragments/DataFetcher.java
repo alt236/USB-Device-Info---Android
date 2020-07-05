@@ -24,40 +24,37 @@ import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
                           final String reportedVendorName,
                           final Callback callback) {
 
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final String vendorFromDb;
-                final String productFromDb;
-                final Bitmap bitmap;
+        final Runnable runnable = () -> {
+            final String vendorFromDb;
+            final String productFromDb;
+            final Bitmap bitmap;
 
-                if (dbUsb.isDataAvailable()) {
-                    vendorFromDb = dbUsb.getVendorName(vid);
-                    productFromDb = dbUsb.getProductName(vid, pid);
+            if (dbUsb.isDataAvailable()) {
+                vendorFromDb = dbUsb.getVendorName(vid);
+                productFromDb = dbUsb.getProductName(vid, pid);
 
-                    if (dbComp.isDataAvailable()) {
-                        final String searchFor;
+                if (dbComp.isDataAvailable()) {
+                    final String searchFor;
 
-                        if (!TextUtils.isEmpty(vendorFromDb)) {
-                            searchFor = vendorFromDb;
-                        } else {
-                            searchFor = reportedVendorName;
-                        }
-
-                        final String logo = dbComp.getLogoName(searchFor);
-                        bitmap = zipComp.getLogoBitmap(logo);
+                    if (!TextUtils.isEmpty(vendorFromDb)) {
+                        searchFor = vendorFromDb;
                     } else {
-                        bitmap = null;
+                        searchFor = reportedVendorName;
                     }
+
+                    final String logo = dbComp.getLogoName(searchFor);
+                    bitmap = zipComp.getLogoBitmap(logo);
                 } else {
-                    vendorFromDb = null;
-                    productFromDb = null;
                     bitmap = null;
                 }
-
-                callback.onSuccess(vendorFromDb, productFromDb, bitmap);
-
+            } else {
+                vendorFromDb = null;
+                productFromDb = null;
+                bitmap = null;
             }
+
+            callback.onSuccess(vendorFromDb, productFromDb, bitmap);
+
         };
 
         final Thread thread = new Thread(runnable);
