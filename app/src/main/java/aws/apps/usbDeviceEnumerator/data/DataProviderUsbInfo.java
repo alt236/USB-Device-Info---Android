@@ -32,16 +32,9 @@ public class DataProviderUsbInfo implements DataProvider {
     private String fileFullPath = "";
 
     public DataProviderUsbInfo(Context context) {
+        final File baseDir = StorageUtils.getStorageRoot(context);
         this.context = context.getApplicationContext();
-        doPathStuff();
-    }
-
-    private static String tryNull(final String suspect,
-                                  final String defaultString) {
-        if (suspect == null) {
-            return defaultString;
-        }
-        return suspect;
+        this.fileFullPath = new File(baseDir, BuildConfig.USB_DB_FILE_NAME).getAbsolutePath();
     }
 
     @Override
@@ -58,16 +51,6 @@ public class DataProviderUsbInfo implements DataProvider {
         return okToAccessData;
     }
 
-    private void doPathStuff() {
-        final File baseDir = StorageUtils.getExternalStorageLocation(context);
-
-        if (baseDir == null) {
-            fileFullPath = "";
-        } else {
-            fileFullPath = new File(baseDir, BuildConfig.USB_DB_FILE_NAME).getAbsolutePath();
-        }
-    }
-
     @Override
     public String getDataFilePath() {
         return fileFullPath;
@@ -78,14 +61,14 @@ public class DataProviderUsbInfo implements DataProvider {
         return BuildConfig.USB_DB_URL;
     }
 
-    public String getProductName(String vid, String pid) {
+    public String getProductName(String vid, String did) {
         final Cursor cur = StorageUtils.executeQuery(
                 context,
                 getDataFilePath(),
                 "usb",
                 new String[]{"vid", "vendor_name", "did", "device_name", "ifid", "interface_name"},
-                "did=? AND vid=?",
-                new String[]{vid, pid},
+                "vid=? AND did=?",
+                new String[]{vid, did},
                 "vid, did, ifid ASC");
 
         final String result = StorageUtils.getStringAndClose(cur, "device_name");
@@ -99,12 +82,20 @@ public class DataProviderUsbInfo implements DataProvider {
                 getDataFilePath(),
                 "usb",
                 new String[]{"vid", "vendor_name", "did", "device_name", "ifid", "interface_name"},
-                "vid=? AND did=''",
+                "vid=?",
                 new String[]{vid},
                 "vid, did, ifid ASC");
 
         final String result = StorageUtils.getStringAndClose(cur, "vendor_name");
 
         return tryNull(result, UNKNOWN_RESULT);
+    }
+
+    private static String tryNull(final String suspect,
+                                  final String defaultString) {
+        if (suspect == null) {
+            return defaultString;
+        }
+        return suspect;
     }
 }

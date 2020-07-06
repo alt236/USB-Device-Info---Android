@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;

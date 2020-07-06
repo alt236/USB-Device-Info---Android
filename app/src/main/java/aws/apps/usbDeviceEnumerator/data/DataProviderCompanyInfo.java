@@ -31,16 +31,9 @@ public class DataProviderCompanyInfo implements DataProvider {
     private String fileFullPath = "";
 
     public DataProviderCompanyInfo(Context context) {
+        final File baseDir = StorageUtils.getStorageRoot(context);
         this.context = context.getApplicationContext();
-        doPathStuff();
-    }
-
-    private static String tryNull(final String suspect,
-                                  final String defaultString) {
-        if (suspect == null) {
-            return defaultString;
-        }
-        return suspect;
+        this.fileFullPath = new File(baseDir, BuildConfig.COMPANY_DB_FILE_NAME).getAbsolutePath();
     }
 
     @Override
@@ -55,16 +48,6 @@ public class DataProviderCompanyInfo implements DataProvider {
         }
 
         return okToAccessData;
-    }
-
-    private void doPathStuff() {
-        final File baseDir = StorageUtils.getExternalStorageLocation(context);
-
-        if (baseDir == null) {
-            fileFullPath = "";
-        } else {
-            fileFullPath = new File(baseDir, BuildConfig.COMPANY_DB_FILE_NAME).getAbsolutePath();
-        }
     }
 
     @Override
@@ -91,5 +74,13 @@ public class DataProviderCompanyInfo implements DataProvider {
         final String result = StorageUtils.getStringAndClose(cur, "logo");
 
         return tryNull(result, UNKNOWN_RESULT);
+    }
+
+    private static String tryNull(final String suspect,
+                                  final String defaultString) {
+        if (suspect == null) {
+            return defaultString;
+        }
+        return suspect;
     }
 }
