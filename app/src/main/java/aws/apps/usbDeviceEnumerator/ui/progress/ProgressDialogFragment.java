@@ -35,14 +35,26 @@ public class ProgressDialogFragment extends DialogFragment {
     }
 
     public void setMessage(String message) {
+        if (getDialog() == null) {
+            return;
+        }
+
         ((ProgressDialog) this.getDialog()).setMessage(message);
     }
 
     public void setTitle(String message) {
+        if (getDialog() == null) {
+            return;
+        }
+
         (this.getDialog()).setTitle(message);
     }
 
     public void setProgress(int progress) {
+        if (getDialog() == null) {
+            return;
+        }
+
         ((ProgressDialog) this.getDialog()).setProgress(progress);
     }
 
