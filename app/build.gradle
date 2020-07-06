@@ -1,23 +1,18 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'com.github.triplet.play' version '2.5.0'
+}
 
-final int versionMajor = 2
-final int versionMinor = 0
-final int versionPatch = 0
-final int androidVersionCode = 7
-
-final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
+apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
 
 android {
-    compileSdkVersion rootProject.compile_sdk_version
-    buildToolsVersion rootProject.build_tools_version
 
     defaultConfig {
-        applicationId "aws.apps.usbDeviceEnumerator"
+        def buildNumber = getBuildNumber()
 
-        minSdkVersion rootProject.min_sdk_version
-        targetSdkVersion rootProject.target_sdk_version
-        versionCode androidVersionCode
-        versionName semanticVersion
+        applicationId "aws.apps.usbDeviceEnumerator"
+        versionCode buildNumber
+        versionName "2.0.1." + buildNumber
 
         buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
         buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
@@ -29,31 +24,67 @@ android {
         buildConfigField "String", "LOGO_ZIP_FILE_NAME", quoteString("logos.zip")
     }
 
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("ANDROID_KEYSTORE") ?: "[KEY_NOT_DEFINED]")
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+
+        debug {
+            storeFile file("${project.rootDir}/buildsystem/signing_keys/debug.keystore")
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
+    }
+
     dependencies {
         implementation project(':usbdeviceenumerator')
-
-        def androidx_appcompat_version = "1.1.0"
-        def android_material_version = "1.1.0"
 
         implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
         implementation "com.google.android.material:material:$android_material_version"
 
-        testImplementation 'junit:junit:4.13'
+        testImplementation "junit:junit:$junit_version"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if(isRunningOnCi()) {
+                signingConfig signingConfigs.release
+            }
         }
 
         debug {
             applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+play {
+    def credentialsPath = System.getenv("GPLAY_DEPLOY_KEY") ?: "[KEY_NOT_DEFINED]"
+    def lastCommitMessage = getLastGitCommitMessage().take(50)
+    logger.warn("GPP Config: $credentialsPath")
+    logger.warn("Release Name: '$lastCommitMessage'")
+
+    if(isRunningOnCi()) {
+        enabled = true
+        track = "internal"
+        //userFraction = 1.0
+        releaseStatus = "completed"
+        serviceAccountCredentials = file(credentialsPath)
+        releaseName = lastCommitMessage
+        artifactDir = file("${project.rootDir}/app/build/outputs/apk/release/")
+    } else {
+        enabled = false
     }
 }
