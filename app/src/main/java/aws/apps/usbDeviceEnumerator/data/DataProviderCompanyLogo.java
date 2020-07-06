@@ -32,23 +32,12 @@ import aws.apps.usbDeviceEnumerator.BuildConfig;
 
 public class DataProviderCompanyLogo implements DataProvider {
     private final String TAG = this.getClass().getName();
-    private final Context context;
 
     private String fileFullPath = "";
 
     public DataProviderCompanyLogo(Context context) {
-        this.context = context.getApplicationContext();
-        doPathStuff();
-    }
-
-    private void doPathStuff() {
-        final File baseDir = StorageUtils.getExternalStorageLocation(context);
-
-        if (baseDir == null) {
-            fileFullPath = "";
-        } else {
-            fileFullPath = new File(baseDir, BuildConfig.LOGO_ZIP_FILE_NAME).getAbsolutePath();
-        }
+        final File baseDir = StorageUtils.getStorageRoot(context);
+        this.fileFullPath = new File(baseDir, BuildConfig.LOGO_ZIP_FILE_NAME).getAbsolutePath();
     }
 
     @Override

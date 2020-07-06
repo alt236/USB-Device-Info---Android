@@ -14,7 +14,7 @@
     <item
         android:id="@+id/menu_debug"
         android:title="@string/label_menu_debug"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_about"
         android:title="@string/label_menu_about"

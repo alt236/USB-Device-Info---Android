@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base;
 
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import aws.apps.usbDeviceEnumerator.R;
 
-/*package*/ class ViewHolder {
+public class ViewHolder {
     private final TableLayout tblUsbInfoHeader;
     private final TableLayout tblUsbInfoTop;
     private final TableLayout tblUsbInfoBottom;

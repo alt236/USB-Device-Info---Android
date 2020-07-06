@@ -9,15 +9,6 @@ import androidx.fragment.app.DialogFragment;
 
 public class ProgressDialogFragment extends DialogFragment {
 
-    protected static ProgressDialogFragment newInstance(int title, String message) {
-        ProgressDialogFragment frag = new ProgressDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt("title", title);
-        args.putString("message", message);
-        frag.setArguments(args);
-        return frag;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,5 +51,14 @@ public class ProgressDialogFragment extends DialogFragment {
         if (getDialog() != null && getRetainInstance())
             getDialog().setDismissMessage(null);
         super.onDestroyView();
+    }
+
+    protected static ProgressDialogFragment newInstance(int title, String message) {
+        ProgressDialogFragment frag = new ProgressDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("title", title);
+        args.putString("message", message);
+        frag.setArguments(args);
+        return frag;
     }
 }

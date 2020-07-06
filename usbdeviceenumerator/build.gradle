@@ -54,7 +54,6 @@ publishing {
 }
 
 
-
 bintray {
     user = project.hasProperty('alt236JCenterUser') ? alt236JCenterUser : "<NO USER NAME>"
     key = project.hasProperty('alt236JCenterToken') ? alt236JCenterToken : "<NO TOKEN>"

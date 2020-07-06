@@ -13,18 +13,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -32,8 +28,9 @@ import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.ShareUtils;
 
-/*package*/ abstract class BaseInfoFragment extends Fragment {
+public abstract class BaseInfoFragment extends Fragment {
 
     private DataFetcher dataFetcher;
 
@@ -93,27 +90,5 @@ import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
                 });
             }
         });
-    }
-
-    protected void addDataRow(LayoutInflater inflater,
-                              TableLayout tlb,
-                              String cell1Text,
-                              String cell2Text) {
-        final TableRow row = (TableRow) inflater.inflate(R.layout.usb_table_row_data, null);
-        final TextView tv1 = row.findViewById(R.id.usb_tablerow_cell1);
-        final TextView tv2 = row.findViewById(R.id.usb_tablerow_cell2);
-        tv1.setText(cell1Text);
-        tv2.setText(cell2Text);
-        tlb.addView(row);
-    }
-
-    protected String padLeft(String string,
-                             String padding,
-                             int size) {
-        StringBuilder pad = new StringBuilder();
-        while ((pad + string).length() < size) {
-            pad.append(padding).append(pad);
-        }
-        return pad + string;
     }
 }

@@ -2,15 +2,15 @@
 <resources>
 
     <string name="app_name">USB Device Info</string>
-    
+
     <string name="app_acknowledgements">
     	Acknowledgements:\n
     	·All logos are the property of their respective owners.
     </string>
 
     <string name="app_copyright">Copyright A. Schillings, 2011</string>
-	
-	<string name="app_changelog">
+
+    <string name="app_changelog">
 		Changelog:\n
 		·v0.0.1 First public release\n
 		·v0.0.2 Added Interface and Endpoint resolution\n
@@ -20,7 +20,7 @@
         ·v1.0.0 Updated to material, better tablet support, code overhaul
 	</string>
 
-	<string name="app_notes" formatted="false">
+    <string name="app_notes" formatted="false">
 		Notes:\n
 		·To fully use  this application, you need to download copies of the Vendor ID Database, the Company Name Database and the Company logo zip file.\nTo do that, Press Menu->Update DBs.\n
 		·The VID/PID database is created by parsing the following file: http://www.linux-usb.org/usb.ids

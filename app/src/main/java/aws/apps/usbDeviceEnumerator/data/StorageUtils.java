@@ -6,25 +6,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.io.File;
+import java.util.Arrays;
 
-import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
 /*package*/ class StorageUtils {
     private static final String TAG = StorageUtils.class.getSimpleName();
 
-    public static File getExternalStorageLocation(final Context context) {
-        final File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
-        final File dir;
-
-        if (dirs == null || dirs.length == 0) {
-            dir = null;
-        } else {
-            dir = dirs[0];
-        }
-
-        return dir;
+    @NonNull
+    public static File getStorageRoot(final Context context) {
+        return new File(context.getFilesDir(), "usbdata/");
     }
 
     public static Cursor executeQuery(final Context context,
@@ -37,18 +31,25 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
         SQLiteDatabase db = null;
 
+        Log.d(TAG, "^ executeQuery(): Path: " + dbPath + "\n" +
+                "table: " + table + "\n" +
+                "fields:" + Arrays.toString(fields) + "\n" +
+                "selection: " + selection + "\n" +
+                "selectionArgs: " + Arrays.toString(selectionArgs) + "\n" +
+                "order:" + order);
+
         try {
             db = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY);
 
             if (!db.isOpen()) {
-                Log.e(TAG, "^ DB was not opened!");
+                Log.e(TAG, "^ executeQuery(): DB was not opened!");
                 NotifyUser.notify(context, R.string.error_could_not_open_db);
                 return null;
             }
 
             return db.query(table, fields, selection, selectionArgs, null, null, order);
         } catch (Exception e) {
-            Log.e(TAG, "^ executeQuery(): " + e.getMessage());
+            Log.e(TAG, "^ executeQuery(): Error: " + e.getMessage());
             if (db != null && db.isOpen()) {
                 db.close();
             }
@@ -56,24 +57,26 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
         return null;
     }
 
+    @Nullable
     public static String getStringAndClose(final Cursor cursor,
                                            final String colName) {
         final String result;
 
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                result = cursor.getString(cursor.getColumnIndex(colName));
-                cursor.close();
-            } else {
-                result = null;
-            }
+        if (cursor == null) {
+            return null;
+        }
 
-            if (!cursor.isClosed()) {
-                cursor.close();
-            }
+        Log.d(TAG, "^ getStringAndClose(): Column: '" + colName + "', Cursor size:" + cursor.getCount() + ", cols:" + Arrays.toString(cursor.getColumnNames()));
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            result = cursor.getString(cursor.getColumnIndex(colName));
         } else {
             result = null;
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
         }
 
         return result;
