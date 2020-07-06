@@ -67,6 +67,7 @@ Changelog
 * v0.0.5 Added support for small screen devices. Bugfixes and stability improvements.
 * v1.0.0 Materialise design, better tablet support, code overhaul
 * v2.0.0 Added debug screens, SysBusUsbDevice is now Serializable instead of Parcelable
+* v2.0.1 Switched to HTTPS, now using internal storage instead of external.
 
 Permission Explanation
 -----------
@@ -88,4 +89,4 @@ All logos are the property of their respective owners
 
 The code in this project is licensed under the Apache Software License 2.0.
 
-Copyright (c) 2017 Alexandros Schillings.
+Copyright (c) 2020 Alexandros Schillings.
