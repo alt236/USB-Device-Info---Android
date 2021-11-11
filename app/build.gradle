@@ -47,6 +47,8 @@ android {
         implementation "com.google.android.material:material:$android_material_version"
 
         testImplementation "junit:junit:$junit_version"
+
+        androidTestImplementation "androidx.test:runner:$andoridx_test_runner_version"
     }
 
     buildTypes {

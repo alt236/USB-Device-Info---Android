@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/kotlin,java,android,androidstudio,intellij
-# Edit at https://www.toptal.com/developers/gitignore?templates=kotlin,java,android,androidstudio,intellij
+# Created by https://www.toptal.com/developers/gitignore/api/android,androidstudio,gradle,intellij,kotlin,java
+# Edit at https://www.toptal.com/developers/gitignore?templates=android,androidstudio,gradle,intellij,kotlin,java
 
 ### Android ###
 # Built application files
@@ -49,6 +49,7 @@ captures/
 .idea/assetWizardSettings.xml
 .idea/dictionaries
 .idea/libraries
+.idea/jarRepositories.xml
 # Android Studio 3 in .gitignore file.
 .idea/caches
 .idea/modules.xml
@@ -89,6 +90,9 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
+# Android Profiling
+*.hprof
+
 ### Android Patch ###
 gen-external-apklibs
 output.json
@@ -106,6 +110,9 @@ output.json
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+
+# AWS User-specific
+.idea/**/aws.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -127,14 +134,14 @@ output.json
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-.idea/artifacts
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/modules.xml
-.idea/*.iml
-.idea/modules
-*.iml
-*.ipr
+# .idea/artifacts
+# .idea/compiler.xml
+# .idea/jarRepositories.xml
+# .idea/modules.xml
+# .idea/*.iml
+# .idea/modules
+# *.iml
+# *.ipr
 
 # CMake
 cmake-build-*/
@@ -177,12 +184,15 @@ fabric.properties
 # *.ipr
 
 # Sonarlint plugin
+# https://plugins.jetbrains.com/plugin/7973-sonarlint
 .idea/**/sonarlint/
 
 # SonarQube Plugin
+# https://plugins.jetbrains.com/plugin/7238-sonarqube-community-plugin
 .idea/**/sonarIssues.xml
 
 # Markdown Navigator plugin
+# https://plugins.jetbrains.com/plugin/7896-markdown-navigator-enhanced
 .idea/**/markdown-navigator.xml
 .idea/**/markdown-navigator-enh.xml
 .idea/**/markdown-navigator/
@@ -190,6 +200,10 @@ fabric.properties
 # Cache file creation bug
 # See https://youtrack.jetbrains.com/issue/JBR-2257
 .idea/$CACHE_FILE$
+
+# CodeStream plugin
+# https://plugins.jetbrains.com/plugin/12206-codestream
+.idea/codestream.xml
 
 ### Java ###
 # Compiled class file
@@ -227,6 +241,30 @@ hs_err_pid*
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 
+### Gradle ###
+.gradle
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+### Gradle Patch ###
+**/build/
+
+# Eclipse Gradle plugin generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
 
@@ -239,7 +277,6 @@ hs_err_pid*
 # Generated files
 
 # Gradle files
-.gradle
 
 # Signing files
 .signing/
@@ -259,6 +296,13 @@ hs_err_pid*
 *.ipr
 *~
 *.swp
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+# google-services.json
 
 # Android Patch
 
@@ -298,8 +342,6 @@ ehthumbs.db
 Thumbs.db
 
 # Legacy Eclipse project files
-.classpath
-.project
 .cproject
 .settings/
 
@@ -323,5 +365,5 @@ Thumbs.db
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
-!/buildsystem/**/*.jar
-# End of https://www.toptal.com/developers/gitignore/api/kotlin,java,android,androidstudio,intellij
+
+# End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,gradle,intellij,kotlin,java
