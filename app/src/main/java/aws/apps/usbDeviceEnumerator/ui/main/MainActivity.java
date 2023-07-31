@@ -62,10 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private DataProviderCompanyInfo mDbComp;
     private DataProviderCompanyLogo mZipComp;
 
-    private Map<String, UsbDevice> mAndroidDeviceMap;
     private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
 
-    private ProgressDialogControl progressDialogControl;
     private Navigation mNavigation;
 
     private TabController mTabController;
@@ -135,23 +133,23 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_about:
-                AboutDialogFactory.createAboutDialog(this).show();
-                return true;
-            case R.id.menu_debug:
-                final Intent intent = new Intent(this, DebugActivity.class);
-                ActivityCompat.startActivity(this, intent, null);
-                return true;
-            case R.id.menu_update_db:
-                final ProgressDialogControl control = new ProgressDialogControl(getSupportFragmentManager());
-                final DatabaseUpdater databaseUpdater = new DatabaseUpdater(control, mDbComp, mDbUsb, mZipComp);
+        final int itemId = item.getItemId();
+        if (itemId == R.id.menu_about) {
+            AboutDialogFactory.createAboutDialog(this).show();
+            return true;
+        } else if (itemId == R.id.menu_debug) {
+            final Intent intent = new Intent(this, DebugActivity.class);
+            ActivityCompat.startActivity(this, intent, null);
+            return true;
+        } else if (itemId == R.id.menu_update_db) {
+            final ProgressDialogControl control = new ProgressDialogControl(getSupportFragmentManager());
+            final DatabaseUpdater databaseUpdater = new DatabaseUpdater(control, mDbComp, mDbUsb, mZipComp);
 
-                databaseUpdater.start(this);
-                return true;
-            case R.id.menu_refresh:
-                refreshUsbDevices();
-                return true;
+            databaseUpdater.start(this);
+            return true;
+        } else if (itemId == R.id.menu_refresh) {
+            refreshUsbDevices();
+            return true;
         }
 
         return false;
@@ -193,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void refreshUsbDevices() {
-        mAndroidDeviceMap = mUsbManAndroid.getDeviceList();
+        Map<String, UsbDevice> mAndroidDeviceMap = mUsbManAndroid.getDeviceList();
         mLinuxDeviceMap = mUsbManagerLinux.getUsbDevices();
 
         updateList(mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO), mAndroidDeviceMap);

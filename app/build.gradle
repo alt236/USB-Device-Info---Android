@@ -1,18 +1,22 @@
 plugins {
     id 'com.android.application'
-    id 'com.github.triplet.play' version '2.8.0'
+    id 'com.github.triplet.play' version '3.8.4'
 }
 
 apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
 
 android {
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         def buildNumber = getBuildNumber()
 
-        applicationId "aws.apps.usbDeviceEnumerator"
+        namespace "aws.apps.usbDeviceEnumerator"
         versionCode buildNumber
-        versionName "2.0.1." + buildNumber
+        versionName "3.0.0." + buildNumber
 
         buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
         buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")

@@ -1,7 +1,7 @@
 ext {
     min_sdk_version = 14
-    target_sdk_version = 31
-    compile_sdk_version = 31
-    build_tools_version = "29.0.2"
-    kotlin_version = '1.5.30'
+    target_sdk_version = 33
+    compile_sdk_version = 33
+    build_tools_version = "34.0.0"
+    kotlin_version = '1.8.20'
 }
