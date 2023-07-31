@@ -33,6 +33,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -48,19 +50,27 @@ import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
-import aws.apps.usbDeviceEnumerator.util.Constants;
+import dagger.hilt.android.AndroidEntryPoint;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();
 
     private UsbManager mUsbManAndroid;
-    private SysBusUsbManager mUsbManagerLinux;
 
-    private DataProviderUsbInfo mDbUsb;
-    private DataProviderCompanyInfo mDbComp;
-    private DataProviderCompanyLogo mZipComp;
+    @Inject
+    SysBusUsbManager mUsbManagerLinux;
+
+    @Inject
+    DataProviderUsbInfo mDbUsb;
+
+    @Inject
+    DataProviderCompanyInfo mDbComp;
+
+    @Inject
+    DataProviderCompanyLogo mZipComp;
 
     private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
 
@@ -72,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         // Prompt user to DL db if it is missing.
         if (!new File(mDbUsb.getDataFilePath()).exists()) {
             DialogFactory.createOkDialog(this,
-                    R.string.alert_db_not_found_title,
-                    R.string.alert_db_not_found_instructions)
+                            R.string.alert_db_not_found_title,
+                            R.string.alert_db_not_found_instructions)
                     .show();
             Log.w(TAG, "^ Database not found: " + mDbUsb.getDataFilePath());
         }
@@ -90,28 +100,23 @@ public class MainActivity extends AppCompatActivity {
         mNavigation = new Navigation(this);
 
         mUsbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
-        mUsbManagerLinux = new SysBusUsbManager(Constants.PATH_SYS_BUS_USB);
-
-        mDbUsb = new DataProviderUsbInfo(this);
-        mDbComp = new DataProviderCompanyInfo(this);
-        mZipComp = new DataProviderCompanyLogo(this);
 
         mTabController.setup(this::onTabChanged);
 
         // Setup android list - tab1;
         mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO)
                 .getList().setOnItemClickListener((parent, view, position, id) -> {
-            ((ListView) parent).setItemChecked(position, true);
-            mNavigation.showAndroidUsbDeviceInfo(((TextView) view).getText().toString());
-        });
+                    ((ListView) parent).setItemChecked(position, true);
+                    mNavigation.showAndroidUsbDeviceInfo(((TextView) view).getText().toString());
+                });
 
 
         // Setup linux list - tab2
         mTabController.getHolderForTag(TabController.TAB_LINUX_INFO)
                 .getList().setOnItemClickListener((parent, view, position, id) -> {
-            ((ListView) parent).setItemChecked(position, true);
-            mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(((TextView) view).getText().toString()));
-        });
+                    ((ListView) parent).setItemChecked(position, true);
+                    mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(((TextView) view).getText().toString()));
+                });
 
 
         checkIfDbPresent();
