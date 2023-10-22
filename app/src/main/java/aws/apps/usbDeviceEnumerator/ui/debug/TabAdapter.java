@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DeviceDumpFragment;
-import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpFragment;
-import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragment;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.device.DeviceDumpFragment;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.directory.DirectoryDumpFragment;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.directorynative.DirectoryDumpNativeFragment;
 
 /*package*/ class TabAdapter extends FragmentPagerAdapter {
     private static final Class<?>[] FRAGMENT_ARRAY = {
@@ -30,8 +30,7 @@ import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragme
     private final Set<Fragment> registeredFragments = new HashSet<>();
     private final Context context;
 
-    public TabAdapter(Context context,
-                      FragmentManager fm) {
+    public TabAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.context = context.getApplicationContext();
     }
@@ -57,7 +56,7 @@ import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DirectoryDumpNativeFragme
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.destroyItem(container, position, object);
-        registeredFragments.remove(object);
+        registeredFragments.remove((Fragment) object);
     }
 
     @NonNull

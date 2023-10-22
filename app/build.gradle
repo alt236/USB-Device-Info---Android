@@ -1,18 +1,25 @@
 plugins {
     id 'com.android.application'
-    id 'com.github.triplet.play' version '2.8.0'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+    id 'com.github.triplet.play' version '3.8.4'
 }
 
 apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
 
 android {
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         def buildNumber = getBuildNumber()
 
-        applicationId "aws.apps.usbDeviceEnumerator"
+        namespace "aws.apps.usbDeviceEnumerator"
         versionCode buildNumber
-        versionName "2.0.1." + buildNumber
+        versionName "3.0.0." + buildNumber
 
         buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
         buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
@@ -47,6 +54,10 @@ android {
         implementation "com.google.android.material:material:$android_material_version"
 
         testImplementation "junit:junit:$junit_version"
+
+        androidTestImplementation "androidx.test:runner:$andoridx_test_runner_version"
+        implementation "com.google.dagger:hilt-android:2.47"
+        kapt "com.google.dagger:hilt-compiler:2.47"
     }
 
     buildTypes {
@@ -65,8 +76,17 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    // Allow references to generated code
+    kapt {
+        correctErrorTypes true
     }
 }
 

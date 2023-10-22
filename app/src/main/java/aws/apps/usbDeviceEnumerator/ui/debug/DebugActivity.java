@@ -14,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import aws.apps.usbDeviceEnumerator.R;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class DebugActivity extends AppCompatActivity {
     private static final String TAG = DebugActivity.class.getSimpleName();
     private static final int LAYOUT_ID = R.layout.act_viewpager;

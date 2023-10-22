@@ -69,8 +69,8 @@ android {
 task jacocoTestReport2(type: JacocoReport) {
 
     reports {
-        xml.enabled = true
-        html.enabled = true
+        xml.required.set(true)
+        html.required.set(true)
     }
 
     def fileFilter = ['jdk.internal.*',
@@ -109,8 +109,8 @@ task jacocoTestReport2(type: JacocoReport) {
     ))
 
     reports {
-        xml.enabled = true
-        html.enabled = true
+        xml.required.set(true)
+        html.required.set(true)
     }
 }
 

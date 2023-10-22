@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
+package aws.apps.usbDeviceEnumerator.ui.debug.fragments.directory;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
@@ -9,15 +9,25 @@ import java.util.Comparator;
 
 import androidx.annotation.NonNull;
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DebugInfoDumper;
 
-/*package*/ class DirectoryDump {
+public class DirectoryDebugInfoDumper implements DebugInfoDumper {
     private static final Comparator<File> FILE_COMPARATOR = new FileComparator();
     private static final String FILE_PREFIX = "    ";
     private static final String DIR_PREFIX = "[D] ";
     private static final char BOX_CORNER = '\u2514';
 
-    public static CharSequence getDump(@NonNull final Context context,
-                                       @NonNull final String dir) {
+    private final Context context;
+    private final String dir;
+
+    public DirectoryDebugInfoDumper(final Context context, final String dir) {
+        this.context = context;
+        this.dir = dir;
+    }
+
+    @NonNull
+    @Override
+    public CharSequence dump() {
         return getDump(context, new File(dir));
     }
 

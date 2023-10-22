@@ -15,33 +15,25 @@
  */
 package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base;
 
-import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.ShareUtils;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public abstract class BaseInfoFragment extends Fragment {
 
-    private DataFetcher dataFetcher;
-
-    @Override
-    public void onAttach(@NonNull final Context context) {
-        super.onAttach(context);
-        dataFetcher = new DataFetcher(
-                new DataProviderCompanyInfo(context),
-                new DataProviderUsbInfo(context),
-                new DataProviderCompanyLogo(context));
-    }
+    @Inject
+    DataFetcher dataFetcher;
 
     @Override
     public void onCreate(Bundle saved) {
@@ -59,7 +51,7 @@ public abstract class BaseInfoFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_export) {
             ShareUtils.share(
-                    getActivity(),
+                    requireActivity(),
                     getString(R.string.app_name),
                     getSharePayload());
             return true;
@@ -82,7 +74,7 @@ public abstract class BaseInfoFragment extends Fragment {
                     viewHolder.getVendorFromDb().setText(vendorFromDb);
                     viewHolder.getProductFromDb().setText(productFromDb);
                     if (bitmap != null) {
-                        final BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), bitmap);
+                        final BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
                         viewHolder.getLogo().setImageDrawable(drawable);
                     } else {
                         viewHolder.getLogo().setImageResource(R.drawable.no_image);
