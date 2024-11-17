@@ -64,7 +64,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if(isRunningOnCi()) {
+            if (isRunningOnCi()) {
                 signingConfig signingConfigs.release
             }
         }
@@ -96,7 +96,7 @@ play {
     logger.warn("GPP Config: $credentialsPath")
     logger.warn("Release Name: '$lastCommitMessage'")
 
-    if(isRunningOnCi()) {
+    if (isRunningOnCi()) {
         enabled = true
         track = "internal"
         //userFraction = 1.0

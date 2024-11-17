@@ -102,7 +102,7 @@ task jacocoTestReport2(type: JacocoReport) {
             excludes: fileFilter
     )
 
-    classDirectories.setFrom(files([ javaClasses ], [ kotlinClasses ]))
+    classDirectories.setFrom(files([javaClasses], [kotlinClasses]))
     sourceDirectories.setFrom(files(mainSrc))
     executionData.setFrom(fileTree(dir: "$buildDir",
             includes: ['jacoco/*.exec', 'connected/*.ec']

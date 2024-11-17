@@ -64,9 +64,9 @@ public class DatabaseUpdater {
             valid = false;
         } else if (!NetworkUtils.isOnline(context)) {  // If we are not online, cancel everything
             DialogFactory.createOkDialog(
-                    context,
-                    R.string.text_device_offline,
-                    R.string.text_device_offline_instructions)
+                            context,
+                            R.string.text_device_offline,
+                            R.string.text_device_offline_instructions)
                     .show();
             valid = false;
         } else {

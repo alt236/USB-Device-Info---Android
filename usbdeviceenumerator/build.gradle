@@ -1,6 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 final int versionMajor = 2
 final int versionMinor = 0
@@ -52,43 +51,3 @@ publishing {
         }
     }
 }
-
-
-bintray {
-    user = project.hasProperty('alt236JCenterUser') ? alt236JCenterUser : "<NO USER NAME>"
-    key = project.hasProperty('alt236JCenterToken') ? alt236JCenterToken : "<NO TOKEN>"
-
-    dryRun = false
-    publish = false
-    publications = ['mavenJava']
-    pkg {
-        repo = 'maven'
-        // userOrg = 'myorg' //An optional organization name when the repo belongs to one of the user's orgs
-        name = artifactName
-        desc = artifactDesc
-        websiteUrl = "${gitHubUrl}"
-        issueTrackerUrl = "${gitHubUrl}/issues"
-        vcsUrl = "${gitHubUrl}.git"
-        labels = tags
-        licenses = ['Apache-2.0']
-        publicDownloadNumbers = true
-        githubRepo = "${gitHubRepo}"
-        githubReleaseNotesFile = 'README.md'
-
-        version {
-            name = semanticVersion
-            //desc = 'optional, version-specific description'
-            mavenCentralSync {
-                sync = false
-                // Optional (true by default). Determines whether to sync the version to Maven Central.
-                user = 'userToken' //OSS user token
-                password = 'paasword' //OSS user password
-                close = '1'
-                // Optional property. By default the staging repository is closed and artifacts are released to Maven Central.
-                // You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
-            }
-        }
-    }
-}
-
-

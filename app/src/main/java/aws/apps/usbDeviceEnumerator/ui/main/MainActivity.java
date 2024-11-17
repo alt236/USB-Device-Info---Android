@@ -57,21 +57,15 @@ import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     final String TAG = this.getClass().getName();
-
-    private UsbManager mUsbManAndroid;
-
     @Inject
     SysBusUsbManager mUsbManagerLinux;
-
     @Inject
     DataProviderUsbInfo mDbUsb;
-
     @Inject
     DataProviderCompanyInfo mDbComp;
-
     @Inject
     DataProviderCompanyLogo mZipComp;
-
+    private UsbManager mUsbManAndroid;
     private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
 
     private Navigation mNavigation;
