@@ -15,10 +15,7 @@
  */
 package aws.apps.usbDeviceEnumerator.ui.main;
 
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -51,6 +48,8 @@ import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
 import dagger.hilt.android.AndroidEntryPoint;
+import uk.co.alt236.androidusbmanager.AndroidUsbManager;
+import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
 
@@ -60,12 +59,14 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     SysBusUsbManager mUsbManagerLinux;
     @Inject
+    AndroidUsbManager mUsbManagerAndroid;
+    @Inject
     DataProviderUsbInfo mDbUsb;
     @Inject
     DataProviderCompanyInfo mDbComp;
     @Inject
     DataProviderCompanyLogo mZipComp;
-    private UsbManager mUsbManAndroid;
+
     private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
 
     private Navigation mNavigation;
@@ -92,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.act_main);
         mTabController = new TabController(this);
         mNavigation = new Navigation(this);
-
-        mUsbManAndroid = (UsbManager) getSystemService(Context.USB_SERVICE);
 
         mTabController.setup(this::onTabChanged);
 
@@ -190,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void refreshUsbDevices() {
-        Map<String, UsbDevice> mAndroidDeviceMap = mUsbManAndroid.getDeviceList();
+        Map<String, AndroidUsbDevice> mAndroidDeviceMap = mUsbManagerAndroid.getDeviceList();
         mLinuxDeviceMap = mUsbManagerLinux.getUsbDevices();
 
         updateList(mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO), mAndroidDeviceMap);

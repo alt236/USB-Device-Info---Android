@@ -50,6 +50,9 @@ public class UsbConstantResolver {
     private final static int USB_ENDPOINT_XFER_INT = 3;
 
 
+    private static final int USB_INTERFACE_SUBCLASS_BOOT = 1;
+    private static final int USB_SUBCLASS_VENDOR_SPEC = 0xff;
+
     public static String resolveUsbClass(int usbClass) {
         switch (usbClass) {
             case USB_CLASS_PER_INTERFACE:
@@ -90,6 +93,17 @@ public class UsbConstantResolver {
                 return "Wireless Controller (0x" + Integer.toHexString(usbClass) + ")";
             case USB_CLASS_MISC:
                 return "Miscellaneous (0x" + Integer.toHexString(usbClass) + ")";
+            default:
+                return "Unknown (0x" + Integer.toHexString(usbClass) + ")";
+        }
+    }
+
+    public static String resolveUsbInterfaceSubClass(int usbClass) {
+        switch (usbClass) {
+            case USB_INTERFACE_SUBCLASS_BOOT:
+                return "Boot (0x" + Integer.toHexString(usbClass) + ")";
+            case USB_SUBCLASS_VENDOR_SPEC:
+                return "Vendor Specific (0x" + Integer.toHexString(usbClass) + ")";
             default:
                 return "Unknown (0x" + Integer.toHexString(usbClass) + ")";
         }

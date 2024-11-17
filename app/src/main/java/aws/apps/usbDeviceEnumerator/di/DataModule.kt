@@ -1,6 +1,7 @@
 package aws.apps.usbDeviceEnumerator.di
 
 import android.content.Context
+import android.hardware.usb.UsbManager
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo
@@ -12,6 +13,7 @@ import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import uk.co.alt236.androidusbmanager.AndroidUsbManager
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
 
 @Module
@@ -40,6 +42,13 @@ object DataModule {
     @Reusable
     fun provideSysBusUsbManager(path: LinuxUsbPath): SysBusUsbManager {
         return SysBusUsbManager(path.path)
+    }
+
+    @Provides
+    @Reusable
+    fun provideAndroidUsbManager(@ApplicationContext context: Context): AndroidUsbManager {
+        val usbman = context.getSystemService(Context.USB_SERVICE) as UsbManager?
+        return AndroidUsbManager(usbman)
     }
 
     @Provides

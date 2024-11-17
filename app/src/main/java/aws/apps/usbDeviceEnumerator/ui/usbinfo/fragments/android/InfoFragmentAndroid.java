@@ -15,48 +15,52 @@
  */
 package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android;
 
-import android.content.Context;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table.BottomTableBuilder;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.BaseInfoFragment;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory;
 import aws.apps.usbDeviceEnumerator.util.StringUtils;
+import dagger.hilt.android.AndroidEntryPoint;
+import uk.co.alt236.androidusbmanager.AndroidUsbManager;
+import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice;
+import uk.co.alt236.androidusbmanager.result.ApiConditionalResult;
 import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
 
+@AndroidEntryPoint
 public class InfoFragmentAndroid extends BaseInfoFragment {
     public final static String DEFAULT_STRING = "???";
     private final static String EXTRA_DATA = InfoFragmentAndroid.class.getName() + ".BUNDLE_DATA";
     private static final SharePayloadFactory SHARE_PAYLOAD_FACTORY = new SharePayloadFactory();
     private static final int LAYOUT_ID = R.layout.fragment_usb_info;
 
-    private final String TAG = this.getClass().getName();
+    @Inject
+    protected AndroidUsbManager usbManager;
+    @Inject
+    protected ApiConditionalResultMapper resultMapper;
+
     private String usbKey = DEFAULT_STRING;
     private ViewHolder viewHolder;
-    private UsbManager usbMan;
-    private UsbDevice device;
-    private boolean validData;
 
-    @Override
-    public void onAttach(@NonNull final Context context) {
-        super.onAttach(context);
-        usbMan = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-    }
+    private boolean validData;
+    private AndroidUsbDevice device;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        usbKey = getArguments().getString(EXTRA_DATA, DEFAULT_STRING);
-        device = usbMan.getDeviceList().get(usbKey);
+        usbKey = requireArguments().getString(EXTRA_DATA, DEFAULT_STRING);
+        device = usbManager.getDeviceList().get(usbKey);
 
         final View view;
 
@@ -76,7 +80,7 @@ public class InfoFragmentAndroid extends BaseInfoFragment {
         super.onViewCreated(view, bundle);
         viewHolder = new ViewHolder(view);
 
-        usbKey = getArguments().getString(EXTRA_DATA, DEFAULT_STRING);
+        usbKey = requireArguments().getString(EXTRA_DATA, DEFAULT_STRING);
 
         if (validData) {
             viewHolder = new ViewHolder(view);
@@ -104,15 +108,21 @@ public class InfoFragmentAndroid extends BaseInfoFragment {
 
         new BottomTableBuilder(getResources(), inflater).build(viewHolder.getBottomTable(), device);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            viewHolder.getReportedVendor().setText(device.getManufacturerName());
-            viewHolder.getReportedProduct().setText(device.getProductName());
-            loadAsyncData(viewHolder, vid, pid, device.getManufacturerName());
+        final ApiConditionalResult<String> manufacturedNameResult = device.getManufacturerName();
+        final String mappedManufacturerNameValue = resultMapper.map(manufacturedNameResult);
+
+        viewHolder.getReportedVendor().setText(mappedManufacturerNameValue);
+        viewHolder.getReportedProduct().setText(resultMapper.map(device.getProductName()));
+
+        final String manufacturerName;
+        if (manufacturedNameResult instanceof ApiConditionalResult.Success<String>
+                && !TextUtils.isEmpty(mappedManufacturerNameValue)) {
+            manufacturerName = mappedManufacturerNameValue;
         } else {
-            viewHolder.getReportedVendor().setText(R.string.not_provided);
-            viewHolder.getReportedProduct().setText(R.string.not_provided);
-            loadAsyncData(viewHolder, vid, pid, null);
+            manufacturerName = null;
         }
+
+        loadAsyncData(viewHolder, vid, pid, manufacturerName);
     }
 
     @Override

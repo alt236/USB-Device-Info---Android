@@ -72,10 +72,17 @@
     <string name="attributes_">"Attributes     : "</string>
     <string name="none">None</string>
     <string name="class_">Class:</string>
+    <string name="alternate_setting_">Alternate Setting:</string>
+    <string name="subclass_">Subclass:</string>
     <string name="interface_">Interface #</string>
     <string name="endpoint_">Endpoint:</string>
+    <string name="configuration_">Configuration #</string>
     <string name="device_path_">Device Path:</string>
     <string name="device_class_">Device Class:</string>
+    <string name="id_">"ID: "</string>
+    <string name="name_">"Name: "</string>
+    <string name="max_power_">"Max Power: "</string>
+
     <string name="vendor_id_">"Vendor ID: "</string>
     <string name="vendor_name_">"Vendor Name: "</string>
     <string name="product_id_">"Product ID: "</string>
@@ -90,4 +97,6 @@
     <string name="logo">Logo</string>
     <string name="additional_info">Additional Info</string>
     <string name="not_provided">Not provided</string>
+
+    <string name="error_device_api_too_low">Error: Device API too low</string>
 </resources>

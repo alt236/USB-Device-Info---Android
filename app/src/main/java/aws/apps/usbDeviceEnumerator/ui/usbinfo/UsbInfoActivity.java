@@ -23,8 +23,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
+import dagger.hilt.android.AndroidEntryPoint;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
+@AndroidEntryPoint
 public class UsbInfoActivity extends AppCompatActivity {
     public static final String EXTRA_DATA_ANDROID = UsbInfoActivity.class.getName() + ".EXTRA_DATA_ANDROID";
     public static final String EXTRA_DATA_LINUX = UsbInfoActivity.class.getName() + ".EXTRA_DATA_LINUX";
