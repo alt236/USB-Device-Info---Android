@@ -1,6 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.debug.fragments;
-
-import android.content.Context;
+package aws.apps.usbDeviceEnumerator.ui.debug.fragments.directorynative;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -9,12 +7,24 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
+import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DebugInfoDumper;
 
-/*package*/ class DirectoryDumpNative {
+public class DirectoryNativeDebugInfoDumper implements DebugInfoDumper {
+
+    private final String dir;
+
+    public DirectoryNativeDebugInfoDumper(final String dir) {
+        this.dir = dir;
+    }
+
+    @NonNull
+    @Override
+    public CharSequence dump() {
+        return getDump(dir);
+    }
 
     @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
-    public static CharSequence getDump(@NonNull final Context context,
-                                       @NonNull final String dir) {
+    private static CharSequence getDump(@NonNull final String dir) {
 
         final String[] command = {"ls", "-al", dir};
         final StringBuilder sb = new StringBuilder();

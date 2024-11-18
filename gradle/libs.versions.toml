@@ -1,0 +1,21 @@
+[versions]
+appcompat = "1.6.1" # changing this will affect minSDK
+gradle-android = "8.7.2"
+junit4 = "4.13.2"
+jsr305 = "3.0.2"
+material = "1.9.0" # changing this will affect minSDK
+mockito = "5.14.2"
+multidex = "1.0.3"
+
+[libraries]
+android-build-tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle-android" }
+android-support-multidex = { module = "com.android.support:multidex", version.ref = "multidex" }
+android-material = { module = "com.google.android.material:material", version.ref = "material" }
+
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
+junit4 = { module = "junit:junit", version.ref = "junit4" }
+
+[plugins]

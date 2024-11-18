@@ -70,7 +70,7 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
 
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            result = cursor.getString(cursor.getColumnIndex(colName));
+            result = getStringFromCursor(cursor, colName);
         } else {
             result = null;
         }
@@ -80,5 +80,13 @@ import aws.apps.usbDeviceEnumerator.util.NotifyUser;
         }
 
         return result;
+    }
+
+    private static String getStringFromCursor(Cursor cursor, String colName) {
+        final int colIndex = cursor.getColumnIndex(colName);
+        if (colIndex < 0) {
+            throw new IllegalArgumentException("No column with name '" + colName + "' in cursor");
+        }
+        return cursor.getString(colIndex);
     }
 }

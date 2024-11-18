@@ -7,7 +7,7 @@ import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
 import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 
-/*package*/ class DataFetcher {
+public class DataFetcher {
 
     private final DataProviderCompanyInfo dbComp;
     private final DataProviderUsbInfo dbUsb;

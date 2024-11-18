@@ -2,10 +2,17 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="usb-device-info/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/linuxapp/linuxapp.iml" filepath="$PROJECT_DIR$/.idea/modules/linuxapp/linuxapp.iml" group="usb-device-info/linuxapp" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usb-device-info.iml" filepath="$PROJECT_DIR$/.idea/modules/usb-device-info.iml" group="usb-device-info" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usbdeviceenumerator.iml" filepath="$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usbdeviceenumerator.iml" group="usb-device-info/usbdeviceenumerator" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usb-device-info.iml" filepath="$PROJECT_DIR$/.idea/modules/usb-device-info.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/usb-device-info.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info.linuxapp.iml" filepath="$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info.linuxapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info.linuxapp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info.linuxapp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info.linuxapp.test.iml" filepath="$PROJECT_DIR$/.idea/modules/linuxapp/usb-device-info.linuxapp.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usb-device-info.usbdeviceenumerator.iml" filepath="$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usb-device-info.usbdeviceenumerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usb-device-info.usbdeviceenumerator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usb-device-info.usbdeviceenumerator.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usb-device-info.usbdeviceenumerator.test.iml" filepath="$PROJECT_DIR$/.idea/modules/usbdeviceenumerator/usb-device-info.usbdeviceenumerator.test.iml" />
     </modules>
   </component>
 </project>

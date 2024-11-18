@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+}
+
+apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
+
+android {
+    namespace 'uk.co.alt236.androidusbmanager'
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        lintConfig file("$rootDir/buildsystem/codequality/lint.xml")
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            enableUnitTestCoverage false
+            enableAndroidTestCoverage false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = 17
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "com.google.android.material:material:$android_material_version"
+    testImplementation 'junit:junit:4.13.2'
+}

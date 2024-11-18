@@ -1,18 +1,26 @@
 plugins {
     id 'com.android.application'
-    id 'com.github.triplet.play' version '2.8.0'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+    id 'com.github.triplet.play' version '3.12.1'
 }
 
 apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
 
 android {
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         def buildNumber = getBuildNumber()
+        multiDexEnabled true
 
-        applicationId "aws.apps.usbDeviceEnumerator"
+        namespace "aws.apps.usbDeviceEnumerator"
         versionCode buildNumber
-        versionName "2.0.1." + buildNumber
+        versionName "3.0.0." + buildNumber
 
         buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
         buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
@@ -42,18 +50,26 @@ android {
 
     dependencies {
         implementation project(':usbdeviceenumerator')
+        implementation project(':android-usbmanager')
 
-        implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-        implementation "com.google.android.material:material:$android_material_version"
+        implementation libs.androidx.appcompat
+        implementation libs.android.material
+        implementation libs.android.support.multidex
 
-        testImplementation "junit:junit:$junit_version"
+        testImplementation libs.junit4
+
+        androidTestImplementation "androidx.test:runner:$andoridx_test_runner_version"
+        implementation "com.google.dagger:hilt-android:2.47"
+        kapt "com.google.dagger:hilt-compiler:2.47"
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            enableUnitTestCoverage false
+            enableAndroidTestCoverage false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if(isRunningOnCi()) {
+            if (isRunningOnCi()) {
                 signingConfig signingConfigs.release
             }
         }
@@ -61,26 +77,44 @@ android {
         debug {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = 17
+    }
+
+    // Allow references to generated code
+    kapt {
+        correctErrorTypes true
+    }
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        lintConfig file("$rootDir/buildsystem/codequality/lint.xml")
     }
 }
 
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
 play {
     def credentialsPath = System.getenv("GPLAY_DEPLOY_KEY") ?: "[KEY_NOT_DEFINED]"
     def lastCommitMessage = getLastGitCommitMessage().take(50)
     logger.warn("GPP Config: $credentialsPath")
     logger.warn("Release Name: '$lastCommitMessage'")
 
-    if(isRunningOnCi()) {
+    if (isRunningOnCi()) {
         enabled = true
         track = "internal"
         //userFraction = 1.0
-        releaseStatus = "completed"
+        releaseStatus = ReleaseStatus.COMPLETED
         serviceAccountCredentials = file(credentialsPath)
         releaseName = lastCommitMessage
         artifactDir = file("${project.rootDir}/app/build/outputs/apk/release/")

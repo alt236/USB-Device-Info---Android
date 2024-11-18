@@ -33,7 +33,7 @@ def getBuildNumber() {
 
 def isRunningOnCi() {
     def envVariable = "CI"
-   return Boolean.parseBoolean(System.getenv(envVariable) ?: "false")
+    return Boolean.parseBoolean(System.getenv(envVariable) ?: "false")
 }
 
 def cleanString(final String text) {
@@ -55,7 +55,6 @@ def quoteString(final String str) {
 }
 
 
-
 def getLastGitCommitMessage() {
     return 'git log -1 --pretty=%B'.execute().text.trim()
 }
@@ -63,8 +62,8 @@ def getLastGitCommitMessage() {
 def collectCommonProguardRules() {
     def proguardFileDirectory = "${project.rootDir}/buildsystem/proguard-rules/"
 
-    def proguardFileSet =  fileTree(proguardFileDirectory).filter { it.isFile() }.files
-    if(proguardFileSet.isEmpty()) {
+    def proguardFileSet = fileTree(proguardFileDirectory).filter { it.isFile() }.files
+    if (proguardFileSet.isEmpty()) {
         throw new IllegalStateException("No proguard rules found in $proguardFileDirectory")
     }
 
