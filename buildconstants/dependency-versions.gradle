@@ -12,7 +12,7 @@ ext {
     junit_version = "4.13.2"
 
     // code quality
-    jacoco_version = "0.8.5"
+    jacoco_version = "0.8.12"
 
     // Other
     dexter_version = "6.1.2"
