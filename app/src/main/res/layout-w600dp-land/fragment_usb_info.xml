@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:scrollbars="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,12 +30,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TableLayout
                 android:id="@+id/tblUsbInfo_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/btnLogo"
                 android:layout_toLeftOf="@+id/btnLogo"
                 android:stretchColumns="1">
 
@@ -144,35 +147,22 @@
 
             <ImageButton
                 android:id="@+id/btnLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/device_logo_image"
+                android:layout_height="@dimen/device_logo_image"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="6dip"
+                android:layout_margin="4dip"
                 android:background="@drawable/image_border"
                 android:contentDescription="@string/logo"
-                android:maxWidth="130dip"
-                android:maxHeight="130dip"
-                android:minWidth="130dip"
-                android:minHeight="130dip"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:src="@drawable/no_image" />
         </RelativeLayout>
 
-        <TableLayout
-            android:id="@+id/tblUsbInfo_bottom"
+        <include
+            layout="@layout/include_info_bottom_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="1">
-
-            <TableRow
-                style="@style/table_section_title_row"
-                android:paddingTop="@dimen/activity_vertical_margin">
-
-                <TextView
-                    style="@style/table_section_title_row_data"
-                    android:text="@string/additional_info" />
-            </TableRow>
-        </TableLayout>
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

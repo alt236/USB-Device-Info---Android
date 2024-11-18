@@ -2,14 +2,27 @@ package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table
 
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.view.LayoutInflater
+import android.widget.TableLayout
 import aws.apps.usbDeviceEnumerator.R
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.TableWriter
 import uk.co.alt236.androidusbmanager.model.AndroidUsbConfiguration
+import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice
 import uk.co.alt236.androidusbmanager.result.ApiConditionalResult
 
-internal class ConfigurationTableBuilder(resources: Resources) : TableBuilder(resources) {
+internal class ConfigurationTableBuilder(
+    resources: Resources,
+    private val inflater: LayoutInflater
+) : TableBuilder(resources) {
 
-    fun addConfigurations(
+
+    fun build(table: TableLayout, device: AndroidUsbDevice) {
+        val tableWriter = TableWriter(inflater, table)
+
+        addConfigurations(tableWriter, device.configurations)
+    }
+
+    private fun addConfigurations(
         tableWriter: TableWriter,
         result: ApiConditionalResult<List<AndroidUsbConfiguration>>
     ) {
@@ -39,6 +52,10 @@ internal class ConfigurationTableBuilder(resources: Resources) : TableBuilder(re
             tableWriter.addDataRow(title, "no configurations")
         } else {
             for ((index, config) in result.withIndex()) {
+                if (index > 0) {
+                    tableWriter.addEmptyRow()
+                }
+
                 tableWriter.addTitleRow(getString(R.string.configuration_) + index)
                 tableWriter.addDataRow(R.string.id_, config.id.toString())
                 tableWriter.addDataRow(R.string.name_, config.name)

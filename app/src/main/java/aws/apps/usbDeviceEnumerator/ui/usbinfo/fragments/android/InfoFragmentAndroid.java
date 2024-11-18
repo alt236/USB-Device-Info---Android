@@ -22,16 +22,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import aws.apps.usbDeviceEnumerator.R;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table.BottomTableBuilder;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table.ConfigurationTableBuilder;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table.InterfaceTableBuilder;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.BaseInfoFragment;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.tabs.BottomTabSetup;
 import aws.apps.usbDeviceEnumerator.util.StringUtils;
 import dagger.hilt.android.AndroidEntryPoint;
 import uk.co.alt236.androidusbmanager.AndroidUsbManager;
@@ -106,7 +110,7 @@ public class InfoFragmentAndroid extends BaseInfoFragment {
         viewHolder.getDevicePath().setText(usbKey);
         viewHolder.getDeviceClass().setText(deviceClass);
 
-        new BottomTableBuilder(getResources(), inflater).build(viewHolder.getBottomTable(), device);
+        populateBottomTabs(inflater);
 
         final ApiConditionalResult<String> manufacturedNameResult = device.getManufacturerName();
         final String mappedManufacturerNameValue = resultMapper.map(manufacturedNameResult);
@@ -123,6 +127,13 @@ public class InfoFragmentAndroid extends BaseInfoFragment {
         }
 
         loadAsyncData(viewHolder, vid, pid, manufacturerName);
+    }
+
+    private void populateBottomTabs(LayoutInflater inflater) {
+        new BottomTabSetup().setup(viewHolder, List.of("Interfaces", "Configurations"));
+
+        new InterfaceTableBuilder(getResources(), inflater).build(viewHolder.getFirstBottomTable(), device);
+        new ConfigurationTableBuilder(getResources(), inflater).build(viewHolder.getSecondBottomTable(), device);
     }
 
     @Override

@@ -16,7 +16,9 @@ public class SharePayloadFactory {
         sb.append(tableToString(holder.getHeaderTable()));
         sb.append(tableToString(holder.getTopTable()));
         sb.append('\n');
-        sb.append(tableToString(holder.getBottomTable()));
+        sb.append(tableToString(holder.getFirstBottomTable()));
+        sb.append('\n');
+        sb.append(tableToString(holder.getSecondBottomTable()));
         return sb.toString();
     }
 

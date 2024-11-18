@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import aws.apps.usbDeviceEnumerator.R;
@@ -28,16 +30,15 @@ import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.BaseInfoFragment;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.TableWriter;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.tabs.BottomTabSetup;
 import aws.apps.usbDeviceEnumerator.util.StringUtils;
 import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class InfoFragmentLinux extends BaseInfoFragment {
-    public final static String DEFAULT_STRING = "???";
     private final static String EXTRA_DATA = InfoFragmentLinux.class.getName() + ".BUNDLE_DATA";
     private static final int LAYOUT_ID = R.layout.fragment_usb_info;
     private static final SharePayloadFactory SHARE_PAYLOAD_FACTORY = new SharePayloadFactory();
-    private final String TAG = this.getClass().getName();
     private SysBusUsbDevice device;
     private boolean validData;
 
@@ -45,7 +46,7 @@ public class InfoFragmentLinux extends BaseInfoFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        device = (SysBusUsbDevice) getArguments().getSerializable(EXTRA_DATA);
+        device = (SysBusUsbDevice) requireArguments().getSerializable(EXTRA_DATA);
         final View view;
 
         if (device == null) {
@@ -87,7 +88,9 @@ public class InfoFragmentLinux extends BaseInfoFragment {
         viewHolder.getReportedVendor().setText(device.getReportedVendorName());
         viewHolder.getReportedProduct().setText(device.getReportedProductName());
 
-        final TableWriter tableWriter = new TableWriter(inflater, viewHolder.getBottomTable());
+        new BottomTabSetup().setup(viewHolder, List.of(getString(R.string.additional_info)));
+
+        final TableWriter tableWriter = new TableWriter(inflater, viewHolder.getFirstBottomTable());
         tableWriter.addDataRow(getString(R.string.usb_version_), device.getUsbVersion());
         tableWriter.addDataRow(getString(R.string.speed_), device.getSpeed());
         tableWriter.addDataRow(getString(R.string.protocol_), device.getDeviceProtocol());

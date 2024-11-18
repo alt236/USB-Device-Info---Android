@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="start"
+        app:tabMode="scrollable"
+        tools:background="#FF00FF" />
+
+    <aws.apps.usbDeviceEnumerator.ui.common.views.ScrollViewNestedViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="#EE0011">
+
+        <TableLayout
+            android:id="@+id/first_bottom_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/second_bottom_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+
+        </TableLayout>
+
+    </aws.apps.usbDeviceEnumerator.ui.common.views.ScrollViewNestedViewPager>
+</LinearLayout>

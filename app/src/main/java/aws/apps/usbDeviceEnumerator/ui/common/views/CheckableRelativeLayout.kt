@@ -1,4 +1,4 @@
-package aws.apps.usbDeviceEnumerator.ui.main.list
+package aws.apps.usbDeviceEnumerator.ui.common.views
 
 import android.content.Context
 import android.util.AttributeSet

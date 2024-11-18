@@ -12,27 +12,25 @@ import uk.co.alt236.androidusbmanager.model.AndroidUsbEndpoint
 import uk.co.alt236.androidusbmanager.model.AndroidUsbInterface
 import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver
 
-class BottomTableBuilder(
+class InterfaceTableBuilder(
     resources: Resources,
     private val inflater: LayoutInflater
 ) : TableBuilder(resources) {
-    private val configurationTableBuilder = ConfigurationTableBuilder(resources)
-
     private val resultMapper = ApiConditionalResultMapper(resources)
 
     fun build(table: TableLayout, device: AndroidUsbDevice) {
         val tableWriter = TableWriter(inflater, table)
-
-        configurationTableBuilder.addConfigurations(tableWriter, device.configurations)
-        tableWriter.addEmptyRow()
         addInterfaces(tableWriter, device.interfaces)
     }
-
 
     private fun addInterfaces(tableWriter: TableWriter, iFaces: List<AndroidUsbInterface>) {
         for ((index, iFace) in iFaces.withIndex()) {
             val usbClass = UsbConstantResolver.resolveUsbClass((iFace.interfaceClass))
             val subClass = UsbConstantResolver.resolveUsbInterfaceSubClass(iFace.interfaceSubclass)
+
+            if (index > 0) {
+                tableWriter.addEmptyRow()
+            }
 
             tableWriter.addTitleRow(getString(R.string.interface_) + index)
             tableWriter.addDataRow(R.string.id_, iFace.id.toString())
