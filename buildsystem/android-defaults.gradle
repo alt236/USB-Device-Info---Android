@@ -17,13 +17,11 @@ android {
         multiDexKeepProguard file("${project.rootDir}/buildsystem/multidex/multidex.pro")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
         release {
             minifyEnabled true
-            testCoverageEnabled false
 
             // PROGUARD
             def proguardRuleFiles = collectCommonProguardRules()
@@ -36,7 +34,6 @@ android {
 
         debug {
             minifyEnabled false
-            testCoverageEnabled true
 
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -51,8 +48,11 @@ android {
         jvmTarget = 17
     }
 
-    lintOptions {
-        lintConfig file("${project.rootDir}/buildsystem/codequality/lint.xml")
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        lintConfig file("$rootDir/buildsystem/codequality/lint.xml")
     }
 
     testOptions {
@@ -65,9 +65,6 @@ android {
         }
     }
 
-    aaptOptions {
-        noCompress 'zip'
-    }
 }
 
 task jacocoTestReport2(type: JacocoReport) {

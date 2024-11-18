@@ -66,6 +66,8 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            enableUnitTestCoverage false
+            enableAndroidTestCoverage false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (isRunningOnCi()) {
                 signingConfig signingConfigs.release
@@ -75,6 +77,8 @@ android {
         debug {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
         }
     }
 
@@ -90,6 +94,12 @@ android {
     // Allow references to generated code
     kapt {
         correctErrorTypes true
+    }
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        lintConfig file("$rootDir/buildsystem/codequality/lint.xml")
     }
 }
 
