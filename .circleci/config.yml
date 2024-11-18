@@ -188,8 +188,8 @@ jobs:
               javac --version
       - setup_dependency_cache
       - *run_unit_tests
-      - *produce_code_coverage # Produce code coverage needs to be straight after running unit tests
-      - *print_code_coverage
+#       - *produce_code_coverage # Produce code coverage needs to be straight after running unit tests
+#       - *print_code_coverage
       - *run_android_lint
       - *build_debug_apks
       - *build_release_apks
