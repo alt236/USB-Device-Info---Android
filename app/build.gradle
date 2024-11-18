@@ -84,7 +84,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = 17
     }
 
     // Allow references to generated code
