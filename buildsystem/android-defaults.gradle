@@ -1,4 +1,5 @@
 // The versions are defined in "${project.rootDir}/buildconstants/android-sdk-versions.gradle"
+
 apply plugin: 'jacoco'
 
 jacoco {

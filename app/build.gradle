@@ -1,9 +1,9 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
-    id 'com.github.triplet.play' version '3.12.1'
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.triplet.play)
 }
 
 apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
@@ -58,9 +58,9 @@ android {
 
         testImplementation libs.junit4
 
-        androidTestImplementation "androidx.test:runner:$andoridx_test_runner_version"
-        implementation "com.google.dagger:hilt-android:2.47"
-        kapt "com.google.dagger:hilt-compiler:2.47"
+        androidTestImplementation libs.androidx.runner
+        implementation libs.hilt.android
+        kapt libs.hilt.compiler
     }
 
     buildTypes {
