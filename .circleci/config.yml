@@ -182,6 +182,10 @@ jobs:
     steps:
       - checkout
       - *setup_environment
+      - run:
+        name: "Checking javac version"
+        command: |
+            javac --version
       - setup_dependency_cache
       - *run_unit_tests
       - *produce_code_coverage # Produce code coverage needs to be straight after running unit tests
