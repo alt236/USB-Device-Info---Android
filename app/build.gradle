@@ -52,11 +52,11 @@ android {
         implementation project(':usbdeviceenumerator')
         implementation project(':android-usbmanager')
 
-        implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-        implementation "com.google.android.material:material:$android_material_version"
-        implementation 'com.android.support:multidex:1.0.3'
+        implementation libs.androidx.appcompat
+        implementation libs.android.material
+        implementation libs.android.support.multidex
 
-        testImplementation "junit:junit:$junit_version"
+        testImplementation libs.junit4
 
         androidTestImplementation "androidx.test:runner:$andoridx_test_runner_version"
         implementation "com.google.dagger:hilt-android:2.47"

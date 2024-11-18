@@ -17,10 +17,14 @@ final String gitHubUrl = "https://github.com/${gitHubRepo}"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
+test {
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
+}
+
 dependencies {
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-    testImplementation 'org.mockito:mockito-all:1.10.19'
-    testImplementation "junit:junit:$junit_version"
+    compileOnly libs.jsr305
+    testImplementation libs.mockito
+    testImplementation libs.junit4
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

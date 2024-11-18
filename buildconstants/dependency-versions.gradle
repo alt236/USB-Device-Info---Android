@@ -8,7 +8,7 @@ ext {
     android_material_version = "1.9.0"
 
     // testing
-    mockito_version = "3.3.3"
+    mockito_version = "5.14.2"
     junit_version = "4.13.2"
 
     // code quality
