@@ -21,13 +21,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -43,6 +44,7 @@ import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.ui.common.Navigation;
 import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
 import aws.apps.usbDeviceEnumerator.ui.debug.DebugActivity;
+import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListAdapter;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
@@ -99,8 +101,10 @@ public class MainActivity extends AppCompatActivity {
         // Setup android list - tab1;
         mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO)
                 .getList().setOnItemClickListener((parent, view, position, id) -> {
-                    ((ListView) parent).setItemChecked(position, true);
-                    mNavigation.showAndroidUsbDeviceInfo(((TextView) view).getText().toString());
+                    final ListView listView = ((ListView) parent);
+                    listView.setItemChecked(position, true);
+                    final String key = (String) listView.getAdapter().getItem(position);
+                    mNavigation.showAndroidUsbDeviceInfo(key);
                 });
 
 
@@ -197,14 +201,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(final TabViewHolder holder, final Map<String, ?> map) {
-        final String[] array = map.keySet().toArray(new String[0]);
+        final List<String> items = new ArrayList<>(map.keySet());
+        Collections.sort(items);
 
-        Arrays.sort(array);
-
-        final ListAdapter adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.list_item, array);
+        final ListAdapter adapter = new UsbDeviceListAdapter(getApplicationContext(), items);
         holder.getList().setAdapter(adapter);
 
-        final String count = getString(R.string.text_number_of_devices, array.length);
+        final String count = getString(R.string.text_number_of_devices, items.size());
         holder.getCount().setText(count);
     }
 }
