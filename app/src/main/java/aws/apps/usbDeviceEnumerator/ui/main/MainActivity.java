@@ -23,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,8 +110,10 @@ public class MainActivity extends AppCompatActivity {
         // Setup linux list - tab2
         mTabController.getHolderForTag(TabController.TAB_LINUX_INFO)
                 .getList().setOnItemClickListener((parent, view, position, id) -> {
-                    ((ListView) parent).setItemChecked(position, true);
-                    mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(((TextView) view).getText().toString()));
+                    final ListView listView = ((ListView) parent);
+                    listView.setItemChecked(position, true);
+                    final String key = (String) listView.getAdapter().getItem(position);
+                    mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(key));
                 });
 
 
