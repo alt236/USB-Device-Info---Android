@@ -93,6 +93,7 @@ android {
     }
 }
 
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
 play {
     def credentialsPath = System.getenv("GPLAY_DEPLOY_KEY") ?: "[KEY_NOT_DEFINED]"
     def lastCommitMessage = getLastGitCommitMessage().take(50)
@@ -103,7 +104,7 @@ play {
         enabled = true
         track = "internal"
         //userFraction = 1.0
-        releaseStatus = "completed"
+        releaseStatus = ReleaseStatus.COMPLETED
         serviceAccountCredentials = file(credentialsPath)
         releaseName = lastCommitMessage
         artifactDir = file("${project.rootDir}/app/build/outputs/apk/release/")
