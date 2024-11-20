@@ -10,7 +10,7 @@ class ApiConditionalResultMapper @Inject constructor(private val resources: Reso
     fun map(input: ApiConditionalResult<*>): String {
         return when (input) {
             ApiConditionalResult.ApiTooLow -> resources.getString(R.string.error_device_api_too_low)
-            is ApiConditionalResult.Error<*> -> input.error::class.java.simpleName
+            is ApiConditionalResult.Error -> input.error::class.java.simpleName
             is ApiConditionalResult.Success -> input.result.toString()
         }
     }

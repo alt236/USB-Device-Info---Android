@@ -28,8 +28,10 @@ public class ViewHolder {
 
     private final TabLayout bottomInfoTabLayout;
     private final ViewPager bottomTabViewPager;
+    private final View rootView;
 
     public ViewHolder(final View rootView) {
+        this.rootView = rootView;
         tblUsbInfoHeader = rootView.findViewById(R.id.tblUsbInfo_title);
         tblUsbInfoTop = rootView.findViewById(R.id.tblUsbInfo_top);
         firstBottomInfoTable = rootView.findViewById(R.id.first_bottom_table);
@@ -45,6 +47,10 @@ public class ViewHolder {
         tvDevicePath = rootView.findViewById(R.id.tvDevicePath);
         tvDeviceClass = rootView.findViewById(R.id.tvDeviceClass);
         logo = rootView.findViewById(R.id.btnLogo);
+    }
+
+    public View getRootView() {
+        return rootView;
     }
 
     public ImageView getLogo() {

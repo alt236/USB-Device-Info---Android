@@ -33,7 +33,7 @@ internal class ConfigurationTableBuilder(
                 getString(R.string.error_device_api_too_low)
             )
 
-            is ApiConditionalResult.Error<*> -> tableWriter.addDataRow(
+            is ApiConditionalResult.Error -> tableWriter.addDataRow(
                 title,
                 result.error::class.java.simpleName
             )

@@ -25,8 +25,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,10 +42,12 @@ import aws.apps.usbDeviceEnumerator.ui.common.Navigation;
 import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
 import aws.apps.usbDeviceEnumerator.ui.debug.DebugActivity;
 import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListAdapter;
+import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListDataMapper;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
 import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper;
 import dagger.hilt.android.AndroidEntryPoint;
 import uk.co.alt236.androidusbmanager.AndroidUsbManager;
 import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice;
@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
     DataProviderCompanyInfo mDbComp;
     @Inject
     DataProviderCompanyLogo mZipComp;
+    @Inject
+    UsbDeviceListDataMapper usbListDataMapper;
+    @Inject
+    ApiConditionalResultMapper apiConditionalResultMapper;
 
     private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
 
@@ -94,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.act_main);
         mTabController = new TabController(this);
         mNavigation = new Navigation(this);
-
         mTabController.setup(this::onTabChanged);
 
         // Setup android list - tab1;
@@ -102,8 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 .getList().setOnItemClickListener((parent, view, position, id) -> {
                     final ListView listView = ((ListView) parent);
                     listView.setItemChecked(position, true);
-                    final String key = (String) listView.getAdapter().getItem(position);
-                    mNavigation.showAndroidUsbDeviceInfo(key);
+                    showDetails((UsbDeviceListAdapter.UsbDevice) listView.getAdapter().getItem(position));
                 });
 
 
@@ -112,13 +114,23 @@ public class MainActivity extends AppCompatActivity {
                 .getList().setOnItemClickListener((parent, view, position, id) -> {
                     final ListView listView = ((ListView) parent);
                     listView.setItemChecked(position, true);
-                    final String key = (String) listView.getAdapter().getItem(position);
-                    mNavigation.showLinuxUsbDeviceInfo(mLinuxDeviceMap.get(key));
+                    showDetails((UsbDeviceListAdapter.UsbDevice) listView.getAdapter().getItem(position));
                 });
 
 
         checkIfDbPresent();
         refreshUsbDevices();
+    }
+
+
+    private void showDetails(UsbDeviceListAdapter.UsbDevice device) {
+        if (device instanceof UsbDeviceListAdapter.UsbDevice.AndroidUsb) {
+            mNavigation.showAndroidUsbDeviceInfo(device.getKey());
+        } else if (device instanceof UsbDeviceListAdapter.UsbDevice.SysUsb) {
+            final SysBusUsbDevice sysBusUsbDevice =
+                    ((UsbDeviceListAdapter.UsbDevice.SysUsb) device).getDevice();
+            mNavigation.showLinuxUsbDeviceInfo(sysBusUsbDevice);
+        }
     }
 
     /**
@@ -202,13 +214,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(final TabViewHolder holder, final Map<String, ?> map) {
-        final List<String> items = new ArrayList<>(map.keySet());
-        Collections.sort(items);
+        final List<UsbDeviceListAdapter.UsbDevice> devices = usbListDataMapper.map(map);
 
-        final ListAdapter adapter = new UsbDeviceListAdapter(getApplicationContext(), items);
+        final ListAdapter adapter = new UsbDeviceListAdapter(
+                getApplicationContext(),
+                devices,
+                apiConditionalResultMapper);
+
         holder.getList().setAdapter(adapter);
 
-        final String count = getString(R.string.text_number_of_devices, items.size());
+        final String count = getString(R.string.text_number_of_devices, devices.size());
         holder.getCount().setText(count);
     }
 }
