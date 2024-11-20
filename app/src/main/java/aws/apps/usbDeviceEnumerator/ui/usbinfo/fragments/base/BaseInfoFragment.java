@@ -59,7 +59,7 @@ public abstract class BaseInfoFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public abstract String getSharePayload();
+    protected abstract String getSharePayload();
 
 
     protected void loadAsyncData(final ViewHolder viewHolder,
@@ -69,8 +69,8 @@ public abstract class BaseInfoFragment extends Fragment {
 
         dataFetcher.fetchData(vid, pid, reportedVendorName, (vendorFromDb, productFromDb, bitmap) -> {
 
-            if (isAdded() && getActivity() != null && getView() != null) {
-                getActivity().runOnUiThread(() -> {
+            if (isFragmentValidAndHasView()) {
+                requireActivity().runOnUiThread(() -> {
                     viewHolder.getVendorFromDb().setText(vendorFromDb);
                     viewHolder.getProductFromDb().setText(productFromDb);
                     if (bitmap != null) {
@@ -82,5 +82,9 @@ public abstract class BaseInfoFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private boolean isFragmentValidAndHasView() {
+        return isAdded() && getActivity() != null && getView() != null;
     }
 }

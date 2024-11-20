@@ -13,103 +13,96 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.linux;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.linux
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import aws.apps.usbDeviceEnumerator.R
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.InfoFragmentAndroid.Companion.DEFAULT_STRING
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.BaseInfoFragment
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory
+import aws.apps.usbDeviceEnumerator.util.StringUtils
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
+import javax.inject.Inject
 
-import java.util.List;
+@AndroidEntryPoint
+class InfoFragmentLinux : BaseInfoFragment() {
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.BaseInfoFragment;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.TableWriter;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.tabs.BottomTabSetup;
-import aws.apps.usbDeviceEnumerator.util.StringUtils;
-import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
+    @Inject
+    lateinit var sharePayloadFactory: SharePayloadFactory
 
-public class InfoFragmentLinux extends BaseInfoFragment {
-    private final static String EXTRA_DATA = InfoFragmentLinux.class.getName() + ".BUNDLE_DATA";
-    private static final int LAYOUT_ID = R.layout.fragment_usb_info;
-    private static final SharePayloadFactory SHARE_PAYLOAD_FACTORY = new SharePayloadFactory();
-    private SysBusUsbDevice device;
-    private boolean validData;
+    @Inject
+    lateinit var dataBinder: SysUsbInfoDataBinder;
 
-    private ViewHolder viewHolder;
+    private var device: SysBusUsbDevice? = null
+    private var viewHolder: ViewHolder? = null
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        device = (SysBusUsbDevice) requireArguments().getSerializable(EXTRA_DATA);
-        final View view;
+    private fun hasValidData() = device != null
 
-        if (device == null) {
-            view = inflater.inflate(R.layout.fragment_error, container, false);
-            validData = false;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        saved: Bundle?
+    ): View? {
+        device = requireArguments().getSerializable(EXTRA_DATA) as SysBusUsbDevice?
+
+        return if (hasValidData()) {
+            inflater.inflate(LAYOUT_ID, container, false)
         } else {
-            view = inflater.inflate(LAYOUT_ID, container, false);
-            validData = true;
-        }
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle bundle) {
-        super.onViewCreated(view, bundle);
-
-        if (validData) {
-            viewHolder = new ViewHolder(view);
-            populateDataTable(LayoutInflater.from(getContext()));
-        } else {
-            final TextView textView = view.findViewById(R.id.errorText);
-            textView.setText(R.string.error_loading_device_info_unknown);
+            inflater.inflate(R.layout.fragment_error, container, false)
         }
     }
 
-    private void populateDataTable(LayoutInflater inflater) {
-        final String vid = StringUtils.padLeft(device.getVid(), '0', 4);
-        final String pid = StringUtils.padLeft(device.getPid(), '0', 4);
-        final String deviceClass = UsbConstantResolver.resolveUsbClass(device);
+    override fun onViewCreated(view: View, bundle: Bundle?) {
+        super.onViewCreated(view, bundle)
 
-        viewHolder.getLogo().setImageResource(R.drawable.no_image);
-
-        viewHolder.getVid().setText(vid);
-        viewHolder.getPid().setText(pid);
-        viewHolder.getDevicePath().setText(device.getDevicePath());
-        viewHolder.getDeviceClass().setText(deviceClass);
-
-        viewHolder.getReportedVendor().setText(device.getReportedVendorName());
-        viewHolder.getReportedProduct().setText(device.getReportedProductName());
-
-        new BottomTabSetup().setup(viewHolder, List.of(getString(R.string.additional_info)));
-
-        final TableWriter tableWriter = new TableWriter(inflater, viewHolder.getFirstBottomTable());
-        tableWriter.addDataRow(getString(R.string.usb_version_), device.getUsbVersion());
-        tableWriter.addDataRow(getString(R.string.speed_), device.getSpeed());
-        tableWriter.addDataRow(getString(R.string.protocol_), device.getDeviceProtocol());
-        tableWriter.addDataRow(getString(R.string.maximum_power_), device.getMaxPower());
-        tableWriter.addDataRow(getString(R.string.serial_number_), device.getSerialNumber());
-
-        loadAsyncData(viewHolder, vid, pid, device.getReportedVendorName());
+        if (hasValidData()) {
+            viewHolder = ViewHolder(view)
+            populateDataTable(LayoutInflater.from(context))
+        } else {
+            val textView = view.findViewById<TextView>(R.id.errorText)
+            textView.setText(R.string.error_loading_device_info_unknown)
+        }
     }
 
-    @Override
-    public String getSharePayload() {
-        return SHARE_PAYLOAD_FACTORY.getSharePayload(viewHolder);
+    override fun onDestroyView() {
+        viewHolder = null
+        super.onDestroyView()
     }
 
-    public static Fragment create(final SysBusUsbDevice usbDevice) {
-        final Fragment fragment = new InfoFragmentLinux();
-        final Bundle bundle = new Bundle();
-        bundle.putSerializable(EXTRA_DATA, usbDevice);
-        fragment.setArguments(bundle);
-        return fragment;
+    private fun populateDataTable(inflater: LayoutInflater) {
+        val device = device!!
+        val vid = StringUtils.padLeft(device.vid, '0', 4)
+        val pid = StringUtils.padLeft(device.pid, '0', 4)
+
+        dataBinder.bind(inflater, viewHolder!!, device)
+
+        loadAsyncData(viewHolder, vid, pid, device.reportedVendorName)
+    }
+
+
+    override fun getSharePayload(): String {
+        return viewHolder?.let {
+            sharePayloadFactory.getSharePayload(it)
+        } ?: DEFAULT_STRING
+    }
+
+    companion object {
+        private val EXTRA_DATA = InfoFragmentLinux::class.java.name + ".BUNDLE_DATA"
+        private val LAYOUT_ID = R.layout.fragment_usb_info
+
+        fun create(usbDevice: SysBusUsbDevice?): Fragment {
+            val fragment: Fragment = InfoFragmentLinux()
+            val bundle = Bundle()
+            bundle.putSerializable(EXTRA_DATA, usbDevice)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

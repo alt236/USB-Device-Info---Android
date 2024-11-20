@@ -1,57 +1,64 @@
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing
 
-import android.util.Log;
-import android.view.View;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.util.Log
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
+import aws.apps.usbDeviceEnumerator.BuildConfig
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder
+import javax.inject.Inject
 
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder;
+class SharePayloadFactory @Inject constructor() {
 
-public class SharePayloadFactory {
-    private static final String TAG = ShareUtils.class.getSimpleName();
+    fun getSharePayload(holder: ViewHolder): String {
+        val sb = StringBuilder()
+        sb.append(tableToString(holder.headerTable))
+        sb.append(tableToString(holder.topTable))
+        sb.append('\n')
+        sb.append(tableToString(holder.firstBottomTable))
+        sb.append('\n')
+        sb.append(tableToString(holder.secondBottomTable))
 
-    public String getSharePayload(final ViewHolder holder) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(tableToString(holder.getHeaderTable()));
-        sb.append(tableToString(holder.getTopTable()));
-        sb.append('\n');
-        sb.append(tableToString(holder.getFirstBottomTable()));
-        sb.append('\n');
-        sb.append(tableToString(holder.getSecondBottomTable()));
-        return sb.toString();
+        if (BuildConfig.DEBUG) {
+            Log.d("SharePayloadFactory", "----\n$sb")
+        }
+
+        return sb.toString()
     }
 
-    private String tableToString(TableLayout table) {
-        final StringBuilder sb = new StringBuilder();
+    private fun tableToString(table: TableLayout?): String {
+        val sb = StringBuilder()
 
         if (table == null) {
-            return sb.toString();
+            return sb.toString()
         }
 
-        for (int i = 0; i <= table.getChildCount() - 1; i++) {
-            final TableRow row = (TableRow) table.getChildAt(i);
+        for (i in 0..<table.childCount) {
+            val row = table.getChildAt(i) as TableRow
 
-            for (int j = 0; j <= row.getChildCount() - 1; j++) {
-                final View v = row.getChildAt(j);
+            for (j in 0..<row.childCount) {
+                val v = row.getChildAt(j)
 
                 try {
-                    if (v instanceof TextView) {
-                        final TextView textView = (TextView) v;
-                        sb.append(textView.getText());
+                    if (v is TextView) {
+                        sb.append(v.text)
 
                         if (j == 0) {
-                            sb.append(" ");
+                            sb.append(" ")
                         }
                     }
-                } catch (Exception e) {
-                    sb.append(e.toString());
-                    Log.e(TAG, "^ ERROR: tableToString: " + e.toString());
+                } catch (e: Exception) {
+                    sb.append(e.toString())
+                    Log.e(TAG, "^ ERROR: tableToString: $e")
                 }
             }
-            sb.append("\n");
+            sb.append('\n')
         }
 
-        return sb.toString();
+        return sb.toString()
+    }
+
+    private companion object {
+        val TAG: String = ShareUtils::class.java.simpleName
     }
 }
