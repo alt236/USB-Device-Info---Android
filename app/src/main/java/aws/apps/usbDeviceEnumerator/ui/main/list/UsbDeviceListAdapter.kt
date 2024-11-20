@@ -10,13 +10,11 @@ import aws.apps.usbDeviceEnumerator.R
 import aws.apps.usbDeviceEnumerator.ui.common.IntExt.formatVidPid
 import aws.apps.usbDeviceEnumerator.ui.common.ViewExt.setTextOrHide
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper
-import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
 
 
 class UsbDeviceListAdapter(
     private val context: Context,
-    private val data: MutableList<UsbDevice>,
+    private val data: List<UiUsbDevice>,
     private val mapper: ApiConditionalResultMapper,
 ) : BaseAdapter() {
 
@@ -38,7 +36,7 @@ class UsbDeviceListAdapter(
             val line2: String
 
             when (device) {
-                is UsbDevice.AndroidUsb -> {
+                is UiUsbDevice.AndroidUsb -> {
                     val vid = combineNullableStrings(
                         device.device.vendorId.formatVidPid(),
                         mapper.map(device.device.manufacturerName)
@@ -51,7 +49,7 @@ class UsbDeviceListAdapter(
                     line2 = context.getString(R.string.device_list_pid_template, pid)
                 }
 
-                is UsbDevice.SysUsb -> {
+                is UiUsbDevice.SysUsb -> {
                     line1 = context.getString(R.string.device_list_vid_template, device.device.vid)
                     line2 = context.getString(R.string.device_list_pid_template, device.device.pid)
                 }
@@ -94,10 +92,4 @@ class UsbDeviceListAdapter(
         return nonNull.joinToString(separator = " | ")
     }
 
-    sealed interface UsbDevice {
-        val key: String
-
-        data class AndroidUsb(override val key: String, val device: AndroidUsbDevice) : UsbDevice
-        data class SysUsb(override val key: String, val device: SysBusUsbDevice) : UsbDevice
-    }
 }

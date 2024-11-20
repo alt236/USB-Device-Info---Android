@@ -18,6 +18,8 @@ package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import javax.inject.Inject;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -30,6 +32,9 @@ import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 public class UsbInfoActivity extends AppCompatActivity {
     public static final String EXTRA_DATA_ANDROID = UsbInfoActivity.class.getName() + ".EXTRA_DATA_ANDROID";
     public static final String EXTRA_DATA_LINUX = UsbInfoActivity.class.getName() + ".EXTRA_DATA_LINUX";
+
+    @Inject
+    protected FragmentFactory deviceInfoFragmentFactory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,9 +53,9 @@ public class UsbInfoActivity extends AppCompatActivity {
             final Fragment fragment;
 
             if (androidKey != null) {
-                fragment = FragmentFactory.getFragment(androidKey);
+                fragment = deviceInfoFragmentFactory.getFragment(androidKey);
             } else if (linuxDevice != null) {
-                fragment = FragmentFactory.getFragment(linuxDevice);
+                fragment = deviceInfoFragmentFactory.getFragment(linuxDevice);
             } else {
                 fragment = null;
             }

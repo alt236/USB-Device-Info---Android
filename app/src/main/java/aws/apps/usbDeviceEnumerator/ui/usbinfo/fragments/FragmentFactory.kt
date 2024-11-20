@@ -1,17 +1,22 @@
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments;
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments
 
-import androidx.fragment.app.Fragment;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.InfoFragmentAndroid;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.linux.InfoFragmentLinux;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
+import androidx.fragment.app.Fragment
+import aws.apps.usbDeviceEnumerator.ui.main.list.UiUsbDevice
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.InfoFragmentAndroid
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.linux.InfoFragmentLinux
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
+import javax.inject.Inject
 
-public final class FragmentFactory {
+class FragmentFactory @Inject constructor() {
 
-    public static Fragment getFragment(String usbKey) {
-        return InfoFragmentAndroid.create(usbKey);
+    fun getFragment(device: UiUsbDevice): Fragment {
+        return when (device) {
+            is UiUsbDevice.AndroidUsb -> getFragment(device.key)
+            is UiUsbDevice.SysUsb -> getFragment(device.device)
+        }
     }
 
-    public static Fragment getFragment(SysBusUsbDevice usbDevice) {
-        return InfoFragmentLinux.create(usbDevice);
-    }
+    fun getFragment(androidKey: String): Fragment = InfoFragmentAndroid.create(androidKey)
+    fun getFragment(device: SysBusUsbDevice) = InfoFragmentLinux.create(device)
+
 }

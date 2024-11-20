@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.main.list.UiUsbDevice;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.UsbInfoActivity;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
@@ -18,29 +19,39 @@ public class Navigation {
     private static final int DEFAULT_FRAGMENT_TRANSACTION = FragmentTransaction.TRANSIT_FRAGMENT_FADE;
 
     private final AppCompatActivity activity;
+    private final FragmentFactory fragmentFactory;
 
-    public Navigation(AppCompatActivity activity) {
+    public Navigation(AppCompatActivity activity, FragmentFactory fragmentFactory) {
         this.activity = activity;
+        this.fragmentFactory = fragmentFactory;
     }
 
-    public void showAndroidUsbDeviceInfo(String device) {
+    public void showUsbDeviceInfo(UiUsbDevice device) {
+        if (device instanceof UiUsbDevice.AndroidUsb) {
+            showAndroidUsbDeviceInfo(device.getKey());
+        } else if (device instanceof UiUsbDevice.SysUsb) {
+            showLinuxUsbDeviceInfo(((UiUsbDevice.SysUsb) device).getDevice());
+        }
+    }
+
+    private void showAndroidUsbDeviceInfo(String device) {
         if (isSmallScreen()) {
             final Intent i = new Intent(activity.getApplicationContext(), UsbInfoActivity.class);
             i.putExtra(UsbInfoActivity.EXTRA_DATA_ANDROID, device);
             startActivity(i);
         } else {
-            final Fragment fragment = FragmentFactory.getFragment(device);
+            final Fragment fragment = fragmentFactory.getFragment(device);
             stackFragment(fragment);
         }
     }
 
-    public void showLinuxUsbDeviceInfo(SysBusUsbDevice device) {
+    private void showLinuxUsbDeviceInfo(SysBusUsbDevice device) {
         if (isSmallScreen()) {
             final Intent i = new Intent(activity.getApplicationContext(), UsbInfoActivity.class);
             i.putExtra(UsbInfoActivity.EXTRA_DATA_LINUX, device);
             startActivity(i);
         } else {
-            final Fragment fragment = FragmentFactory.getFragment(device);
+            final Fragment fragment = fragmentFactory.getFragment(device);
             stackFragment(fragment);
         }
     }

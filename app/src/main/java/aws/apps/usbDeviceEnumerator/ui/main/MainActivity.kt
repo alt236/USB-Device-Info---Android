@@ -13,217 +13,214 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package aws.apps.usbDeviceEnumerator.ui.main;
+package aws.apps.usbDeviceEnumerator.ui.main
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
-import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
-import aws.apps.usbDeviceEnumerator.ui.common.Navigation;
-import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater;
-import aws.apps.usbDeviceEnumerator.ui.debug.DebugActivity;
-import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListAdapter;
-import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListDataMapper;
-import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController;
-import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder;
-import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
-import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper;
-import dagger.hilt.android.AndroidEntryPoint;
-import uk.co.alt236.androidusbmanager.AndroidUsbManager;
-import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ListAdapter
+import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import aws.apps.usbDeviceEnumerator.R
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo
+import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo
+import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo
+import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory
+import aws.apps.usbDeviceEnumerator.ui.common.Navigation
+import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater
+import aws.apps.usbDeviceEnumerator.ui.debug.DebugActivity
+import aws.apps.usbDeviceEnumerator.ui.main.list.UiUsbDevice
+import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListAdapter
+import aws.apps.usbDeviceEnumerator.ui.main.list.UsbDeviceListDataMapper
+import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabController
+import aws.apps.usbDeviceEnumerator.ui.main.tabs.TabViewHolder
+import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.alt236.androidusbmanager.AndroidUsbManager
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
+import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity {
-    final String TAG = this.getClass().getName();
-    @Inject
-    SysBusUsbManager mUsbManagerLinux;
-    @Inject
-    AndroidUsbManager mUsbManagerAndroid;
-    @Inject
-    DataProviderUsbInfo mDbUsb;
-    @Inject
-    DataProviderCompanyInfo mDbComp;
-    @Inject
-    DataProviderCompanyLogo mZipComp;
-    @Inject
-    UsbDeviceListDataMapper usbListDataMapper;
-    @Inject
-    ApiConditionalResultMapper apiConditionalResultMapper;
+class MainActivity : AppCompatActivity() {
+    private val TAG: String = javaClass.name
 
-    private Map<String, SysBusUsbDevice> mLinuxDeviceMap;
+    @Inject
+    lateinit var usbManagerLinux: SysBusUsbManager
 
-    private Navigation mNavigation;
+    @Inject
+    lateinit var usbManagerAndroid: AndroidUsbManager
 
-    private TabController mTabController;
+    @Inject
+    lateinit var dbUsb: DataProviderUsbInfo
 
-    private void checkIfDbPresent() {
-        // Prompt user to DL db if it is missing.
-        if (!new File(mDbUsb.getDataFilePath()).exists()) {
-            DialogFactory.createOkDialog(this,
-                            R.string.alert_db_not_found_title,
-                            R.string.alert_db_not_found_instructions)
-                    .show();
-            Log.w(TAG, "^ Database not found: " + mDbUsb.getDataFilePath());
+    @Inject
+    lateinit var dbComp: DataProviderCompanyInfo
+
+    @Inject
+    lateinit var zipComp: DataProviderCompanyLogo
+
+    @Inject
+    lateinit var usbListDataMapper: UsbDeviceListDataMapper
+
+    @Inject
+    lateinit var apiConditionalResultMapper: ApiConditionalResultMapper
+
+    @Inject
+    lateinit var infoFragmentFactory: FragmentFactory
+
+    private var navigation: Navigation? = null
+
+    private var tabController: TabController? = null
+
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.act_main)
+        tabController = createTabController()
+        navigation = Navigation(this, infoFragmentFactory)
+        checkIfDbPresent()
+        refreshUsbDevices()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        when (itemId) {
+            R.id.menu_about -> {
+                AboutDialogFactory.createAboutDialog(this).show()
+                return true
+            }
+
+            R.id.menu_debug -> {
+                val intent = Intent(this, DebugActivity::class.java)
+                ActivityCompat.startActivity(this, intent, null)
+                return true
+            }
+
+            R.id.menu_update_db -> {
+                val control = ProgressDialogControl(supportFragmentManager)
+                val databaseUpdater = DatabaseUpdater(control, dbComp, dbUsb, zipComp)
+
+                databaseUpdater.start(this)
+                return true
+            }
+
+            R.id.menu_refresh -> {
+                refreshUsbDevices()
+                return true
+            }
+
+            else -> return false
         }
     }
 
-    /**
-     * Called when the activity is first created.
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.act_main);
-        mTabController = new TabController(this);
-        mNavigation = new Navigation(this);
-        mTabController.setup(this::onTabChanged);
+    private fun createTabController(): TabController {
+        val tabController = TabController(this)
+
+        tabController.setup { tabId: String, tabViewHolder: TabViewHolder ->
+            this.onTabChanged(tabId, tabViewHolder)
+        }
 
         // Setup android list - tab1;
-        mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO)
-                .getList().setOnItemClickListener((parent, view, position, id) -> {
-                    final ListView listView = ((ListView) parent);
-                    listView.setItemChecked(position, true);
-                    showDetails((UsbDeviceListAdapter.UsbDevice) listView.getAdapter().getItem(position));
-                });
-
+        tabController.getHolderForTag(TabController.TAB_ANDROID_INFO)
+            .list.onItemClickListener =
+            OnItemClickListener { parent: AdapterView<*>, _: View?, position: Int, _: Long ->
+                onListItemClicked((parent as ListView), position)
+            }
 
         // Setup linux list - tab2
-        mTabController.getHolderForTag(TabController.TAB_LINUX_INFO)
-                .getList().setOnItemClickListener((parent, view, position, id) -> {
-                    final ListView listView = ((ListView) parent);
-                    listView.setItemChecked(position, true);
-                    showDetails((UsbDeviceListAdapter.UsbDevice) listView.getAdapter().getItem(position));
-                });
-
-
-        checkIfDbPresent();
-        refreshUsbDevices();
-    }
-
-
-    private void showDetails(UsbDeviceListAdapter.UsbDevice device) {
-        if (device instanceof UsbDeviceListAdapter.UsbDevice.AndroidUsb) {
-            mNavigation.showAndroidUsbDeviceInfo(device.getKey());
-        } else if (device instanceof UsbDeviceListAdapter.UsbDevice.SysUsb) {
-            final SysBusUsbDevice sysBusUsbDevice =
-                    ((UsbDeviceListAdapter.UsbDevice.SysUsb) device).getDevice();
-            mNavigation.showLinuxUsbDeviceInfo(sysBusUsbDevice);
-        }
-    }
-
-    /**
-     * Creates the menu items
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Handles item selections
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        final int itemId = item.getItemId();
-        if (itemId == R.id.menu_about) {
-            AboutDialogFactory.createAboutDialog(this).show();
-            return true;
-        } else if (itemId == R.id.menu_debug) {
-            final Intent intent = new Intent(this, DebugActivity.class);
-            ActivityCompat.startActivity(this, intent, null);
-            return true;
-        } else if (itemId == R.id.menu_update_db) {
-            final ProgressDialogControl control = new ProgressDialogControl(getSupportFragmentManager());
-            final DatabaseUpdater databaseUpdater = new DatabaseUpdater(control, mDbComp, mDbUsb, mZipComp);
-
-            databaseUpdater.start(this);
-            return true;
-        } else if (itemId == R.id.menu_refresh) {
-            refreshUsbDevices();
-            return true;
-        }
-
-        return false;
-    }
-
-    private void onTabChanged(String tabId, TabViewHolder tabViewHolder) {
-        if (mNavigation.isSmallScreen()) {
-            return;
-        }
-
-        final ListView listView = tabViewHolder.getList();
-        final int checkedItemPosition = listView.getCheckedItemPosition();
-        final Fragment fragment;
-
-        if (checkedItemPosition == ListView.INVALID_POSITION) {
-            fragment = null;
-        } else {
-            final String text = (String) listView.getItemAtPosition(checkedItemPosition);
-
-            switch (tabId) {
-                case TabController.TAB_ANDROID_INFO:
-                    fragment = FragmentFactory.getFragment(text);
-                    break;
-                case TabController.TAB_LINUX_INFO:
-                    fragment = FragmentFactory.getFragment(mLinuxDeviceMap.get(text));
-                    break;
-                default:
-                    fragment = null;
-                    break;
+        tabController.getHolderForTag(TabController.TAB_LINUX_INFO)
+            .list.onItemClickListener =
+            OnItemClickListener { parent: AdapterView<*>, _: View?, position: Int, _: Long ->
+                onListItemClicked((parent as ListView), position)
             }
+
+        return tabController
+    }
+
+    private fun onListItemClicked(listView: ListView, position: Int) {
+        listView.setItemChecked(position, true)
+        navigation?.showUsbDeviceInfo(listView.getDeviceAtPosition(position))
+    }
+
+    private fun onTabChanged(
+        @Suppress("UNUSED_PARAMETER") tabId: String,
+        tabViewHolder: TabViewHolder
+    ) {
+        if (navigation!!.isSmallScreen) {
+            return
+        }
+
+        val listView = tabViewHolder.list
+        val checkedItemPosition = listView.checkedItemPosition
+
+        val fragment = if (checkedItemPosition == ListView.INVALID_POSITION) {
+            null
+        } else {
+            val device = listView.getDeviceAtPosition(checkedItemPosition)
+            infoFragmentFactory.getFragment(device)
         }
 
         if (fragment == null) {
-            mNavigation.removeFragmentsFromContainer();
+            navigation!!.removeFragmentsFromContainer()
         } else {
-            mNavigation.stackFragment(fragment);
+            navigation!!.stackFragment(fragment)
         }
     }
 
 
-    private void refreshUsbDevices() {
-        Map<String, AndroidUsbDevice> mAndroidDeviceMap = mUsbManagerAndroid.getDeviceList();
-        mLinuxDeviceMap = mUsbManagerLinux.getUsbDevices();
+    private fun refreshUsbDevices() {
+        updateList(
+            tabController!!.getHolderForTag(TabController.TAB_ANDROID_INFO),
+            usbManagerAndroid.getDeviceList()
+        )
 
-        updateList(mTabController.getHolderForTag(TabController.TAB_ANDROID_INFO), mAndroidDeviceMap);
-        updateList(mTabController.getHolderForTag(TabController.TAB_LINUX_INFO), mLinuxDeviceMap);
+        updateList(
+            tabController!!.getHolderForTag(TabController.TAB_LINUX_INFO),
+            usbManagerLinux.usbDevices
+        )
     }
 
-    private void updateList(final TabViewHolder holder, final Map<String, ?> map) {
-        final List<UsbDeviceListAdapter.UsbDevice> devices = usbListDataMapper.map(map);
+    private fun updateList(holder: TabViewHolder, map: Map<String, *>) {
+        val devices = usbListDataMapper.map(map)
 
-        final ListAdapter adapter = new UsbDeviceListAdapter(
-                getApplicationContext(),
-                devices,
-                apiConditionalResultMapper);
+        val adapter: ListAdapter = UsbDeviceListAdapter(
+            applicationContext,
+            devices,
+            apiConditionalResultMapper
+        )
 
-        holder.getList().setAdapter(adapter);
+        holder.list.adapter = adapter
 
-        final String count = getString(R.string.text_number_of_devices, devices.size());
-        holder.getCount().setText(count);
+        val count = getString(R.string.text_number_of_devices, devices.size)
+        holder.count.text = count
     }
+
+    private fun checkIfDbPresent() {
+        // Prompt user to DL db if it is missing.
+        if (!File(dbUsb.dataFilePath).exists()) {
+            DialogFactory.createOkDialog(
+                this,
+                R.string.alert_db_not_found_title,
+                R.string.alert_db_not_found_instructions
+            ).show()
+            Log.w(TAG, "^ Database not found: " + dbUsb.dataFilePath)
+        }
+    }
+
+    private fun ListView.getDeviceAtPosition(position: Int) =
+        this.getItemAtPosition(position) as UiUsbDevice
 }
