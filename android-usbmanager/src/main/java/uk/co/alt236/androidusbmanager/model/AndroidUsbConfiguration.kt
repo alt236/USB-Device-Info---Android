@@ -20,12 +20,13 @@ data class AndroidUsbConfiguration(
     val isSelfPowered get() = rawConfiguration.isSelfPowered
     val isRemoteWakeup get() = rawConfiguration.isRemoteWakeup
 
-    val interfaces: List<AndroidUsbInterface> by lazy {
-        val result = ArrayList<AndroidUsbInterface>(rawConfiguration.interfaceCount)
-        for (i in 0 until rawConfiguration.interfaceCount) {
-            result.add(AndroidUsbInterface(rawConfiguration.getInterface(i)))
+    val interfaces: List<AndroidUsbInterface>
+        get() {
+            val result = ArrayList<AndroidUsbInterface>(rawConfiguration.interfaceCount)
+            for (i in 0 until rawConfiguration.interfaceCount) {
+                result.add(AndroidUsbInterface(rawConfiguration.getInterface(i)))
+            }
+            return result
         }
-        result
-    }
 
 }

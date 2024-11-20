@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android
+package aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.linux
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,38 +22,35 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import aws.apps.usbDeviceEnumerator.R
-import aws.apps.usbDeviceEnumerator.ui.common.IntExt.formatVidPid
+import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.AndroidUsbInfoFragment.Companion.DEFAULT_STRING
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.BaseInfoFragment
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory
+import aws.apps.usbDeviceEnumerator.util.StringUtils
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.alt236.androidusbmanager.AndroidUsbManager
-import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice
+import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class InfoFragmentAndroid : BaseInfoFragment() {
-    @Inject
-    lateinit var usbManager: AndroidUsbManager
+class LinuxUsbInfoFragment : BaseInfoFragment() {
 
     @Inject
-    lateinit var binder: AndroidUsbInfoDataBinder
+    lateinit var sharePayloadFactory: SharePayloadFactory
 
     @Inject
-    lateinit var sharePayloadFactory: SharePayloadFactory;
+    lateinit var dataBinder: SysUsbInfoDataBinder
 
+    private var device: SysBusUsbDevice? = null
     private var viewHolder: ViewHolder? = null
-    private var device: AndroidUsbDevice? = null
 
     private fun hasValidData() = device != null
-    private fun geUsbKey(): String = requireArguments().getString(EXTRA_DATA, DEFAULT_STRING)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         saved: Bundle?
-    ): View {
-        device = usbManager.getDeviceList()[geUsbKey()]
+    ): View? {
+        device = requireArguments().getSerializable(EXTRA_DATA) as SysBusUsbDevice?
 
         return if (hasValidData()) {
             inflater.inflate(LAYOUT_ID, container, false)
@@ -64,13 +61,13 @@ class InfoFragmentAndroid : BaseInfoFragment() {
 
     override fun onViewCreated(view: View, bundle: Bundle?) {
         super.onViewCreated(view, bundle)
-        viewHolder = ViewHolder(view)
 
         if (hasValidData()) {
             viewHolder = ViewHolder(view)
-            populateDataTable(LayoutInflater.from(requireContext()))
+            populateDataTable(LayoutInflater.from(context))
         } else {
-            setErrorState()
+            val textView = view.findViewById<TextView>(R.id.errorText)
+            textView.setText(R.string.error_loading_device_info_unknown)
         }
     }
 
@@ -79,26 +76,16 @@ class InfoFragmentAndroid : BaseInfoFragment() {
         super.onDestroyView()
     }
 
-    private fun setErrorState() {
-        val stringRes = if (geUsbKey() == DEFAULT_STRING) {
-            R.string.error_loading_device_info_unknown
-        } else {
-            R.string.error_loading_device_info_device_disconnected
-        }
-
-        requireView().findViewById<TextView>(R.id.errorText).setText(stringRes)
-    }
-
     private fun populateDataTable(inflater: LayoutInflater) {
-        binder.bind(inflater, viewHolder!!, geUsbKey(), device!!)
-        val manufacturerName = device!!.manufacturerName.getValueOrNull()
-        loadAsyncData(
-            viewHolder,
-            device!!.vendorId.formatVidPid(false),
-            device!!.productId.formatVidPid(false),
-            manufacturerName
-        )
+        val device = device!!
+        val vid = StringUtils.padLeft(device.vid, '0', 4)
+        val pid = StringUtils.padLeft(device.pid, '0', 4)
+
+        dataBinder.bind(inflater, viewHolder!!, device)
+
+        loadAsyncData(viewHolder, vid, pid, device.reportedVendorName)
     }
+
 
     override fun getSharePayload(): String {
         return viewHolder?.let {
@@ -107,14 +94,13 @@ class InfoFragmentAndroid : BaseInfoFragment() {
     }
 
     companion object {
-        const val DEFAULT_STRING: String = "???"
-        private val EXTRA_DATA = InfoFragmentAndroid::class.java.name + ".BUNDLE_DATA"
+        private val EXTRA_DATA = LinuxUsbInfoFragment::class.java.name + ".BUNDLE_DATA"
         private val LAYOUT_ID = R.layout.fragment_usb_info
 
-        fun create(usbKey: String): Fragment {
-            val fragment = InfoFragmentAndroid()
+        fun create(usbDevice: SysBusUsbDevice): Fragment {
+            val fragment: Fragment = LinuxUsbInfoFragment()
             val bundle = Bundle()
-            bundle.putString(EXTRA_DATA, usbKey)
+            bundle.putSerializable(EXTRA_DATA, usbDevice)
             fragment.arguments = bundle
             return fragment
         }

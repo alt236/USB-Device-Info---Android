@@ -18,26 +18,25 @@ class AndroidUsbInfoDataBinder @Inject constructor(
     fun bind(
         inflater: LayoutInflater,
         viewHolder: ViewHolder,
-        usbKey: String,
         device: AndroidUsbDevice
     ) {
         val vid = device.vendorId.formatVidPid()
         val pid = device.productId.formatVidPid()
-        val deviceClass = UsbConstantResolver.resolveUsbClass(device.deviceClass);
+        val deviceClass = UsbConstantResolver.resolveUsbClass(device.deviceClass)
 
-        viewHolder.logo.setImageResource(R.drawable.no_image);
-        viewHolder.vid.text = vid;
-        viewHolder.pid.text = pid;
-        viewHolder.devicePath.text = usbKey;
-        viewHolder.deviceClass.text = deviceClass;
+        viewHolder.logo.setImageResource(R.drawable.no_image)
+        viewHolder.vid.text = vid
+        viewHolder.pid.text = pid
+        viewHolder.devicePath.text = device.deviceName
+        viewHolder.deviceClass.text = deviceClass
 
-        populateBottomTabs(inflater, viewHolder, device);
+        populateBottomTabs(inflater, viewHolder, device)
 
         val manufacturedNameResult = device.manufacturerName
-        val mappedManufacturerNameValue = apiConditionalResultMapper.map(manufacturedNameResult);
+        val mappedManufacturerNameValue = apiConditionalResultMapper.map(manufacturedNameResult)
 
-        viewHolder.reportedVendor.text = mappedManufacturerNameValue;
-        viewHolder.reportedProduct.text = apiConditionalResultMapper.map(device.productName);
+        viewHolder.reportedVendor.text = mappedManufacturerNameValue
+        viewHolder.reportedProduct.text = apiConditionalResultMapper.map(device.productName)
     }
 
     private fun populateBottomTabs(

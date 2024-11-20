@@ -46,13 +46,14 @@ class AndroidUsbDevice(
         mapConfigurations()
     }
 
-    val interfaces: List<AndroidUsbInterface> by lazy {
-        val result = ArrayList<AndroidUsbInterface>(rawDevice.interfaceCount)
-        for (i in 0 until rawDevice.interfaceCount) {
-            result.add(AndroidUsbInterface(rawDevice.getInterface(i)))
+    val interfaces: List<AndroidUsbInterface>
+        get() {
+            val result = ArrayList<AndroidUsbInterface>(rawDevice.interfaceCount)
+            for (i in 0 until rawDevice.interfaceCount) {
+                result.add(AndroidUsbInterface(rawDevice.getInterface(i)))
+            }
+            return result
         }
-        result
-    }
 
     private fun mapConfigurations(): ApiConditionalResult<List<AndroidUsbConfiguration>> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
