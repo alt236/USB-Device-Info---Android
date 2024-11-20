@@ -99,4 +99,7 @@
     <string name="not_provided">Not provided</string>
 
     <string name="error_device_api_too_low">Error: Device API too low</string>
+
+    <string name="device_list_vid_template">VID: %s</string>
+    <string name="device_list_pid_template">PID: %s</string>
 </resources>

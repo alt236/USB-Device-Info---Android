@@ -38,12 +38,18 @@ public class DataFetcher {
 
                     if (!TextUtils.isEmpty(vendorFromDb)) {
                         searchFor = vendorFromDb;
-                    } else {
+                    } else if (!TextUtils.isEmpty(reportedVendorName)) {
                         searchFor = reportedVendorName;
+                    } else {
+                        searchFor = null;
                     }
 
-                    final String logo = dbComp.getLogoName(searchFor);
-                    bitmap = zipComp.getLogoBitmap(logo);
+                    if (searchFor == null) {
+                        bitmap = null;
+                    } else {
+                        final String logo = dbComp.getLogoName(searchFor);
+                        bitmap = zipComp.getLogoBitmap(logo);
+                    }
                 } else {
                     bitmap = null;
                 }

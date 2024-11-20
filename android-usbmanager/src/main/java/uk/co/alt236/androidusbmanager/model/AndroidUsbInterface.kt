@@ -29,13 +29,14 @@ data class AndroidUsbInterface(val rawInterface: UsbInterface) : Parcelable {
     val interfaceSubclass: Int get() = rawInterface.interfaceSubclass
     val interfaceProtocol: Int get() = rawInterface.interfaceProtocol
 
-    val endpoints: List<AndroidUsbEndpoint> by lazy {
-        val result = ArrayList<AndroidUsbEndpoint>(rawInterface.endpointCount)
+    val endpoints: List<AndroidUsbEndpoint>
+        get() {
+            val result = ArrayList<AndroidUsbEndpoint>(rawInterface.endpointCount)
 
-        for (i in 0 until rawInterface.endpointCount) {
-            result.add(AndroidUsbEndpoint(rawInterface.getEndpoint(i)))
+            for (i in 0 until rawInterface.endpointCount) {
+                result.add(AndroidUsbEndpoint(rawInterface.getEndpoint(i)))
+            }
+
+            return result
         }
-
-        result
-    }
 }

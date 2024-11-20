@@ -15,21 +15,27 @@
  */
 package aws.apps.usbDeviceEnumerator.ui.usbinfo;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import aws.apps.usbDeviceEnumerator.R;
+import aws.apps.usbDeviceEnumerator.ui.main.list.UiUsbDevice;
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory;
 import dagger.hilt.android.AndroidEntryPoint;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 @AndroidEntryPoint
 public class UsbInfoActivity extends AppCompatActivity {
-    public static final String EXTRA_DATA_ANDROID = UsbInfoActivity.class.getName() + ".EXTRA_DATA_ANDROID";
-    public static final String EXTRA_DATA_LINUX = UsbInfoActivity.class.getName() + ".EXTRA_DATA_LINUX";
+    public static final String EXTRA_DATA_DEVICE = UsbInfoActivity.class.getName() + ".EXTRA_DATA_DEVICE";
+
+    @Inject
+    protected FragmentFactory deviceInfoFragmentFactory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,24 +48,13 @@ public class UsbInfoActivity extends AppCompatActivity {
         if (b == null) {
             finish();
         } else {
-            final String androidKey = b.getString(EXTRA_DATA_ANDROID);
-            final SysBusUsbDevice linuxDevice = (SysBusUsbDevice) b.getSerializable(EXTRA_DATA_LINUX);
-
-            final Fragment fragment;
-
-            if (androidKey != null) {
-                fragment = FragmentFactory.getFragment(androidKey);
-            } else if (linuxDevice != null) {
-                fragment = FragmentFactory.getFragment(linuxDevice);
-            } else {
-                fragment = null;
-            }
-
-            if (fragment == null) {
+            final UiUsbDevice device = b.getParcelable(EXTRA_DATA_DEVICE);
+            if (device == null) {
                 finish();
-            } else {
-                showFragment(fragment);
             }
+
+            final Fragment fragment = deviceInfoFragmentFactory.getFragment(device);
+            showFragment(fragment);
         }
     }
 
@@ -77,5 +72,11 @@ public class UsbInfoActivity extends AppCompatActivity {
         ft.replace(R.id.fragment_container, fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
+    }
+
+    public static Intent createIntent(Context context, UiUsbDevice device) {
+        final Intent intent = new Intent(context, UsbInfoActivity.class);
+        intent.putExtra(UsbInfoActivity.EXTRA_DATA_DEVICE, device);
+        return intent;
     }
 }
