@@ -35,11 +35,11 @@ class DataProviderCompanyLogo(context: Context) : AbstractDataProvider(context),
 
     init {
         val baseDir: File = context.getDatabaseRoot()
-        this.dataFilePath = File(baseDir, BuildConfig.LOGO_ZIP_FILE_NAME).absolutePath
+        this.dataFilePath = File(baseDir, BuildConfig.VENDOR_LOGO_ZIP_FILE_NAME).absolutePath
     }
 
     override val url: String
-        get() = BuildConfig.LOGO_ZIP_URL
+        get() = BuildConfig.VENDOR_LOGO_ZIP_URL
 
     fun getLogoBitmap(logoName: String?): Bitmap? {
         Log.d(logTag, "^ Getting logo '$logoName' from '$dataFilePath'")

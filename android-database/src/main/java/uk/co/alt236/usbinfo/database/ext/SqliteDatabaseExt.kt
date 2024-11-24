@@ -43,8 +43,6 @@ internal object SqliteDatabaseExt {
             Log.e(TAG, "^ executeQuery(): Error: ${e.message}")
             this.closeSafe()
             ErrorGeneric(e)
-        } finally {
-
         }
     }
 }

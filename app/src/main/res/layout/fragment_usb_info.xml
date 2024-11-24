@@ -36,7 +36,7 @@
             android:layout_margin="4dp"
             android:background="@drawable/image_border"
             android:contentDescription="@string/logo"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             android:src="@drawable/no_image" />
 
         <TableLayout

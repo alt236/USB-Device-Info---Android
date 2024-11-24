@@ -24,11 +24,11 @@ android {
         buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
         buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
 
-        buildConfigField "String", "COMPANY_DB_URL", quoteString("https://alt236.co.uk/download/db/android_company.db3")
-        buildConfigField "String", "COMPANY_DB_FILE_NAME", quoteString("company.db3")
+        buildConfigField "String", "VENDOR_LOGO_DB_URL", quoteString("https://app-files.schillings.io/db/vendor-images/vendor_logo.db")
+        buildConfigField "String", "VENDOR_LOGO_DB_FILE_NAME", quoteString("vendor_logo.db")
 
-        buildConfigField "String", "LOGO_ZIP_URL", quoteString("https://alt236.co.uk/download/db/company_logos.zip")
-        buildConfigField "String", "LOGO_ZIP_FILE_NAME", quoteString("logos.zip")
+        buildConfigField "String", "VENDOR_LOGO_ZIP_URL", quoteString("https://app-files.schillings.io/db/vendor-images/vendor_logo.zip")
+        buildConfigField "String", "VENDOR_LOGO_ZIP_FILE_NAME", quoteString("vendor_logo.zip")
     }
 
     buildTypes {

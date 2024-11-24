@@ -30,11 +30,11 @@ class DataProviderCompanyInfo(context: Context) : AbstractDataProvider(context),
 
     init {
         val baseDir: File = context.getDatabaseRoot()
-        this.dataFilePath = File(baseDir, BuildConfig.COMPANY_DB_FILE_NAME).absolutePath
+        this.dataFilePath = File(baseDir, BuildConfig.VENDOR_LOGO_DB_FILE_NAME).absolutePath
     }
 
     override val url: String
-        get() = BuildConfig.COMPANY_DB_URL
+        get() = BuildConfig.VENDOR_LOGO_DB_URL
 
     fun getLogoName(companyNameString: String): DbResult<String?> {
         return when (val dbResult = openDatabase(dataFilePath)) {
@@ -50,14 +50,18 @@ class DataProviderCompanyInfo(context: Context) : AbstractDataProvider(context),
         companyNameString: String
     ): DbResult<String?> {
         val cursorResult = db.executeQuery(
-            table = "companies, company_name_spellings",
-            fields = arrayOf("companies.logo"),
-            selection = "company_name_spellings.company_name=? AND company_name_spellings.companyId=companies._id",
+            table = "vendors, logos",
+            fields = arrayOf("vendors.name", "logos.file_name as $COLUMN_LOGO_FILENAME"),
+            selection = "vendors.name=? AND vendors.logo_id=logos.id",
             selectionArgs = arrayOf(companyNameString),
-            order = "companies.logo ASC"
+            order = "$COLUMN_LOGO_FILENAME ASC"
         )
-        val result = cursorResult.getStringResult("logo", closeAfter = true)
+        val result = cursorResult.getStringResult(COLUMN_LOGO_FILENAME, closeAfter = true)
         db.closeSafe()
         return result
+    }
+
+    private companion object {
+        const val COLUMN_LOGO_FILENAME = "file_name"
     }
 }
