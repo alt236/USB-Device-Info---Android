@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.library'
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+}
+
+apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
+android.buildFeatures.buildConfig true
+
+android {
+    namespace 'uk.co.alt236.usbinfo.database'
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        lintConfig file("$rootDir/buildsystem/codequality/lint.xml")
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
+        buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
+
+        buildConfigField "String", "COMPANY_DB_URL", quoteString("https://alt236.co.uk/download/db/android_company.db3")
+        buildConfigField "String", "COMPANY_DB_FILE_NAME", quoteString("company.db3")
+
+        buildConfigField "String", "LOGO_ZIP_URL", quoteString("https://alt236.co.uk/download/db/company_logos.zip")
+        buildConfigField "String", "LOGO_ZIP_FILE_NAME", quoteString("logos.zip")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            enableUnitTestCoverage false
+            enableAndroidTestCoverage false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = 17
+    }
+}
+
+dependencies {
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
+    testImplementation libs.junit4
+}
