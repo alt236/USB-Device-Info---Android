@@ -1,2 +1,3 @@
 include ':app', ':usbdeviceenumerator', ':linuxapp'
 include ':android-usbmanager'
+include ':android-database'

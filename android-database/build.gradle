@@ -1,0 +1,61 @@
+plugins {
+    id 'com.android.library'
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+}
+
+apply from: "${project.rootDir}/buildsystem/android-defaults.gradle"
+android.buildFeatures.buildConfig true
+
+android {
+    namespace 'uk.co.alt236.usbinfo.database'
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        lintConfig file("$rootDir/buildsystem/codequality/lint.xml")
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        var server_file_root = "https://app-files.schillings.io/db"
+        buildConfigField "String", "USB_DB_URL", quoteString("${server_file_root}/device-ids/usb_ids.db")
+        buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb_ids.db")
+
+        buildConfigField "String", "VENDOR_LOGO_DB_URL", quoteString("${server_file_root}/vendor-images/vendor_logo.db")
+        buildConfigField "String", "VENDOR_LOGO_DB_FILE_NAME", quoteString("vendor_logo.db")
+
+        buildConfigField "String", "VENDOR_LOGO_ZIP_URL", quoteString("${server_file_root}/vendor-images/vendor_logo.zip")
+        buildConfigField "String", "VENDOR_LOGO_ZIP_FILE_NAME", quoteString("vendor_logo.zip")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            enableUnitTestCoverage false
+            enableAndroidTestCoverage false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            enableUnitTestCoverage true
+            enableAndroidTestCoverage true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = 17
+    }
+}
+
+dependencies {
+    implementation libs.androidx.appcompat
+    implementation libs.android.material
+    testImplementation libs.junit4
+}

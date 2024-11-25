@@ -22,15 +22,6 @@ android {
         namespace "aws.apps.usbDeviceEnumerator"
         versionCode buildNumber
         versionName "3.0.0." + buildNumber
-
-        buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
-        buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
-
-        buildConfigField "String", "COMPANY_DB_URL", quoteString("https://alt236.co.uk/download/db/android_company.db3")
-        buildConfigField "String", "COMPANY_DB_FILE_NAME", quoteString("company.db3")
-
-        buildConfigField "String", "LOGO_ZIP_URL", quoteString("https://alt236.co.uk/download/db/company_logos.zip")
-        buildConfigField "String", "LOGO_ZIP_FILE_NAME", quoteString("logos.zip")
     }
 
     signingConfigs {
@@ -52,6 +43,7 @@ android {
     dependencies {
         implementation project(':usbdeviceenumerator')
         implementation project(':android-usbmanager')
+        implementation project(':android-database')
 
         implementation libs.androidx.appcompat
         implementation libs.android.material

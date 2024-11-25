@@ -28,9 +28,6 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import aws.apps.usbDeviceEnumerator.R
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory
 import aws.apps.usbDeviceEnumerator.ui.common.Navigation
 import aws.apps.usbDeviceEnumerator.ui.dbupdate.DatabaseUpdater
@@ -46,6 +43,9 @@ import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiCondi
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.alt236.androidusbmanager.AndroidUsbManager
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
+import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyInfo
+import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyLogo
+import uk.co.alt236.usbinfo.database.providers.DataProviderUsbInfo
 import java.io.File
 import javax.inject.Inject
 

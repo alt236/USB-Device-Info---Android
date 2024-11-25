@@ -1,11 +1,8 @@
 package aws.apps.usbDeviceEnumerator.di
 
 import android.content.Context
+import android.content.res.Resources
 import android.hardware.usb.UsbManager
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo
-import aws.apps.usbDeviceEnumerator.data.LinuxUsbPath
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.DataFetcher
 import dagger.Module
 import dagger.Provides
@@ -15,6 +12,10 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.co.alt236.androidusbmanager.AndroidUsbManager
 import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
+import uk.co.alt236.usbinfo.database.model.LinuxUsbPath
+import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyInfo
+import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyLogo
+import uk.co.alt236.usbinfo.database.providers.DataProviderUsbInfo
 
 @Module
 @InstallIn(ActivityComponent::class)
@@ -54,11 +55,13 @@ object DataModule {
     @Provides
     @Reusable
     fun provideDataFetcher(
+        resources: Resources,
         usbInfo: DataProviderUsbInfo,
         companyInfo: DataProviderCompanyInfo,
         logoInfo: DataProviderCompanyLogo,
     ): DataFetcher {
         return DataFetcher(
+            resources,
             companyInfo,
             usbInfo,
             logoInfo

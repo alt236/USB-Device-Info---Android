@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aws.apps.usbDeviceEnumerator.R;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyInfo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderCompanyLogo;
-import aws.apps.usbDeviceEnumerator.data.DataProviderUsbInfo;
 import aws.apps.usbDeviceEnumerator.ui.common.DialogFactory;
 import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl;
 import aws.apps.usbDeviceEnumerator.util.NetworkUtils;
 import aws.apps.usbDeviceEnumerator.util.NotifyUser;
+import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyInfo;
+import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyLogo;
+import uk.co.alt236.usbinfo.database.providers.DataProviderUsbInfo;
 
 public class DatabaseUpdater {
     private static final String TAG = DatabaseUpdater.class.getSimpleName();
