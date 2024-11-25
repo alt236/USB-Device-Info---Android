@@ -46,21 +46,18 @@ class DataProviderUsbInfo(context: Context) : AbstractDataProvider(context), Dat
             is DbResult.Success -> {
                 val db = dbResult.result
                 val cursorResult = db.executeQuery(
-                    table = "usb",
+                    table = "devices",
                     fields = arrayOf(
-                        "vid",
-                        "vendor_name",
-                        "did",
-                        "device_name",
-                        "ifid",
-                        "interface_name"
+                        "id",
+                        "vendor_id",
+                        "name",
                     ),
-                    selection = "vid=? AND did=?",
-                    selectionArgs = arrayOf(vid, did),
-                    order = "vid, did, ifid ASC"
+                    selection = "id=? AND vendor_id=?",
+                    selectionArgs = arrayOf(did, vid),
+                    order = "name ASC"
                 )
 
-                val result = cursorResult.getStringResult("device_name", closeAfter = true)
+                val result = cursorResult.getStringResult("name", closeAfter = true)
                 db.closeSafe()
                 return result
             }
@@ -75,20 +72,13 @@ class DataProviderUsbInfo(context: Context) : AbstractDataProvider(context), Dat
             is DbResult.Success -> {
                 val db = dbResult.result
                 val cursorResult = db.executeQuery(
-                    table = "usb",
-                    fields = arrayOf(
-                        "vid",
-                        "vendor_name",
-                        "did",
-                        "device_name",
-                        "ifid",
-                        "interface_name"
-                    ),
-                    selection = "vid=?",
+                    table = "vendors",
+                    fields = arrayOf("id", "name"),
+                    selection = "id=?",
                     selectionArgs = arrayOf(vid),
-                    order = "vid, did, ifid ASC"
+                    order = "name ASC"
                 )
-                val result = cursorResult.getStringResult("vendor_name", closeAfter = true)
+                val result = cursorResult.getStringResult("name", closeAfter = true)
                 db.closeSafe()
                 return result
             }

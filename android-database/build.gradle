@@ -21,13 +21,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "USB_DB_URL", quoteString("https://alt236.co.uk/download/db/android_usb.db3")
-        buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb.db3")
+        var server_file_root = "https://app-files.schillings.io/db"
+        buildConfigField "String", "USB_DB_URL", quoteString("${server_file_root}/device-ids/usb_ids.db")
+        buildConfigField "String", "USB_DB_FILE_NAME", quoteString("usb_ids.db")
 
-        buildConfigField "String", "VENDOR_LOGO_DB_URL", quoteString("https://app-files.schillings.io/db/vendor-images/vendor_logo.db")
+        buildConfigField "String", "VENDOR_LOGO_DB_URL", quoteString("${server_file_root}/vendor-images/vendor_logo.db")
         buildConfigField "String", "VENDOR_LOGO_DB_FILE_NAME", quoteString("vendor_logo.db")
 
-        buildConfigField "String", "VENDOR_LOGO_ZIP_URL", quoteString("https://app-files.schillings.io/db/vendor-images/vendor_logo.zip")
+        buildConfigField "String", "VENDOR_LOGO_ZIP_URL", quoteString("${server_file_root}/vendor-images/vendor_logo.zip")
         buildConfigField "String", "VENDOR_LOGO_ZIP_FILE_NAME", quoteString("vendor_logo.zip")
     }
 
