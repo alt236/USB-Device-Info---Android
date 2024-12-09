@@ -1,3 +1,5 @@
-include ':app', ':usbdeviceenumerator', ':linuxapp'
-include ':android-usbmanager'
-include ':android-database'
+include ':app'
+include ':app-linux'
+include ':libs-jvm:usbdeviceenumerator'
+include ':libs-android:usbmanager'
+include ':libs-android:database'
