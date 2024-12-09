@@ -41,8 +41,8 @@ import aws.apps.usbDeviceEnumerator.ui.progress.ProgressDialogControl
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.FragmentFactory
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper
 import dagger.hilt.android.AndroidEntryPoint
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
 import uk.co.alt236.androidusbmanager.AndroidUsbManager
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
 import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyInfo
 import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyLogo
 import uk.co.alt236.usbinfo.database.providers.DataProviderUsbInfo

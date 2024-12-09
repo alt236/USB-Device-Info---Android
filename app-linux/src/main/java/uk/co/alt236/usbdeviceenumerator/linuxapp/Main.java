@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.dump.ShellSysBusDumper;
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager;
+import dev.alt236.usbdeviceenumerator.sysbususb.dump.ShellSysBusDumper;
 
 public class Main {
     public static void main(String[] args) {

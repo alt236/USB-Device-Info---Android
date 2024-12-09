@@ -13,11 +13,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package uk.co.alt236.usbdeviceenumerator;
+package dev.alt236.usbdeviceenumerator;
 
 import javax.annotation.Nonnull;
 
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice;
 
 public class UsbConstantResolver {
 

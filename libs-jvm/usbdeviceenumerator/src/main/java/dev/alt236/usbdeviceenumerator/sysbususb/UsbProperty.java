@@ -1,4 +1,4 @@
-package uk.co.alt236.usbdeviceenumerator.sysbususb;
+package dev.alt236.usbdeviceenumerator.sysbususb;
 
 public enum UsbProperty {
     PID("idProduct"),

@@ -10,8 +10,8 @@ import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
 import uk.co.alt236.androidusbmanager.AndroidUsbManager
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbManager
 import uk.co.alt236.usbinfo.database.model.LinuxUsbPath
 import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyInfo
 import uk.co.alt236.usbinfo.database.providers.DataProviderCompanyLogo

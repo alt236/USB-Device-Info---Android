@@ -1,7 +1,7 @@
 package aws.apps.usbDeviceEnumerator.ui.main.list
 
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
 import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
 import javax.inject.Inject
 
 class UsbDeviceListDataMapper @Inject constructor() {

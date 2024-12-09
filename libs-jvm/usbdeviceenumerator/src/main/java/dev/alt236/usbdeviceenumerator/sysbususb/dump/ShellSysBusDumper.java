@@ -1,11 +1,11 @@
-package uk.co.alt236.usbdeviceenumerator.sysbususb.dump;
+package dev.alt236.usbdeviceenumerator.sysbususb.dump;
 
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import uk.co.alt236.usbdeviceenumerator.sysbususb.Constants;
-import uk.co.alt236.usbdeviceenumerator.sysbususb.UsbProperty;
+import dev.alt236.usbdeviceenumerator.sysbususb.Constants;
+import dev.alt236.usbdeviceenumerator.sysbususb.UsbProperty;
 
 public class ShellSysBusDumper {
     public static final String DEVICE_START = "-- DEVICE START--";

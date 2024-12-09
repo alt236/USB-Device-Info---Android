@@ -8,8 +8,8 @@ import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table.Configura
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.table.InterfaceTableBuilder
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.tabs.BottomTabSetup
+import dev.alt236.usbdeviceenumerator.UsbConstantResolver
 import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice
-import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver
 import javax.inject.Inject
 
 class AndroidUsbInfoDataBinder @Inject constructor(

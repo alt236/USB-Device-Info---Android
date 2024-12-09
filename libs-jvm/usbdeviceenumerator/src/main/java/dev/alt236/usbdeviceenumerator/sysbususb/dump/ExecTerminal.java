@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package uk.co.alt236.usbdeviceenumerator.sysbususb.dump;
+package dev.alt236.usbdeviceenumerator.sysbususb.dump;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
