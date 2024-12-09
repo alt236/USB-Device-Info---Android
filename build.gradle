@@ -6,8 +6,8 @@ buildscript {
         google()
         mavenCentral()
         gradlePluginPortal()
-
     }
+
     dependencies {
         classpath libs.android.build.tools.gradle
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

@@ -41,9 +41,9 @@ android {
     }
 
     dependencies {
-        implementation project(':usbdeviceenumerator')
-        implementation project(':android-usbmanager')
-        implementation project(':android-database')
+        implementation project(':libs-jvm:usbdeviceenumerator')
+        implementation project(':libs-android:usbmanager')
+        implementation project(':libs-android:database')
 
         implementation libs.androidx.appcompat
         implementation libs.android.material
