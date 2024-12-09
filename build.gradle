@@ -1,6 +1,5 @@
 buildscript {
     apply from: "${project.rootDir}/buildconstants/android-sdk-versions.gradle"
-    apply from: "${project.rootDir}/buildconstants/dependency-versions.gradle"
 
     repositories {
         google()
@@ -40,6 +39,5 @@ allprojects {
     }
 
     apply from: "${project.rootDir}/buildconstants/android-sdk-versions.gradle"
-    apply from: "${project.rootDir}/buildconstants/dependency-versions.gradle"
     apply from: "${project.rootDir}/buildsystem/common-methods.gradle"
 }

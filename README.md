@@ -23,10 +23,20 @@ Apart from using the build in API it now also parses "/sys/bus/usb/devices/" to 
 which are hidden by the Android OS, although in less detail.
 This part is also available as a Java library (see <i>Library</i> below)
 
+<a href='https://play.google.com/store/apps/details?id=aws.apps.usbDeviceEnumerator&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+<img alt='Get it on Google Play' height=100 src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
+</a>
+
 ##### Important
 
-As of version 2.0.0 `SysBusUsbDevice` is no longer `Parcelable`; it is now `Serializable`. This is
+⚠️ BREAKING CHANGES ⚠️
+
+* As of version 2.0.0 `SysBusUsbDevice` is no longer `Parcelable`; it is now `Serializable`. This is
 so that the library can be used in pure java projects.
+* As of version 3.0.0, the library package name has been changed from
+  `uk.co.alt236.usbdeviceenumerator.*`
+  to `dev.alt236.usbdeviceenumerator.*`.
+  The maven coordinates have also changed due to the migration to Maven Central (see below).
 
 Library
 -----------
@@ -36,14 +46,8 @@ To use that, add the following blocks:
 <b>gradle</b>
 
 ```groovy
-	repositories {
-		maven {
-			url "https://dl.bintray.com/alt236/maven"
-		}
-	}
-
 	dependencies {
-		compile 'uk.co.alt236:usbdeviceenumerator:2.0.0'
+  compile 'dev.alt236:usbdeviceenumerator:3.0.0'
 	}
 ```
 
@@ -51,9 +55,9 @@ To use that, add the following blocks:
 
 ```xml
     <dependency>
-      <groupId>uk.co.alt236</groupId>
+  <groupId>dev.alt236</groupId>
       <artifactId>usbdeviceenumerator</artifactId>
-      <version>2.0.0</version>
+  <version>3.0.0</version>
       <type>pom</type>
     </dependency>
 ```

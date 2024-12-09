@@ -1,21 +1,23 @@
-apply plugin: 'java'
-apply plugin: 'maven-publish'
+import com.vanniktech.maven.publish.SonatypeHost
 
-final int versionMajor = 2
-final int versionMinor = 0
-final int versionPatch = 0
+plugins {
+    id 'java-library'
+    alias(libs.plugins.vanniktech.maven.publish)
+}
 
-final String gitHubRepo = 'alt236/USB-Device-Info---Android'
-final String artifactName = 'usbdeviceenumerator'
-final String artifactDesc = 'List USB devices by parsing sysfs. Linux/Android only.'
-final String[] tags = ['usb', 'java', 'android']
 
-final String artifactGroupId = 'uk.co.alt236'
-final String semanticVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
-final String gitHubUrl = "https://github.com/${gitHubRepo}"
+def project_name = "USB Device Enumerator"
+def project_description = "A library to collect USB device data from /sys/bus/usb/"
+def github_owner_and_repo = "alt236/USB-Device-Info---Android"
+def group_id = 'dev.alt236'
+def artifact_id = 'usbdeviceenumerator'
+def artifact_version = '3.0.0'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+group group_id
+version artifact_version
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 test {
     jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
@@ -27,31 +29,47 @@ dependencies {
     testImplementation libs.junit4
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-    archiveClassifier = 'sources'
-}
+mavenPublishing { // This is for the 'vanniktech-maven-publish' plugin
+    var automaticRelease = false
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease)
+    signAllPublications()
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    archiveClassifier = 'javadoc'
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            if (plugins.hasPlugin('war')) {
-                from components.web
-            } else {
-                from components.java
+    coordinates(group_id, artifact_id, artifact_version)
+    pom {
+        name = project_name
+        description = project_description
+        url = "https://github.com/$github_owner_and_repo"
+        licenses {
+            license {
+                name = 'The Apache License, Version 2.0'
+                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
             }
-
-            groupId artifactGroupId
-            artifactId artifactName
-            version semanticVersion
-
-            artifact sourcesJar
-            artifact javadocJar
+        }
+        developers {
+            developer {
+                id = 'alt236'
+                name = 'Alexandros Schillings'
+                url = "https://github.com/alt236/"
+            }
+        }
+        scm {
+            url = "https://github.com/$github_owner_and_repo"
         }
     }
 }
+
+// Fix for dependency order issue: https://github.com/vanniktech/gradle-maven-publish-plugin/issues/814
+afterEvaluate {
+    var sigDependentTasks = [
+            "publishMavenPublicationToMavenCentralRepository",
+    ]
+
+    for (taskName in sigDependentTasks) {
+        tasks.named(taskName) {
+            println("Found: " + it.name)
+            dependsOn("signMavenPublication")
+        }
+    }
+}
+

@@ -3,7 +3,7 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = jacoco_version
+    toolVersion = "0.8.12"
 }
 
 android {
