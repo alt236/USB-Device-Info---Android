@@ -28,7 +28,7 @@ import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.sharing.SharePayloadFactory
 import aws.apps.usbDeviceEnumerator.util.StringUtils
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
 import javax.inject.Inject
 
 @AndroidEntryPoint

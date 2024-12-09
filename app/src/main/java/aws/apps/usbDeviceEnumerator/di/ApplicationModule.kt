@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import uk.co.alt236.usbdeviceenumerator.sysbususb.Constants
+import dev.alt236.usbdeviceenumerator.sysbususb.Constants
 import uk.co.alt236.usbinfo.database.model.LinuxUsbPath
 import javax.inject.Singleton
 

@@ -7,8 +7,8 @@ import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.TableWriter
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.ViewHolder
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.tabs.BottomTabSetup
 import aws.apps.usbDeviceEnumerator.util.StringUtils
-import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver
-import uk.co.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
+import dev.alt236.usbdeviceenumerator.UsbConstantResolver
+import dev.alt236.usbdeviceenumerator.sysbususb.SysBusUsbDevice
 import javax.inject.Inject
 
 class SysUsbInfoDataBinder @Inject constructor(private val res: Resources) {

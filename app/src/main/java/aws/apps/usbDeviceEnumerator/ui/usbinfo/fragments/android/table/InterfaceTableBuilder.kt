@@ -7,10 +7,10 @@ import aws.apps.usbDeviceEnumerator.R
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.android.mapper.ApiConditionalResultMapper
 import aws.apps.usbDeviceEnumerator.ui.usbinfo.fragments.base.TableWriter
 import aws.apps.usbDeviceEnumerator.util.StringUtils
+import dev.alt236.usbdeviceenumerator.UsbConstantResolver
 import uk.co.alt236.androidusbmanager.model.AndroidUsbDevice
 import uk.co.alt236.androidusbmanager.model.AndroidUsbEndpoint
 import uk.co.alt236.androidusbmanager.model.AndroidUsbInterface
-import uk.co.alt236.usbdeviceenumerator.UsbConstantResolver
 
 class InterfaceTableBuilder(
     resources: Resources,

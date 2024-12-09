@@ -9,7 +9,7 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import aws.apps.usbDeviceEnumerator.R
 import aws.apps.usbDeviceEnumerator.ui.debug.fragments.DebugInfoDumper
-import uk.co.alt236.usbdeviceenumerator.sysbususb.dump.ShellSysBusDumper
+import dev.alt236.usbdeviceenumerator.sysbususb.dump.ShellSysBusDumper
 import java.util.regex.Pattern
 import javax.inject.Inject
 
